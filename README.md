@@ -35,4 +35,27 @@ However, it is not easy to get that money but this is my aim for now apart from 
 I don't really have anything to say about this device. It's worth more on the junkyard than in the terms of computing power. 
 
 - Double Xeon E5520 
-- 36 GB of DDR3 ECC RDIMM memory. Most likely I will take it out and save it for something else
+- 36 GB of DDR3 ECC RDIMM memory. Most likely I will take it out and save it for something else  
+- 2x 717W PSU  
+
+Nothing more than that. It basically just collects dust. I will probably give it to someone for free. Until that, it will sit at the bottom of the server rack.
+
+## Routers
+
+### ISP Router
+
+GPON ONT + Router provided by my ISP, **VICTOR**.
+- 4x 1GbE RJ45
+- 1x SC/APC fiber connector.  
+
+I enjoy having internet access from this ISP. However one thing that I would like to have, is access to the router admin panel. Since I don't have any access to that, I can't even change the Wi-Fi password, which is actually a security risk. Otherwise than that, the service is pretty good and the ping is low, no more than **6-7ms**.
+
+### MikroTik CCR2004
+
+The explicit model of this router is **CCR2004-1G-12S+2XS**.  
+It's a very powerful router with a lot of capabilities.
+
+- 1x GbE RJ45 Management port
+- 12x SFP+ ports
+- 2x SFP28 ports
+
