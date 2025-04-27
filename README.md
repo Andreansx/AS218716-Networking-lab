@@ -1,67 +1,100 @@
-## Hey there
-## Happy to see you visiting this repository dediacted to general documentation of my networking lab.
+# Welcome 👋
+## Happy to see you visiting this repository dedicated to general documentation of my networking lab.
 
 ![Dell](https://img.shields.io/badge/dell-%230012b3?style=for-the-badge&logo=dell)
 ![Proxmox](https://img.shields.io/badge/proxmox-proxmox?style=for-the-badge&logo=proxmox&logoColor=%23E57000&labelColor=%232b2a33&color=%232b2a33)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white)
 ![MikroTik](https://img.shields.io/badge/MikroTik-%23363636?style=for-the-badge&logo=Mikrotik)
 
-## Hardware overview
-> My networking lab consists of servers, routers, switches and other devices.  
-> Below you can see a brief overview of them
-## Servers
+---
 
-### Dell PowerEdge R710  
+## 🧠 About This Repository
 
-This is a pretty old server. It is loud, power-hungry and not really powerful.  
-However, for now it does what it is meant to do.  
-Current specification:
-- Double Intel Xeon X5670. 12 cores and 24 threads in total at around 2.90 GHz
-- 128 GB of DDR3 ECC RDIMM memory. Samsung and Skhynix
-- Double 870W PSU
-- 2x 10GbE RJ45 Network card but it isn't currently used for anything  
-Drives:  
-    - Dell certified 146 GB HDD SAS 15K ( Proxmox )
-    - Dell certified 600 GB HDD SAS 10K
-    - HGST 900 GB HDD SAS 10K  
+This repository serves as an overview of my physical networking lab.  
+It documents my current devices, setup, goals, and the methodology behind my learning journey.
 
-- 4x 1GbE RJ45 NDA
+My lab is designed for **serious, hands-on learning**. It's where I test realistic scenarios, experiment with routing and switching protocols, and simulate environments similar to those found in ISPs and data centers.
 
-As you can easily see above, it is not a cutting edge configuration. I am thinking about buying a used **Dell PowerEdge R740 server**. This would allow me to run more virtual machines at once. Along with 2x SFP+ ports, this would be a great improvement and a addition to my lab.  
-However, it is not easy to get that money but this is my aim for now apart from learning networking.  
+Each specific lab scenario (e.g., BGP testing, VLAN setups) will be developed separately in **dedicated repositories** for easier modularity.
 
-### Dell PowerEdge R610
+---
 
-I don't really have anything to say about this device. It's worth more on the junkyard than in the terms of computing power. 
+##  Hardware Overview
 
-- Double Xeon E5520 
-- 36 GB of DDR3 ECC RDIMM memory. Most likely I will take it out and save it for something else  
-- 2x 717W PSU  
+My networking lab consists of servers, routers, switches, and other critical devices.  
+Here’s a brief overview:
 
-Nothing more than that. It basically just collects dust. I will probably give it to someone for free. Until that, it will sit at the bottom of the server rack.
+---
 
-## Routers
+###  Servers
 
-### ISP Router
+#### Dell PowerEdge R710
 
-GPON ONT + Router provided by my ISP, **VICTOR**.
-- 4x 1GbE RJ45
-- 1x SC/APC fiber connector.  
+An older but still functional server—loud, power-hungry, but perfect for lab purposes.
 
-I enjoy having internet access from this ISP. However one thing that I would like to have, is access to the router admin panel. Since I don't have any access to that, I can't even change the Wi-Fi password, which is actually a security risk. Otherwise than that, the service is pretty good and the ping is low, no more than **6-7ms**.
+- Dual Intel Xeon X5670 (12 cores / 24 threads, 2.9 GHz)
+- 128 GB DDR3 ECC RDIMM (Samsung + SK Hynix)
+- Dual 870W PSUs
+- 2x 10GbE RJ45 NIC (currently unused)
+- 4x 1GbE RJ45 NIC
+- Drives:
+  - 146 GB Dell-certified SAS 15K HDD (Proxmox)
+  - 600 GB Dell-certified SAS 10K HDD
+  - 900 GB HGST SAS 10K HDD
 
-### MikroTik CCR2004
+>  _Although it's not a cutting-edge configuration, it allows me to experiment and run basic services. I plan to upgrade to a used Dell PowerEdge R740 in the future to significantly expand my lab capabilities._
 
-The explicit model of this router is **CCR2004-1G-12S+2XS**.  
-It's a very powerful router with a lot of capabilities.
+#### Dell PowerEdge R610
 
-- 1x GbE RJ45 Management port
-- 12x SFP+ ports
-- 2x SFP28 ports
-- 4 GB of memory when using RouterOS 7. If using version 6 - 1700 MB
-- 256 KB of flash memory  
-- 4 cores at 1.7 GHz  
+Honestly, this server is mostly e-waste at this point.  
+However, it’s still part of the rack:
 
-This router provides access to features that are used in Data Centers, which is great for me, such as BGP, OSPF, VPN tunneling etc.
+- Dual Xeon E5520
+- 36 GB DDR3 ECC RDIMM
+- Dual 717W PSUs
 
-### MikroTik CRS326
+>  _It will most likely be decommissioned or given away soon._
+
+---
+
+###  Routers
+
+#### ISP Router (Provided by VICTOR)
+
+- GPON ONT + Router
+- 4x 1GbE RJ45 ports
+- 1x SC/APC fiber connector
+
+>  _The internet service is generally good (low latency ~6-7ms), but lack of admin access to the router is a security limitation._
+
+---
+
+#### MikroTik CCR2004-1G-12S+2XS
+
+An absolute beast for labbing advanced routing protocols.
+
+- 1x 1GbE RJ45 (Management)
+- 12x SFP+ ports (10GbE)
+- 2x SFP28 ports (25GbE)
+- 4 GB RAM (RouterOS 7) / 1700 MB (RouterOS 6)
+- 256 KB flash memory
+- 4 ARM cores at 1.7 GHz
+
+Supports BGP, OSPF, VPN tunneling, MPLS, and other data-center level features.
+
+---
+
+#### MikroTik CRS326-24S+2Q+RM
+
+Coming soon — more details will be documented as I finalize its role within the lab.
+
+---
+
+## 🛠️ Current Focus Areas
+
+- OSPF and BGP routing experiments
+- VLAN segmentation and inter-VLAN routing
+- Redundancy and failover simulations
+- Home data center principles (virtualization, backups, monitoring)
+
+
