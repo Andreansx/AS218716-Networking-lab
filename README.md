@@ -63,3 +63,5 @@ It's a very powerful router with a lot of capabilities.
 - 4 cores at 1.7 GHz  
 
 This router provides access to features that are used in Data Centers, which is great for me, such as BGP, OSPF, VPN tunneling etc.
+
+### MikroTik CRS326
