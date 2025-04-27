@@ -58,4 +58,8 @@ It's a very powerful router with a lot of capabilities.
 - 1x GbE RJ45 Management port
 - 12x SFP+ ports
 - 2x SFP28 ports
+- 4 GB of memory when using RouterOS 7. If using version 6 - 1700 MB
+- 256 KB of flash memory  
+- 4 cores at 1.7 GHz  
 
+This router provides access to features that are used in Data Centers, which is great for me, such as BGP, OSPF, VPN tunneling etc.
