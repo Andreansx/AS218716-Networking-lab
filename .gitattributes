@@ -5,6 +5,8 @@
 *.json linguist-detectable=true
 *.json linguist-language=JSON
 *.yaml linguist-detectable=true
-*.yaml linguist-language=Shell
+*.yaml linguist-language=YAML
 *.yml linguist-detectable=true
-*.yml linguist-language=Shell
+*.yml linguist-language=YAML
+*.rsc linguist-detectable=true
+*.rsc linguist-language=Shell
