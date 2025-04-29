@@ -42,7 +42,7 @@ An older but still functional server—loud, power-hungry, but perfect for lab p
   - 600 GB Dell-certified SAS 10K HDD
   - 900 GB HGST SAS 10K HDD
 
->  _Although it's not a cutting-edge configuration, it allows me to experiment and run basic services. I plan to upgrade to a used Dell PowerEdge R740 in the future to significantly expand my lab capabilities._
+ _Although it's not a cutting-edge configuration, it allows me to experiment and run basic services. I plan to upgrade to a used Dell PowerEdge R740 in the future to significantly expand my lab capabilities._
 
 #### Dell PowerEdge R610
 
@@ -53,7 +53,7 @@ However, it’s still part of the rack:
 - 36 GB DDR3 ECC RDIMM
 - Dual 717W PSUs
 
->  _It will most likely be decommissioned or given away soon._
+ _It will most likely be decommissioned or given away soon._
 
 ---
 
@@ -65,7 +65,7 @@ However, it’s still part of the rack:
 - 4x 1GbE RJ45 ports
 - 1x SC/APC fiber connector
 
->  _The internet service is generally good (low latency ~6-7ms), but lack of admin access to the router is a security limitation._
+ _The internet service is generally good (low latency ~6-7ms), but lack of admin access to the router is a security limitation._
 
 ---
 
