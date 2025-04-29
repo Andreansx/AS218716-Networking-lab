@@ -9,4 +9,3 @@
 *.yml linguist-detectable=true
 *.yml linguist-language=YAML
 *.rsc linguist-detectable=true
-*.rsc linguist-language=Shell
