@@ -9,3 +9,7 @@
 *.yml linguist-detectable=true
 *.yml linguist-language=YAML
 *.rsc linguist-detectable=true
+interfaces linguist-detectable=true
+interfaces linguist-language=YAML
+hosts linguist-detectable=true
+hosts linguist-language=YAML
