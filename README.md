@@ -21,7 +21,7 @@ Each specific lab scenario (e.g., BGP testing, VLAN setups) will be developed se
 
 ##  Hardware Overview
 
-My networking lab consists of servers, routers, switches, and other critical devices.  
+My networking lab consists of servers, routers, switches, and other devices.  
 Here’s a brief overview:
 
 ---
@@ -30,13 +30,14 @@ Here’s a brief overview:
 
 #### [Dell PowerEdge R710](./dell-poweredge-r710/)
 
-An older but still functional server—loud, power-hungry, but perfect for lab purposes.
+A much older but still functional server—loud, power-hungry, but enough for lab purposes.
 
 - Dual Intel Xeon X5670 (12 cores / 24 threads, 2.9 GHz)
 - 128 GB DDR3 ECC RDIMM (Samsung + SK Hynix)
 - Dual 870W PSUs
 - 2x 10GbE RJ45 NIC (currently unused)
 - 4x 1GbE RJ45 NIC
+- iDRAC 6 Enterprise Remote access 
 - Drives:
   - 146 GB Dell-certified SAS 15K HDD (Proxmox)
   - 600 GB Dell-certified SAS 10K HDD
@@ -47,13 +48,13 @@ An older but still functional server—loud, power-hungry, but perfect for lab p
 #### Dell PowerEdge R610
 
 Honestly, this server is mostly e-waste at this point.  
-However, it’s still part of the rack:
+However, it’s still takes some space in my room.
 
 - Dual Xeon E5520
 - 36 GB DDR3 ECC RDIMM
 - Dual 717W PSUs
 
- _It will most likely be decommissioned or given away soon._
+ _It will most likely be given away soon._
 
 ---
 
@@ -86,7 +87,11 @@ Supports BGP, OSPF, VPN tunneling, MPLS, and other data-center level features.
 
 #### MikroTik CRS326-24S+2Q+RM
 
-Coming soon — more details will be documented as I finalize its role within the lab.
+Another powerful device. It has L3 features and it is an important part of the lab.
+
+- 1x 1GbE RJ45 Management port
+- 24x SFP+ ports ( 10GbE )
+- 2x QSFP+ ( 40GbE )
 
 ---
 
