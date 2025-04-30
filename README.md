@@ -28,7 +28,7 @@ Here’s a brief overview:
 
 ###  Servers
 
-#### Dell PowerEdge R710
+#### [Dell PowerEdge R710](./dell-poweredge-r710/)
 
 An older but still functional server—loud, power-hungry, but perfect for lab purposes.
 
@@ -69,7 +69,7 @@ However, it’s still part of the rack:
 
 ---
 
-#### MikroTik CCR2004-1G-12S+2XS
+#### [MikroTik CCR2004-1G-12S+2XS](./ccr2004-1g-12s+2xs/)
 
 An absolute beast for labbing advanced routing protocols.
 
