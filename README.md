@@ -16,7 +16,11 @@ It documents my current devices, setup, goals, and the methodology behind my lea
 My lab is designed for **serious, hands-on learning**. It's where I test realistic scenarios, experiment with routing and switching protocols, and try to simulate environments similar to those found in ISPs and data centers.
 
 Each specific lab scenario (e.g., BGP testing, VLAN setups) will be developed separately in **dedicated repositories** for easier modularity.
+However, **manual installations** of copper cables, fiber patchcords etc. will be documented in the **[/docs](./docs/)** folder.
 
+## Manual installations
+
+*   **[Keystone and copper cable installation](./docs/keystones-installation.md)**
 
 ## Standalone scenarios / services repositories
 
