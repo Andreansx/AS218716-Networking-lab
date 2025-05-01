@@ -90,11 +90,9 @@ Coming soon — more details will be documented as I finalize its role within th
 
 ---
 
-## 🛠️ Current Focus Areas
+## 🛠️ Current Focus Areas of this repository
 
-- OSPF and BGP routing experiments
-- VLAN segmentation and inter-VLAN routing
-- Redundancy and failover simulations
-- Home data center principles (virtualization, backups, monitoring)
-
-
+- Documentiation of latest configuration of the devices
+- Providing links to standalone repositories dedicated to specific scenarios
+- Storing backups of the configurations in case of a failure
+- Potentially storing notes I take
