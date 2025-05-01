@@ -1,5 +1,3 @@
-*.md linguist-detectable=true
-*.md linguist-language=Markdown
 *.txt linguist-detectable=true
 *.txt linguist-language=Text
 *.json linguist-detectable=true
@@ -13,3 +11,5 @@ interfaces linguist-detectable=true
 interfaces linguist-language=YAML
 hosts linguist-detectable=true
 hosts linguist-language=YAML
+*.md linguist-detectable=true
+*.md linguist-language=Markdown
