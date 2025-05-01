@@ -20,7 +20,7 @@ However, **manual installations** of copper cables, fiber patchcords etc. will b
 
 ## Manual installations
 
-*   **[Keystone and copper cable installation](./docs/keystones-installation.md)**
+*   **[Keystones and copper cable through wall installation](./docs/keystones-installation.md)**
 
 ## Standalone scenarios / services repositories
 

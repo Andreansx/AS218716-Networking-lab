@@ -1,7 +1,12 @@
 *.md linguist-detectable=true
 *.md linguist-language=Markdown
 *.rsc linguist-detectable=true
-##interfaces linguist-detectable=true
-##interfaces linguist-language=YAML
-##hosts linguist-detectable=true
-##hosts linguist-language=YAML
+interfaces linguist-detectable=true
+interfaces linguist-language=YAML
+hosts linguist-detectable=true
+hosts linguist-language=YAML
+* text=auto
+*.yml linguist-detectable=true
+*.yaml linguist-detectable=true
+*.yml linguist-language=YAML
+*.yaml linguist-language=YAML
