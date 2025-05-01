@@ -101,3 +101,4 @@ Another powerful device. It has L3 features and it is an important part of the l
 - Providing links to standalone repositories dedicated to specific scenarios
 - Storing backups of the configurations in case of a failure
 - Potentially storing notes I take
+- Storing details about physical wiring in the lab
