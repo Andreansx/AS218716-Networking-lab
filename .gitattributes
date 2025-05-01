@@ -1,11 +1,3 @@
-*.txt linguist-detectable=true
-*.txt linguist-language=Text
-*.json linguist-detectable=true
-*.json linguist-language=JSON
-*.yaml linguist-detectable=true
-*.yaml linguist-language=YAML
-*.yml linguist-detectable=true
-*.yml linguist-language=YAML
 *.rsc linguist-detectable=true
 interfaces linguist-detectable=true
 interfaces linguist-language=YAML
