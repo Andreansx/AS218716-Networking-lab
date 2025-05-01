@@ -54,7 +54,7 @@ However, it’s still takes some space in my room.
 - 36 GB DDR3 ECC RDIMM
 - Dual 717W PSUs
 
- _It will most likely be given away soon._
+ _It will most likely scrapped for parts soon._
 
 ---
 
