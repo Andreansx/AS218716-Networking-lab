@@ -1,5 +1,4 @@
 ## I wrote a example readme. the projects mentioned here aren't real. Im using them now only as placholders
-
 # 🌐 Networking Lab
 > *Where packets find their purpose*
 
@@ -15,16 +14,25 @@
 
 ---
 
-## 💡 What's This All About?
+## 💡 What's This Repository About?
 
-This repository documents my hands-on networking lab - a practical learning environment where I build real skills with enterprise-grade equipment. While I'm currently in my second year of high school, I'm already building the foundation for my future career in data center operations and carrier-grade networking through practical experimentation rather than just theoretical learning.
+This is the **central documentation hub** for my networking lab – it contains everything related to the physical infrastructure, configuration backups, and manual installations. While I'm currently in my second year of high school, I'm building the foundation for my future career in data center operations through hands-on experience with enterprise equipment.
+
+**Important Note:** This repository focuses solely on the lab infrastructure itself. All specific networking projects (BGP, VLAN setups, Terraform deployments, etc.) are maintained in their own dedicated repositories.
+
+## 🗂️ What You'll Find Here
+
+- **Current Device Configurations** - Backups and documentation of running configs
+- **Physical Installation Guides** - How I set up copper cables, keystones, rack mounting, etc.
+- **Lab Infrastructure Details** - Power, cooling, physical organization
+- **Hardware Documentation** - Specifications and setup of physical equipment
 
 ## 🧪 Lab Highlights
 
 - **Enterprise Hardware**: Dell servers running virtualization platforms, MikroTik routers, and more [→ details](./docs/hardware.md)
-- **Carrier-Grade Scenarios**: Simulating ISP routing, data center networking, and backbone infrastructure
-- **Virtualization Focus**: Leveraging Proxmox to maximize learning with limited physical resources
-- **Practical Skills Development**: Building the exact skills needed in modern data centers
+- **Carrier-Grade Focus**: Building a foundation in ISP and data center networking concepts
+- **Virtualization Environment**: Leveraging Proxmox to maximize learning with limited resources
+- **Practical Skills Development**: Real-world infrastructure management experience
 
 ## 🔍 Quick Navigation
 
@@ -43,32 +51,32 @@ This repository documents my hands-on networking lab - a practical learning envi
       </a>
     </td>
     <td width="33%" align="center">
-      <a href="https://github.com/yourusername?tab=repositories&q=networking">
+      <a href="https://github.com/AndreansxTech?tab=repositories&q=networking">
         <img src="https://img.icons8.com/fluency/96/000000/test-tube.png" width="65px"/>
-        <br/>Lab Projects
+        <br/>Project Repositories
       </a>
     </td>
   </tr>
 </table>
 
-## 🧠 Current Focus
+## 🧠 Infrastructure Focus
 
 ```diff
-+ Learning carrier-grade BGP implementations
-+ Mastering virtualization environments with Proxmox
-+ Building data center switching fabrics
-- Upgrading home lab power infrastructure 
-- Documenting completed projects thoroughly
++ Optimizing device configurations for better stability
++ Setting up automated configuration backups
++ Improving physical cable management and labeling
+- Upgrading home lab power distribution
+- Enhancing documentation with network diagrams
 ```
 
-## 🌟 Featured Projects
+## 🔗 Related Project Repositories
 
-Every project here represents real, working implementations - not just concepts:
+While this repository focuses on infrastructure, my actual networking projects live in their own repositories:
 
-- **[BGP Lab →](https://github.com/AndreansxTech/networking-bgp-lab)** - Simulating carrier backbone routing with multiple autonomous systems
-- **[Virtualization Cluster →](https://github.com/AndreansxTech/proxmox-lab)** - Multi-node Proxmox setup with distributed storage
+- **[BGP Lab →](https://github.com/AndreansxTech/networking-bgp-lab)** - Carrier backbone routing simulations
+- **[Virtualization Cluster →](https://github.com/AndreansxTech/proxmox-lab)** - Proxmox virtualization platform implementation
 
-*See my [GitHub profile](https://github.com/AndreansxTech) for more practical networking projects*
+*Check my [GitHub profile](https://github.com/AndreansxTech) for all networking project repositories*
 
 ## 📸 Lab Gallery
 
@@ -88,18 +96,18 @@ Every project here represents real, working implementations - not just concepts:
 </details>
 </div>
 
-## 📚 Documentation Index
+## 📚 Infrastructure Documentation
 
-- **[Hardware Inventory](./docs/hardware.md)** - The enterprise equipment I've acquired and deployed
-- **[Physical Installations](./docs/keystones-installation.md)** - Real-world infrastructure implementations
-- **[Network Architecture](./docs/architecture.md)** - My approach to carrier-inspired network design
-- **[Virtualization Strategy](./docs/virtualization.md)** - How I maximize learning with limited resources
+- **[Hardware Inventory](./docs/hardware.md)** - Detailed equipment specifications
+- **[Physical Installations](./docs/keystones-installation.md)** - Guide to cabling, crimping, and rack mounting
+- **[Device Configurations](./docs/configurations/)** - Backup directory for all device configs
+- **[Network Topology](./docs/topology.md)** - Physical and logical layout of the lab
 
 ## 🚀 Learning Journey
 
-While I'm still in high school, I'm building practical, hands-on experience with the technologies that power modern data centers and carrier networks. This lab represents my commitment to developing real-world skills through direct implementation rather than just theoretical study.
+While I'm still in high school, I'm building practical, hands-on experience with the technologies that power modern data centers and carrier networks. This lab infrastructure represents my commitment to developing real-world skills through direct implementation rather than just theoretical study.
 
-Every configuration, cable run, and troubleshooting session here prepares me for my goal of working in large-scale network operations after graduation.
+Every cable run, rack mount, and device configuration here prepares me for my goal of working in large-scale network operations after graduation.
 
 ---
 
