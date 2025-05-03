@@ -1,48 +1,112 @@
-# Welcome 👋
-## Happy to see you visiting this repository dedicated to general documentation of my networking lab.
+## I wrote a example readme. the projects mentioned here aren't real. Im using them now only as placholders
+
+# 🌐 Networking Lab
+> *Where packets find their purpose*
+
+<div align="center">
 
 ![Dell](https://img.shields.io/badge/dell-%230012b3?style=for-the-badge&logo=dell)
 ![Proxmox](https://img.shields.io/badge/proxmox-proxmox?style=for-the-badge&logo=proxmox&logoColor=%23E57000&labelColor=%232b2a33&color=%232b2a33)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white)
 ![MikroTik](https://img.shields.io/badge/MikroTik-%23363636?style=for-the-badge&logo=Mikrotik)
 
+*A high school student's journey into enterprise networking*
+</div>
+
 ---
 
-## 🧠 About This Repository
+## 💡 What's This All About?
 
-This repository serves as an overview of my physical networking lab.  
-It documents my current devices, setup, goals, and the methodology behind my learning journey.
+This repository documents my hands-on networking lab - a practical learning environment where I build real skills with enterprise-grade equipment. While I'm currently in my second year of high school, I'm already building the foundation for my future career in data center operations and carrier-grade networking through practical experimentation rather than just theoretical learning.
 
-My lab is designed for **serious, hands-on learning**. It's where I test realistic scenarios, experiment with routing and switching protocols, and try to simulate environments similar to those found in ISPs and data centers.
+## 🧪 Lab Highlights
 
-Each specific lab scenario (e.g., BGP testing, VLAN setups) will be documented separately in **dedicated repositories** for easier modularity.  
-However, **manual installations** of copper cables, fiber patchcords etc. will be documented in the **[/docs](./docs/)** folder in this repository, as it wouldn't make sense to create new repositories just for the sake of those short tasks.
+- **Enterprise Hardware**: Dell servers running virtualization platforms, MikroTik routers, and more [→ details](./docs/hardware.md)
+- **Carrier-Grade Scenarios**: Simulating ISP routing, data center networking, and backbone infrastructure
+- **Virtualization Focus**: Leveraging Proxmox to maximize learning with limited physical resources
+- **Practical Skills Development**: Building the exact skills needed in modern data centers
 
-## Manual installations
+## 🔍 Quick Navigation
 
-*   **[Keystones and copper cable through wall installation](./docs/keystones-installation.md)**
+<table>
+  <tr>
+    <td width="33%" align="center">
+      <a href="./docs/hardware.md">
+        <img src="https://img.icons8.com/fluency/96/000000/server.png" width="65px"/>
+        <br/>Hardware Details
+      </a>
+    </td>
+    <td width="33%" align="center">
+      <a href="./docs/keystones-installation.md">
+        <img src="https://img.icons8.com/fluency/96/000000/ethernet-on.png" width="65px"/>
+        <br/>Physical Setup
+      </a>
+    </td>
+    <td width="33%" align="center">
+      <a href="https://github.com/yourusername?tab=repositories&q=networking">
+        <img src="https://img.icons8.com/fluency/96/000000/test-tube.png" width="65px"/>
+        <br/>Lab Projects
+      </a>
+    </td>
+  </tr>
+</table>
 
-## Standalone scenarios / services repositories
+## 🧠 Current Focus
 
-All different scenarios, setups, services and projects are placed in their own, **standalone repositories**.  
-Below you can find links to all of them: 
+```diff
++ Learning carrier-grade BGP implementations
++ Mastering virtualization environments with Proxmox
++ Building data center switching fabrics
+- Upgrading home lab power infrastructure 
+- Documenting completed projects thoroughly
+```
 
-  _Here will be the list_
+## 🌟 Featured Projects
 
-## Hardware Overview
+Every project here represents real, working implementations - not just concepts:
 
-Below you can find a short list of devices that my current lab consists of.  
-The details you can find **[here](./docs/hardware.md)**
+- **[BGP Lab →](https://github.com/AndreansxTech/networking-bgp-lab)** - Simulating carrier backbone routing with multiple autonomous systems
+- **[Virtualization Cluster →](https://github.com/AndreansxTech/proxmox-lab)** - Multi-node Proxmox setup with distributed storage
 
-  The lab consist of servers such as **Dell PowerEdge R710**, used as a Proxmox host, and a R610 which does not have any current use.
-  There also are networking devices such as **CCR2004** and a **CRS326** from **MikroTik**.
-  I even have a very old **Brocade FastIron LS648-STK** switch that required some tinkering to enable L3 functionality.
+*See my [GitHub profile](https://github.com/AndreansxTech) for more practical networking projects*
 
+## 📸 Lab Gallery
 
-## 🛠️ Current Focus Areas of this repository
+<div align="center">
+<details>
+<summary><a href="">Click to see lab photos</a></summary>
+<br>
 
-- Documentiation of latest configuration of the devices
-- Providing links to standalone repositories dedicated to specific scenarios
-- Storing backups of the configurations in case of a failure
-- Potentially storing notes I take
-- Storing details about physical wiring in the lab
+<table>
+  <tr>
+    <td><img src="https://i.imgur.com/PLACEHOLDER1.png" alt="Rack Front" width="250px"/></td>
+    <td><img src="https://i.imgur.com/PLACEHOLDER2.png" alt="Cable Management" width="250px"/></td>
+    <td><img src="https://i.imgur.com/PLACEHOLDER3.png" alt="Console Setup" width="250px"/></td>
+  </tr>
+</table>
+
+</details>
+</div>
+
+## 📚 Documentation Index
+
+- **[Hardware Inventory](./docs/hardware.md)** - The enterprise equipment I've acquired and deployed
+- **[Physical Installations](./docs/keystones-installation.md)** - Real-world infrastructure implementations
+- **[Network Architecture](./docs/architecture.md)** - My approach to carrier-inspired network design
+- **[Virtualization Strategy](./docs/virtualization.md)** - How I maximize learning with limited resources
+
+## 🚀 Learning Journey
+
+While I'm still in high school, I'm building practical, hands-on experience with the technologies that power modern data centers and carrier networks. This lab represents my commitment to developing real-world skills through direct implementation rather than just theoretical study.
+
+Every configuration, cable run, and troubleshooting session here prepares me for my goal of working in large-scale network operations after graduation.
+
+---
+
+<div align="center">
+<p>Built with determination and practical skills by <a href="https://github.com/AndreansxTech">AndreansxTech</a></p>
+
+<a href="https://www.linkedin.com/in/yourusername"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/></a>
+<a href="https://twitter.com/yourusername"><img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter"/></a>
+
+</div>
