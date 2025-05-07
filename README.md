@@ -24,7 +24,29 @@ Here you will be able to find the list of links to manual installs in my lab.
 
 <h2>External related repositories</h2>
 Below you will be able to find neccessary links to additional external repos with specific projects.
+<h2>Hardware</h2>
+Below, you can look at general overview of the devices that my lab consists of
+</br></div>
 
+### Servers
+
+##### **[Dell PowerEdge R710](./r710/)**
+**Really old server. However, for now it is enough, for simple virtualization. Definetly going to replace it. Probably with a R740**
+* **CPU:** 2x Intel Xeon X5670 2.30GHz
+* **RAM:** 128 DDR3 ECC Samsung and Skhynix memory
+* **Disk space:** 1.5 TB combined storage 
+* **OS:** Proxmox
+
+##### **[Dell PowerEdge R610](./r610/)**
+**This one can be considered as garbage. Single Intel Xeon E5520 with 36 Gigabytes of DDR3 RAM. I will give it away to someone probably.**
+### Network devices
+
+##### **[MikroTik CCR2004-1G-12S+2XS](./ccr2004/)**
+**Main lab router. Excellent for learning from basic technologies to advanced protocols like OSPF, BGP etc. Overkill for my needs**
+
+##### **[MikroTik CRS326-24S+2Q+RM](./crs326/)**
+**Core switch in the lab, capable of L3 functionality. 24 SFP+ ports along with 2 QSFP+ offer a lot of possibilities. Also overkill for this lab**
+<div align="center">
 <h3>Contact</h3>
 
 [![Telegram](https://img.shields.io/badge/Telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
