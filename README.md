@@ -22,11 +22,18 @@
 
 Here you will be able to find the list of links to manual installs in my lab.
 
+#### **[Server rack install](./docs/server-rack/overview.md)
+
 <h2>External related repositories</h2>
 Below you will be able to find neccessary links to additional external repos with specific projects.
 <h2>Hardware</h2>
 Below, you can look at general overview of the devices that my lab consists of
 </br></div>
+
+### Server rack
+
+##### My server rack is a **Hewlett Packard Enterprise ASSY 10636 G2**.
+
 
 ### Servers
 
