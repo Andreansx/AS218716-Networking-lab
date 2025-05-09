@@ -22,7 +22,7 @@
 
 Here you will be able to find the list of links to manual installs in my lab.
 
-#### **[Server rack install](./docs/server-rack/overview.md)
+#### **[Server rack install](./docs/server-rack/readme.md)**
 
 <h2>External related repositories</h2>
 Below you will be able to find neccessary links to additional external repos with specific projects.
