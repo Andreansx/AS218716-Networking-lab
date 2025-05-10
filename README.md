@@ -32,7 +32,9 @@ Below, you can look at general overview of the devices that my lab consists of
 
 ### **[Server rack](./hpe-10636-g2/readme.md)**
 
-##### My server rack is a **Hewlett Packard Enterprise ASSY 10636 G2**.
+#### My server rack is a **Hewlett Packard Enterprise ASSY 10636 G2**.
+* **Height:** 36U
+* **Standard:** 19"
 
 
 ### Servers
