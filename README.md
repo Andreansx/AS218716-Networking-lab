@@ -6,7 +6,7 @@
 <h3>Tools and Technologies</h3>
 <img alt="Static Badge" src="https://img.shields.io/badge/dell-171EEB?style=for-the-badge&logo=dell&logoSize=auto">
 <img alt="Static Badge" src="https://img.shields.io/badge/mikrotik-4D1AC7?style=for-the-badge&logo=mikrotik&logoSize=auto">
-<img alt="Static Badge" src="https://img.shields.io/badge/termius-8316A2?style=for-the-badge&logo=termius&logoSize=auto">
+<img alt="Static Badge" src="https://img.shields.io/badge/hewlett packard-8316A2?style=for-the-badge&logo=hp&logoSize=auto">
 <img alt="Static Badge" src="https://img.shields.io/badge/proxmox-B8127E?style=for-the-badge&logo=proxmox&logoSize=auto&logoColor=white">
 <img alt="Static Badge" src="https://img.shields.io/badge/debian-EE0E59?style=for-the-badge&logo=debian&logoSize=auto">
 <h3>What you will find here:</h3>
