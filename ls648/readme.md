@@ -1,3 +1,4 @@
+
 <div align="center">
 <h1>Brocade FastIron LS648-STK</h1>
 <h3>Specifications</h3>
@@ -19,6 +20,7 @@
 
 ## Below is a copy of the issue with the firmware that I documented in my deprecated repo. 
 ## I will try to rewrite it here if I find any mistakes.
+
 </div>
 
 ### How it started
@@ -253,8 +255,10 @@ I think I will try to write my own tutorial for the sake of it.
 Maybe someone starting with a lab will buy that switch, because they are dirt cheap and are a great way to get along with CLI instead of typical GUI. </br>
 And they seem like they never ever existed on the internet. There is only a brochure, maybe like 5 posts about them and a 90 page document about the FastIron LS / LS-STK series from Brocade, year 2011. Otherwise, a community about this switch is extinct I guess. I searched a lot a found absolutely no info whatsoever about the 2015 release of the firmware.
 </br>
-The firmwares were like following:
 
-- FGS07202a.bin - Base L2 functionality 
-- FGLS07202a.bin - Base L3 functionality 
-- FGSR07202a.bin - Edge L3 functionality
+List of all firmware files I found:
+* **[FGS07202a.bin](./)** - L2 Full - Compiled on 2011
+* **FGS07202r.bin** - L2 Full - Compiled on 2015 ( Doesn't seem to have any difference from the a version ) 
+* **FGLS07202r.bin** - Base L3 functionality - Compiled on 2015 **(This is the version I managed to load)**
+* **FGSR07202r.bin** - Edge L3 functionality - Compiled on 2015 **( Still cannot load despite tweaking licence codes )**
+* **fgz05000.bin** - Bootloader ( Apparently, there is a v7 bootloader but I didn't find it anywhere )
