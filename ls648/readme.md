@@ -257,8 +257,8 @@ And they seem like they never ever existed on the internet. There is only a broc
 </br>
 
 List of all firmware files I found:
-* **[FGS07202a.bin](./)** - L2 Full - Compiled on 2011
-* **FGS07202r.bin** - L2 Full - Compiled on 2015 ( Doesn't seem to have any difference from the a version ) 
-* **FGLS07202r.bin** - Base L3 functionality - Compiled on 2015 **(This is the version I managed to load)**
-* **FGSR07202r.bin** - Edge L3 functionality - Compiled on 2015 **( Still cannot load despite tweaking licence codes )**
-* **fgz05000.bin** - Bootloader ( Apparently, there is a v7 bootloader but I didn't find it anywhere )
+* **[FGS07202a.bin](./FGS07202a.bin)** - L2 Full - Compiled on 2011
+* **[FGS07202r.bin](./FGS07202r.bin)** - L2 Full - Compiled on 2015 ( Doesn't seem to have any difference from the a version ) 
+* **[FGLS07202r.bin](./FGSL07202r.bin)** - Base L3 functionality - Compiled on 2015 **(This is the version I managed to load)**
+* **[FGSR07202r.bin](./FGSR07202r.bin)** - Edge L3 functionality - Compiled on 2015 **( Still cannot load despite tweaking licence codes )**
+* **[fgz05000.bin](./fgz05000.bin)** - Bootloader ( Apparently, there is a v7 bootloader but I didn't find it anywhere )
