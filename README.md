@@ -57,7 +57,7 @@ Below, you can look at general overview of the devices that my lab consists of
 **Core switch in the lab, capable of L3 functionality. 24 SFP+ ports along with 2 QSFP+ offer a lot of possibilities. Also overkill for this lab**
 
 ##### **[Brocade FastIron LS648](./ls648/)**
-**A very old but interesting switch. Capable of L3 functionality with L3 Lite firmware after some tinkering with EEPROMs. Also features routable ports which is a really advanced switch function.**
+**A very old but interesting switch. Capable of L3 functionality with L3 Lite firmware after some tinkering with EEPROM chips. Also features routable ports which is a really advanced switch function.**
 <div align="center">
 <h3>Contact</h3>
 

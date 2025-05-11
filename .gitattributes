@@ -2,11 +2,15 @@
 *.md linguist-language=Markdown
 *.rsc linguist-detectable=true
 interfaces linguist-detectable=true
-interfaces linguist-language=YAML
+interfaces linguist-language=Other
 hosts linguist-detectable=true
-hosts linguist-language=YAML
+hosts linguist-language=Other
+config linguist-detectable=true
+config linguist-language=Other
 * text=auto
 *.yml linguist-detectable=true
 *.yaml linguist-detectable=true
 *.yml linguist-language=YAML
 *.yaml linguist-language=YAML
+*.bin linguist-detectable=true
+*.bin linguist-language=Binary
