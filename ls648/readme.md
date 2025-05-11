@@ -162,7 +162,7 @@ This might mean that for some unknown reason, my switch has a firmware from the 
 </br>
 I copied the flash from the switch via TFTP to my laptop and opened it with HxD to see if I could see any clue.
 
-![screenshot](flash-screenshot.png) </br>
+![screenshot](./img2.png) </br>
 At the end of the binary file I saw FGSL07202a. That string of letters is different from any that I saw earlier. It was either FLS or FGS, now it is FGSL. I have no idea for now why it is like that.</br>
 So now it got really weird. The firmware is named FGS which ( read *Conclusion* ) should have basic L2 functionality and that is correct. But at the end of that binary file is a FGSL string which suggest that it should be a base L3 functions capable firmware. </br>
 However, of course we saw that the L3 commands *do not work at all*.
@@ -173,7 +173,7 @@ I may have found something.</br>
 I did a lot of searching and in result I have found that the firmware name is in fact correct. Apparently the firmware for LS series is named like FGS, FGLS and FGSR. There is no FLS firmware. </br>
 The downloads for the firmware are no longer available because first they were only for premium users and additionally the company that made them doesn't exist anymore. I have found a single working link on some very old post on Reddit. It was uploaded by Fohdeesha. The link was a mirror download for a folder with the firmware's for the whole FastIron series. </br>
 This screenshot is something that finally gave me some kind of a clue. Well, not only some clue but this really confirmed that the switch *is aware that it can do L3*. Or more precisely, that there are more versions of the firmware for this switch.</br>
-![alt text](errorcode8.png)</br>
+![error](./img1.png)</br>
 Here is what actually happened and what this meant. After I downloaded the folder with the firmwares and located where were the LS firmwares, I moved it to my TFTP directory and tried to load it into flash using `copy` command:
 
 ```bash
@@ -229,17 +229,12 @@ I also read that it was in fact possible to buy that EEPROM chip on your own alo
 
 </br>
 
-**( I will put a photo of the mobo here )**
 
-![mobo](/issues@homelab/Brocade-FLS648-firmware-issue/FLS648-mobo.jpeg)
+![mobo](./img3.jpeg)
 
 
 
 I will provide the folder here in this repository in case the only available mirror link goes down. 
-
-</br>
-
-**( more info coming here soon... )**
 
 
 # Conclusion 
