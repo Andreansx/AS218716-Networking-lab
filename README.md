@@ -27,6 +27,8 @@ Here you can find the list of links to manual installs in my lab.
 
 <h2>External related repositories</h2>
 Below you will be able to find neccessary links to additional external repos with specific projects.
+
+**[Netmiko first experiments](https://github.com/andreansx/netmiko-experimenting)**
 <h2>Hardware</h2>
 Below, you can look at general overview of the devices that my lab consists of
 </br></div>
