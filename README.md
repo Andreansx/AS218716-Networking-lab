@@ -6,24 +6,24 @@
 <h3>Tools and Technologies</h3>
 <img alt="Static Badge" src="https://img.shields.io/badge/dell-171EEB?style=for-the-badge&logo=dell&logoSize=auto">
 <img alt="Static Badge" src="https://img.shields.io/badge/mikrotik-4D1AC7?style=for-the-badge&logo=mikrotik&logoSize=auto">
-<img alt="Static Badge" src="https://img.shields.io/badge/hewlett packard-8316A2?style=for-the-badge&logo=hp&logoSize=auto&logoColor=white">
+<img alt="Static Badge" src="https://img.shields.io/badge/hp-8316A2?style=for-the-badge&logo=hp&logoSize=auto&logoColor=white">
 <img alt="Static Badge" src="https://img.shields.io/badge/proxmox-B8127E?style=for-the-badge&logo=proxmox&logoSize=auto&logoColor=white">
 <img alt="Static Badge" src="https://img.shields.io/badge/debian-EE0E59?style=for-the-badge&logo=debian&logoSize=auto">
 <h3>What you will find here:</h3>
 </div>
 
-- Latest configuration files of devices
+- Latest **'stable'** configuration files of devices
 - Images
 - Manual installations
-- Links to repositories with specific projects
+- Links to external repositories with specific projects
 
 <div align="center">
 <h2>Manual installations</h2>
 
-Here you will be able to find the list of links to manual installs in my lab.
+Here you can find the list of links to manual installs in my lab.
 
-#### **[Server rack install](./installs/installation-rack/)**
-#### **[Copper and keystones install](./installs/installation-keystones/)**
+ **[Server rack install](./installs/installation-rack/)**  
+ **[Copper and keystones install](./installs/installation-keystones/)**
 
 <h2>External related repositories</h2>
 Below you will be able to find neccessary links to additional external repos with specific projects.
