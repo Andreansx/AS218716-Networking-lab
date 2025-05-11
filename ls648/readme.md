@@ -15,8 +15,10 @@
 <div align="center">
 <h3>Firmware Issue</h3>
 
-# Below is a copy of the issue with the firmware that I documented in my deprecated repo. 
-# I will try to rewrite it here if I find any mistakes.
+> Note: Revised or corrected details in this section will be prefixed with the “>” symbol to indicate clarifications or amendments.
+
+## Below is a copy of the issue with the firmware that I documented in my deprecated repo. 
+## I will try to rewrite it here if I find any mistakes.
 </div>
 
 ### How it started
@@ -33,6 +35,7 @@ Added tagged port(s) ethe 1/1/48 to port-vlan 10.
 SSH@Rigel(config-vlan-10)#ip-subnet 10.0.10.0/24
 SSH@Rigel(config-vlan-ip-subnet)#
 ```
+> Here is a error made by me. I should not have used the `ip-subnet` command. I should have used `ip address` command instead. The `ip-subnet` command is not valid in this context.
 
 With that, I added ports 3 to 12 to the VLAN ID 10 and added what is typically a trunk port on the 48 port, and I assigned a subnet to this VLAN.
 Here is the VLAN 20 configuration:
@@ -46,7 +49,7 @@ Added untagged port(s) ethe 1/1/13 to 1/1/24 to port-vlan 20.
 SSH@Rigel(config-vlan-20)#ip-subnet 10.0.20.0/24
 SSH@Rigel(config-vlan-ip-subnet)#
 ```
-
+> The same issue as above. I should have used `ip address` command instead of `ip-subnet`.
 This is the cut output of `write terminal` command: ( It was cut to only include the important parts )
 
 ```bash
@@ -153,7 +156,7 @@ SSH@Rigel#
 
 Thats when I saw that the firmware is labeled as FGS07202a and *not as* **FLS07202a**.</br>
 This might mean that for some unknown reason, my switch has a firmware from the GS series and not from the correct LS series. It basically functions probably because those switches might be similar on hardware level. But this lack of correct firmware, makes me unable to use the L3 options.
-
+> Basically, firmware for LS is named FGS. There is no such firmware as FLS07202...
 </br>
 I copied the flash from the switch via TFTP to my laptop and opened it with HxD to see if I could see any clue.
 
@@ -166,7 +169,7 @@ However, of course we saw that the L3 commands *do not work at all*.
 I may have found something.</br>
 
 I did a lot of searching and in result I have found that the firmware name is in fact correct. Apparently the firmware for LS series is named like FGS, FGLS and FGSR. There is no FLS firmware. </br>
-The downloads for the firmware are no longer available because first they were only for premium users and additionally the company that made them doesn’t exist anymore. I have found a single working link on some very old post on Reddit. It was uploaded by Fohdeesha. The link was a mirror download for a folder with the firmware’s for the whole FastIron series. </br>
+The downloads for the firmware are no longer available because first they were only for premium users and additionally the company that made them doesn't exist anymore. I have found a single working link on some very old post on Reddit. It was uploaded by Fohdeesha. The link was a mirror download for a folder with the firmware's for the whole FastIron series. </br>
 This screenshot is something that finally gave me some kind of a clue. Well, not only some clue but this really confirmed that the switch *is aware that it can do L3*. Or more precisely, that there are more versions of the firmware for this switch.</br>
 ![alt text](errorcode8.png)</br>
 Here is what actually happened and what this meant. After I downloaded the folder with the firmwares and located where were the LS firmwares, I moved it to my TFTP directory and tried to load it into flash using `copy` command:
@@ -178,11 +181,21 @@ File Type Check failed
 TFTP to Flash error - code 8
 ```
 
-Looks like the FGSR version of this firmware is not possible to load without a suitable license. Of course, I cannot do that because of obvious reason. However I searched some mode and by typing "FLS648" on the search bar on the <a href="https://fohdeesha.com/docs/">Fohdeesha docs</a> website, I found some information that specified how to manually trick the switch into thinking that it has a license enabled.</br>
+Looks like the FGSR version of this firmware is not possible to load without a suitable license.
+ Of course, I cannot do that because of obvious reason. 
+ However I searched some more and by typing "FLS648" on the search bar on the <a href="https://fohdeesha.com/docs/">Fohdeesha docs</a> website, I found some information that specified how to manually trick the switch into thinking that it has a license enabled.</br>
 
-This part of the process consisted of manually byte-by-byte inserting a "magic string" into the flash. The command allowing us to do so, is `i2cWriteByte`. However, this command does not work in the typical level of the terminal. So I had to use a serial connection and the after logging into privelaged mode I had to click **Ctrl+Y** and **Ctrl+M** and **Enter**. After doing so, the command prompt turned from `FLS648` into `FLS-Monitor`. This is where I could use the command for manually writing data into the switch. </br>
+This part of the process consisted of manually byte-by-byte inserting a "magic string" into the flash. 
+The command allowing us to do so, is `i2cWriteByte`. 
+However, this command does not work in the typical level of the terminal. 
+So I had to use a serial connection and the after logging into privelaged mode I had to click **Ctrl+Y** and **Ctrl+M** and **Enter**. 
+After doing so, the command prompt turned from `FLS648` into `FLS-Monitor`. 
+This is where I could use the command for manually writing data into the switch. </br>
 
-Below are the commands I had to input. They were used to manually write the **magic string** which tells the switch that it has an active L3 license *( it doesn't )*.</br>
+Below are the commands I had to input.
+They were used to manually write the **magic string** which tells the switch that it has an active L3 license *( it doesn't )*.</br>
+
+> The FGSR firmware is still not possible to load after all. However, the FGSL **is**
 
 </br>
 
@@ -229,12 +242,12 @@ I will provide the folder here in this repository in case the only available mir
 
 # Conclusion 
 
-Turns out, **the firmware wasn’t incorrect**. It was named correctly and *it was* made for this switch. However, there were three versions of it. FGS, FGLS and FGSR. Each of them could have an „a” or a „r” letter at the end. The ones with „a” were compiled in 2011 and the ones with „r” in 2015.</br>
-The „FGS” version is only L2. That was the reason why I wasn’t able to use commands such as `ip route`. This firmware didn’t even have that command implemented.
+Turns out, **the firmware wasn't incorrect**. It was named correctly and *it was* made for this switch. However, there were three versions of it. FGS, FGLS and FGSR. Each of them could have an „a” or a „r” letter at the end. The ones with „a” were compiled in 2011 and the ones with „r” in 2015.</br>
+The „FGS” version is only L2. That was the reason why I wasn't able to use commands such as `ip route`. This firmware didn't even have that command implemented.
 </br>
 Also, what is common when buying a datacenter or enterprise-grade network hardware, you need a license to use L3 features. 
 </br>
-Of course they 99% of the time, are impossible to obtain by regular people. And even if in this particular scenario, a license for L3 was possible to get, the company that could issue a license, doesn’t even exist anymore. 
+Of course they 99% of the time, are impossible to obtain by regular people. And even if in this particular scenario, a license for L3 was possible to get, the company that could issue a license, doesn't even exist anymore. 
 </br>
 I think I will try to write my own tutorial for the sake of it. 
 Maybe someone starting with a lab will buy that switch, because they are dirt cheap and are a great way to get along with CLI instead of typical GUI. </br>
