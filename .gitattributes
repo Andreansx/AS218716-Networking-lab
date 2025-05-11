@@ -7,6 +7,5 @@ hosts linguist-detectable=true
 hosts linguist-language=Other
 config linguist-detectable=true
 config linguist-language=Other
-* text=auto
 *.bin linguist-detectable=true
 *.bin linguist-language=Binary
