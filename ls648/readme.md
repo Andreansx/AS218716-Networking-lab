@@ -14,8 +14,10 @@
 </div>
 <div align="center">
 <h3>Firmware Issue</h3>
-</div>
 
+# Below is a copy of the issue with the firmware that I documented in my deprecated repo. 
+# I will try to rewrite it here if I find any mistakes.
+</div>
 
 ### How it started
 Some time ago, I wanted to do some inter-vlan routing on this switch since I found that it *is* capable of that. </br>
