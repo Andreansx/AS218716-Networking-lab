@@ -8,3 +8,8 @@
 
 ## System
 **This server is running Proxmox version 7.8 ( gonna reinstall with latest ISO )**
+
+## Related files
+* **[Bios 6.6.0](./BIOS_0F4YY_LN_6.6.0.BIN)**
+* **[Bios 6.6.0](./BIOS_0YV9D_LN_6.6.0.BIN)**
+* **[All in one](./r-710-bootable_archive.torrent)**
