@@ -9,3 +9,5 @@ config linguist-detectable=true
 config linguist-language=Other
 *.bin linguist-detectable=true
 *.bin linguist-language=Binary
+*.BIN linguist-detectable=true
+*.BIN linguist-language=Binary
