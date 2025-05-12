@@ -41,11 +41,7 @@ Below, you can look at general overview of the devices that my lab consists of
 ### Servers
 
 ##### **[Dell PowerEdge R710](./r710/)**
-**Really old server. However, for now it is enough, for simple virtualization. Definetly going to replace it. Probably with a R740**
-* **CPU:** 2x Intel Xeon X5670 2.30GHz
-* **RAM:** 128 DDR3 ECC Samsung and Skhynix memory
-* **Disk space:** 1.5 TB combined storage 
-* **OS:** Proxmox
+**Really old server. However, for now it is enough, for simple virtualization. Definetly going to replace it. Probably with a R740. Running Proxmox VE**
 
 ##### **[Dell PowerEdge R610](./r610/)**
 **This one can be considered as garbage. Single Intel Xeon E5520 with 36 Gigabytes of DDR3 RAM. I will give it away to someone probably.**
