@@ -14,8 +14,10 @@
 ## Hewlett-Packard S1132 Power Distribution Unit
 </div>
 
-The only problem I encountered with this PDU at this time, is that the main power cable is littelary cut off.
+The only problem I encountered with this PDU at this time, is that the main power cable is littelary cut off. *Look at photo below*
 
-*Gonna place a photo here*
+<div align="center">
+<img src="./IMG_2306.jpeg">
+</div>
 
 Though, that isn't that big of a problem for me, since I have the neccessary equipment to deal with this type of situation, still it's a slow-down for the process of setting up a full lab.
