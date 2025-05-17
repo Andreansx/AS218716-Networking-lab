@@ -48,3 +48,10 @@ iface vmbr0 inet static
 
 source /etc/network/interfaces.d/*
 ```
+
+**[/etc/hosts](./etc/hosts)**
+```bash
+127.0.0.1 localhost.localdomain localhost
+10.0.0.120 idrac
+10.0.0.130 r710homelab.pve r710homelab
+```
