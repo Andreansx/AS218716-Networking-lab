@@ -1,1 +1,28 @@
-## For now, a placeholder for network configuration
+auto lo
+iface lo inet loopback
+
+auto eno4
+iface eno4 inet manual
+
+iface eno1 inet manual
+
+auto eno2
+iface eno2 inet manual
+
+auto eno3
+iface eno3 inet manual
+
+iface enp6s0f0 inet manual
+
+iface enp6s0f1 inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+        address 10.0.0.130/24
+        gateway 10.0.0.1
+        bridge-ports eno1 eno2
+        bridge-stp off
+        bridge-fd 0
+        default-gateway 10.0.0.1
+
+source /etc/network/interfaces.d/*
