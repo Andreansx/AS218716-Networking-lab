@@ -28,8 +28,8 @@ Here you can find the list of links to manual installs in my lab.
 <h2>Featured external related repositories</h2>
 Here are links to related projects that happen in this environment.   
 
-**[Netmiko first experiments](https://github.com/andreansx/netmiko-experimenting)**  
-**[Nginx web server setup](https://github.com/andreansx/proxmox-ngnix-vm-setup)**
+**[Netmiko first experiments](https://github.com/Andreansx/netmiko-experimenting)**  
+**[Nginx web server setup](https://github.com/Andreansx/proxmox-nginx-vm-setup)**
 <h2>Hardware</h2>
 Below, you can look at general overview of the devices that my lab consists of
 </br></div>
