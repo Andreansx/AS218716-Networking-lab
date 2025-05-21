@@ -25,11 +25,11 @@ Here you can find the list of links to manual installs in my lab.
  **[Server rack install](./installs/installation-rack/)**  
  **[Copper and keystones install](./installs/installation-keystones/)**
 
-<h2>External related repositories</h2>
-Below you will be able to find neccessary links to additional external repos with specific projects.
+<h2>Featured external related repositories</h2>
+Here are links to related projects that happen in this environment.   
 
 **[Netmiko first experiments](https://github.com/andreansx/netmiko-experimenting)**  
-**[Room setup](https://github.com/andreansx/my-setup)**
+**[Nginx web server setup](https://github.com/andreansx/proxmox-ngnix-vm-setup)**
 <h2>Hardware</h2>
 Below, you can look at general overview of the devices that my lab consists of
 </br></div>
