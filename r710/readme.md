@@ -7,8 +7,12 @@
 *   **Disk space:** Combined 1.6 TB of HDD SAS disk space
 
 ## System
-**This server is running Proxmox version 7.8 ( gonna reinstall with latest ISO )**
-
+**This server is running Proxmox Virtual Environment version 8.4.1**
+```sh
+root@r710homelab ~
+# uname -a
+Linux r710homelab 6.8.12-10-pve #1 SMP PREEMPT_DYNAMIC PMX 6.8.12-10 (2025-04-18T07:39Z) x86_64 GNU/Linux
+```
 ## Related files
 * **[BIOS 6.6.0](./BIOS_0F4YY_LN_6.6.0.BIN) - BIOS image to flash using iDRAC**
 * **[BIOS 6.6.0](./BIOS_0YV9D_LN_6.6.0.BIN) - BIOS image to flash using iDRAC**
