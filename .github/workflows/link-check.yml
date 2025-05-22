@@ -1,0 +1,11 @@
+name: "Check Markdown links"
+on: [push, pull_request]
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm install markdown-link-check
+      - name: Run link check
+        run: npx markdown-link-check '**/*.md' --quiet
