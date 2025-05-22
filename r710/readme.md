@@ -22,40 +22,7 @@ Linux r710homelab 6.8.12-10-pve #1 SMP PREEMPT_DYNAMIC PMX 6.8.12-10 (2025-04-18
 </div>
 
 **[/etc/network/interfaces](./interfaces)**
-```bash
-auto lo
-iface lo inet loopback
-
-auto eno4
-iface eno4 inet manual
-
-iface eno1 inet manual
-
-auto eno2
-iface eno2 inet manual
-
-auto eno3
-iface eno3 inet manual
-
-iface enp6s0f0 inet manual
-
-iface enp6s0f1 inet manual
-
-auto vmbr0
-iface vmbr0 inet static
-        address 10.0.0.130/24
-        gateway 10.0.0.1
-        bridge-ports eno1 eno2
-        bridge-stp off
-        bridge-fd 0
-        default-gateway 10.0.0.1
-
-source /etc/network/interfaces.d/*
-```
 
 **[/etc/hosts](./hosts)**
-```bash
-127.0.0.1 localhost.localdomain localhost
-10.0.0.120 idrac
-10.0.0.130 r710homelab.pve r710homelab
-```
+
+**[/etc/update-motd.d/00-lab-motd](./motd/00-lab-motd)**
