@@ -21,7 +21,7 @@ Linux r710homelab 6.8.12-10-pve #1 SMP PREEMPT_DYNAMIC PMX 6.8.12-10 (2025-04-18
 <h2>Configuration files</h2>
 </div>
 
-**[/etc/network/interfaces](./etc/network/interfaces)**
+**[/etc/network/interfaces](./interfaces)**
 ```bash
 auto lo
 iface lo inet loopback
@@ -53,7 +53,7 @@ iface vmbr0 inet static
 source /etc/network/interfaces.d/*
 ```
 
-**[/etc/hosts](./etc/hosts)**
+**[/etc/hosts](./hosts)**
 ```bash
 127.0.0.1 localhost.localdomain localhost
 10.0.0.120 idrac
