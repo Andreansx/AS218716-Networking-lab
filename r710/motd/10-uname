@@ -1,0 +1,4 @@
+#!/bin/bash
+# /etc/update-motd.d/10-uname
+/usr/bin/env figlet "$(hostname)" | /snap/bin/lolcat -f
+printf "\n"
