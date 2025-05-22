@@ -7,5 +7,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install dependencies
         run: npm install markdown-link-check
+      - name: Check for Markdown files
+        run: |
+          if ! ls **/*.md 1> /dev/null 2>&1; then
+            echo "No Markdown files found. Skipping link check."
+            exit 0
+          fi
       - name: Run link check
         run: npx markdown-link-check '**/*.md' --quiet
