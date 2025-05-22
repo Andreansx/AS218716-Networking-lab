@@ -18,4 +18,4 @@ jobs:
           fi
       - name: Run link check
         if: env.found == 'true'
-        run: npx markdown-link-check '**/*.md' --quiet
+        run: npx markdown-link-check **/*.md --quiet
