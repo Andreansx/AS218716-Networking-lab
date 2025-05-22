@@ -1,0 +1,10 @@
+#/etc/network/interfaces
+
+auto lo
+iface lo inet loopback
+
+auto ens18
+iface ens18 inet static
+   address 10.0.0.208/24
+   gateway 10.0.0.1
+   dns-nameservers 1.1.1.1 8.8.8.8
