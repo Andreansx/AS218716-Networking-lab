@@ -1,9 +1,7 @@
 *.md linguist-detectable=true
 *.md linguist-language=Markdown
 *.rsc linguist-detectable=true
-interfaces linguist-detectable=true
-interfaces linguist-language=Config
-hosts linguist-detectable=true
-hosts linguist-language=Config
 config linguist-detectable=true
 config linguist-language=Config
+motd/*.* liguist-detectable=false
+old-motd/*.* liguist-detectable=false
