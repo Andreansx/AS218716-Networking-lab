@@ -3,5 +3,5 @@
 *.rsc linguist-detectable=true
 config linguist-detectable=true
 config linguist-language=Config
-/motd/*.* liguist-detectable=false
-/old-motd/*.* liguist-detectable=false
+r710/motd/*.* liguist-detectable=false
+r710/old-motd/*.* liguist-detectable=false
