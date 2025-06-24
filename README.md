@@ -1,6 +1,8 @@
 <div class="title" align="center">
 <h1>  Networking Lab - Centre   </h1>
 
+<h1>For now I have yet to fix the R710, because the whole ZFS pool broke</h1>
+
 <h4>Welcome to my networking lab centre. This is a repository dedicated to be a main overview of my lab. All specific scenarios, deployments etc. will be placed in their own repositories and links to them will be available here</h4>
 <h4>I am building this repository because I want to document everything I do on my path to study network engineering, server administration and cloud infrastructure. That is what I am aiming to do at work in the future</h4>
 <h3>Tools and Technologies</h3>
