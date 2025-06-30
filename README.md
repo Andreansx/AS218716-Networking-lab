@@ -38,6 +38,8 @@ Below, you can look at general overview of the devices that my lab consists of
 
 ### **[Server rack](./hpe-10636-g2/readme.md)**
 
+![server rack](./media/IMG_3919.JPG)
+
 #### My server rack is a **Hewlett Packard Enterprise ASSY 10636 G2**.
 
 ### Servers
