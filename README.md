@@ -30,9 +30,9 @@ Here you can find the list of links to manual installs in my lab.
 <h2>Featured external related repositories</h2>
 Here are links to related projects that happen in this environment.   
 
-**[Simple VLANs](https://github.com/andreansx/routeros-simple-vlans)**
+**[Simple VLANs](https://github.com/andreansx/routeros-simple-vlans)**  
 **[Netmiko first experiments](https://github.com/Andreansx/netmiko-experimenting)**  
-**[Nginx web server setup](https://github.com/Andreansx/proxmox-nginx-vm-setup)**
+**[Nginx web server setup](https://github.com/Andreansx/proxmox-nginx-vm-setup)**  
 
 <h2>Hardware</h2>
 Below, you can look at general overview of the devices that my lab consists of
@@ -40,7 +40,7 @@ Below, you can look at general overview of the devices that my lab consists of
 
 ### **[Server rack](./hpe-10636-g2/readme.md)**
 
-![server rack](./media/IMG_3919.JPG)
+<img src="./media/IMG_3919.JPG" height=500px>
 
 #### My server rack is a **Hewlett Packard Enterprise ASSY 10636 G2**.
 
