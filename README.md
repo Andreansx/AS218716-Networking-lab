@@ -30,8 +30,10 @@ Here you can find the list of links to manual installs in my lab.
 <h2>Featured external related repositories</h2>
 Here are links to related projects that happen in this environment.   
 
+**[Simple VLANs](https://github.com/andreansx/routeros-simple-vlans)**
 **[Netmiko first experiments](https://github.com/Andreansx/netmiko-experimenting)**  
 **[Nginx web server setup](https://github.com/Andreansx/proxmox-nginx-vm-setup)**
+
 <h2>Hardware</h2>
 Below, you can look at general overview of the devices that my lab consists of
 </br></div>
@@ -45,7 +47,7 @@ Below, you can look at general overview of the devices that my lab consists of
 ### Servers
 
 ##### **[Dell PowerEdge R710](./r710/)**
-**Really old server. However, for now it is enough, for simple virtualization. Definetly going to replace it. Probably with a R740. Running Proxmox VE**
+**Really old server. However, for now it is enough, for simple tasks despite being insanely power-hungry. Definetly going to replace it, probably with a R740. Running Arch Linux**
 
 ##### **[Dell PowerEdge R610](./r610/)**
 **This one can be considered as garbage. Single Intel Xeon E5520 with 36 Gigabytes of DDR3 RAM. I will give it away to someone probably.**
@@ -58,7 +60,7 @@ Below, you can look at general overview of the devices that my lab consists of
 **Core switch in the lab, capable of L3 functionality. 24 SFP+ ports along with 2 QSFP+ offer a lot of possibilities. Also overkill for this lab**
 
 ##### **[Brocade FastIron LS648](./ls648/)**
-**A very old but interesting switch. Capable of L3 functionality with L3 Lite firmware after some tinkering with EEPROM chips. Also features routable ports which is a really advanced switch function.**
+**Not used. Capable of base L3 functionality with L3 Lite firmware after some tinkering with EEPROM chips.**
 <div align="center">
 <h3>Contact</h3>
 
