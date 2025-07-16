@@ -30,7 +30,7 @@ Here you can find the list of links to manual installs in my lab.
 <h2>Featured external related repositories</h2>
 Here are links to related projects that happen in this environment.   
 
-**[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)**
+**[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)**  
 **[Simple VLANs](https://github.com/andreansx/routeros-simple-vlans)**  
 **[Netmiko first experiments](https://github.com/Andreansx/netmiko-experimenting)**  
 **[Nginx web server setup](https://github.com/Andreansx/proxmox-nginx-vm-setup)**  

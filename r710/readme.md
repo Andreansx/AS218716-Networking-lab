@@ -11,7 +11,7 @@
 **This server is running Proxmox Virtual Environment version 8.4.0**
 
 ## VMs
-    - **[100](./vm101/) - FreeBSD**
+- **[100](./vm100/) - FreeBSD**
 
 ## Related files
 * **[BIOS 6.6.0](./BIOS_0F4YY_LN_6.6.0.BIN) - BIOS image to flash using iDRAC**
