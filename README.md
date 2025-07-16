@@ -1,7 +1,7 @@
 <div class="title" align="center">
 <h1>  Networking Lab - Centre   </h1>
 
-<h1>For now I have yet to fix the R710, because the whole ZFS pool broke</h1>
+
 
 <h4>Welcome to my networking lab centre. This is a repository dedicated to be a main overview of my lab. All specific scenarios, deployments etc. will be placed in their own repositories and links to them will be available here</h4>
 <h4>I am building this repository because I want to document everything I do on my path to study network engineering, server administration and cloud infrastructure. That is what I am aiming to do at work in the future</h4>
@@ -30,6 +30,7 @@ Here you can find the list of links to manual installs in my lab.
 <h2>Featured external related repositories</h2>
 Here are links to related projects that happen in this environment.   
 
+**[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)**
 **[Simple VLANs](https://github.com/andreansx/routeros-simple-vlans)**  
 **[Netmiko first experiments](https://github.com/Andreansx/netmiko-experimenting)**  
 **[Nginx web server setup](https://github.com/Andreansx/proxmox-nginx-vm-setup)**  
@@ -47,7 +48,7 @@ Below, you can look at general overview of the devices that my lab consists of
 ### Servers
 
 ##### **[Dell PowerEdge R710](./r710/)**
-**Really old server. However, for now it is enough, for simple tasks despite being insanely power-hungry. Definetly going to replace it, probably with a R740. Running Arch Linux**
+**Really old server. However, for now it is enough, for simple tasks despite being insanely power-hungry. Running Proxmox VE 8.4.0**
 
 ##### **[Dell PowerEdge R610](./r610/)**
 **This one can be considered as garbage. Single Intel Xeon E5520 with 36 Gigabytes of DDR3 RAM. I will give it away to someone probably.**
