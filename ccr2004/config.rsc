@@ -1,4 +1,4 @@
-# jul/17/2025 19:31:28 by RouterOS 6.49.18
+# jul/17/2025 19:50:54 by RouterOS 6.49.18
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -60,6 +60,11 @@ add action=accept chain=forward comment=\
     "allow management to access everything" src-address=10.10.10.0/24
 add action=accept chain=forward comment="allow users to access servers" \
     dst-address=10.10.30.0/24 src-address=10.10.20.0/24
+add action=accept chain=forward comment=\
+    "Allow VMs and CTs to access bare-metal servers" dst-address=\
+    10.10.20.0/24 src-address=10.10.40.0/24
+add action=drop chain=forward comment="Drop all VMs accessing Management" \
+    dst-address=10.10.10.0/24 src-address=10.10.40.0/24
 add action=drop chain=forward comment=\
     "drop any traffic trying to enter mgmt vlan" dst-address=10.10.10.0/24
 add action=drop chain=forward comment="drop servers initiating to users" \
