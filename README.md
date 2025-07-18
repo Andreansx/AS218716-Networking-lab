@@ -1,71 +1,64 @@
-<div class="title" align="center">
-<h1>  Networking Lab - Centre   </h1>
+
+# Networking Homelab - Documentation Hub
+
+Welcome to the documentation hub for my home lab. This repository serves as the main overview of the infrastructure, configurations, and projects I'm working on as I develop my skills towards a career in network engineering, server administration, and cloud solutions.
+
+### Tools and Technologies
+
+![MikroTik](https://img.shields.io/badge/mikrotik-3D2817?style=for-the-badge&logo=mikrotik&logoColor=white)
+![Proxmox](https://img.shields.io/badge/proxmox-762126?style=for-the-badge&logo=proxmox&logoColor=white)
+![Debian](https://img.shields.io/badge/debian-B51B35?style=for-the-badge&logo=debian&logoColor=white)
+![FreeBSD](https://img.shields.io/badge/freebsd-F11444?style=for-the-badge&logo=freebsd&logoColor=white)
+
+---
+
+## Table of Contents
+
+1.  [Lab Architecture](#lab-architecture)
+    *   [Network Diagram](#network-diagram)
+    *   [Logical Topology (VLAN & IP)](#logical-topology-vlan--ip)
+2.  [Hardware](#hardware)
+
+---
+
+## Lab Architecture
+
+### Network Diagram
+
+The diagram below illustrates the overall physical and logical topology of the lab.
+
+
+![topology](./media/topology.png)
+
+### Logical Topology (VLAN & IP)
+
+The network is segmented using VLANs to isolate traffic and enhance security. The core of the network is built around a **MikroTik CCR2004** router and a **MikroTik CRS326** switch. The `ip-list.md` file contains a detailed list of all assigned IP addresses.
+
+| VLAN ID | Name         | Subnet / IP Scheme | Description                                                                                                                              |
+| :------ | :----------- | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| 10      | Management   | `10.10.10.0/24`    | Network for managing network devices (router, switches, PDU) and the Proxmox web interface.                                              |
+| 20      | Bare-metal   | `10.10.20.0/24`    | Network for physical servers and devices. The R710 server's management interface lives here at `10.10.20.201` (untagged on a hybrid port). |
+| 30      | Users        | `10.10.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
+| 40      | VMs-CTs      | `10.10.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port.                 |
+
+---
+
+## Hardware
+
+Below is a list of the key components in the lab. Click the name to navigate to its specific documentation and configuration files.
+
+| Device Type      | Model                                   | Role in the Lab                                   |
+| :--------------- | :-------------------------------------- | :------------------------------------------------ |
+| **Server Rack**  | [HPE 10636 G2](./hpe-10636-g2/)         | Central mounting point for all equipment.         |
+| **Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
+| **Server**       | [Dell PowerEdge R610](./r610/)          | Currently unused, planned for a giveaway.         |
+| **Core Router**  | [MikroTik CCR2004](./ccr2004/)           | Core router. Handles inter-VLAN routing and NAT.       |
+| **Core Switch**  | [MikroTik CRS326](./crs326/)           | Main switch, VLAN handling, L2/L3 switching. |
+| **Switch**| [Brocade FastIron LS648](./ls648/)      | A device for testing and L3 firmware experimentation.      |
+| **PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
 
 
-<h4>Welcome to my networking lab centre. This is a repository dedicated to be a main overview of my lab. All specific scenarios, deployments etc. will be placed in their own repositories and links to them will be available here</h4>
-<h4>I am building this repository because I want to document everything I do on my path to study network engineering, server administration and cloud infrastructure. That is what I am aiming to do at work in the future</h4>
-<h3>Tools and Technologies</h3>
-<img alt="Static Badge" src="https://img.shields.io/badge/dell-171EEB?style=for-the-badge&logo=dell&logoSize=auto">
-<img alt="Static Badge" src="https://img.shields.io/badge/mikrotik-4D1AC7?style=for-the-badge&logo=mikrotik&logoSize=auto">
-<img alt="Static Badge" src="https://img.shields.io/badge/hp-8316A2?style=for-the-badge&logo=hp&logoSize=auto&logoColor=white">
-<img alt="Static Badge" src="https://img.shields.io/badge/proxmox-B8127E?style=for-the-badge&logo=proxmox&logoSize=auto&logoColor=white">
-<img alt="Static Badge" src="https://img.shields.io/badge/debian-EE0E59?style=for-the-badge&logo=debian&logoSize=auto">
-<h3>What you will find here:</h3>
-</div>
+## Contact
 
-- Latest **'stable'** configuration files of devices
-- Images
-- Manual installations
-- Links to external repositories with specific projects
-
-<div align="center">
-<h2>Manual installations</h2>
-
-Here you can find the list of links to manual installs in my lab.
-
- **[Server rack install](./installs/installation-rack/)**  
- **[Copper and keystones install](./installs/installation-keystones/)**
-
-<h2>Featured external related repositories</h2>
-Here are links to related projects that happen in this environment.   
-
-**[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)**  
-**[Simple VLANs](https://github.com/andreansx/routeros-simple-vlans)**  
-**[Netmiko first experiments](https://github.com/Andreansx/netmiko-experimenting)**  
-**[Nginx web server setup](https://github.com/Andreansx/proxmox-nginx-vm-setup)**  
-
-<h2>Hardware</h2>
-Below, you can look at general overview of the devices that my lab consists of
-</br></div>
-
-### **[Server rack](./hpe-10636-g2/readme.md)**
-
-<img src="./media/IMG_3919.JPG" height=500px>
-
-#### My server rack is a **Hewlett Packard Enterprise ASSY 10636 G2**.
-
-### Servers
-
-##### **[Dell PowerEdge R710](./r710/)**
-**Really old server. However, for now it is enough, for simple tasks despite being insanely power-hungry. Running Proxmox VE 8.4.0**
-
-##### **[Dell PowerEdge R610](./r610/)**
-**This one can be considered as garbage. Single Intel Xeon E5520 with 36 Gigabytes of DDR3 RAM. I will give it away to someone probably.**
-### Network devices
-
-##### **[MikroTik CCR2004-1G-12S+2XS](./ccr2004/)**
-**Main lab router. Excellent for learning from basic technologies to advanced protocols like OSPF, BGP etc. Overkill for my needs**
-
-##### **[MikroTik CRS326-24S+2Q+RM](./crs326/)**
-**Core switch in the lab, capable of L3 functionality. 24 SFP+ ports along with 2 QSFP+ offer a lot of possibilities. Also overkill for this lab**
-
-##### **[Brocade FastIron LS648](./ls648/)**
-**Not used. Capable of base L3 functionality with L3 Lite firmware after some tinkering with EEPROM chips.**
-<div align="center">
-<h3>Contact</h3>
-
-[![Telegram](https://img.shields.io/badge/Telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
-
-</div>
-
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/Andrtexh)
