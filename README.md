@@ -19,32 +19,38 @@ Welcome to the documentation hub for my home lab. This repository serves as the 
 3.  [Lab Architecture](#lab-architecture)
     *   [Network Diagram](#network-diagram)
     *   [Logical Topology (VLAN & IP)](#logical-topology-vlan--ip)
+4. [Related Projects](#related-projects)
+5. [Physical Installation Documentation](#physical-installation-documentation)
+6. [Contact](#contact)
 ---
 
 ## Repository Guide
 
-This repository contains configuration files, notes, firmware, and photo documentation. A nice way of exploring this repository is depicted below:
+This repository contains configuration files, notes, firmware, and photo documentation. Without any idea on how to look through it, things can get messy. I put a nice way of exploring this repository:
 
 **1.   First, you can look through configuration files and descriptions:**
 
--   `./ccr2004/` & `./crs326/` - **Core Router and Switch**
-    -   Contain `config.rsc` files, which are configuration exports from the MikroTik devices. They can be used to restore settings.
+-   [`./ccr2004/`](./ccr2004/) & [`./crs326/`](./crs326/) - **Core Router and Switch**
+    -   Contain **latest** `config.rsc` files, which are configuration exports from the MikroTik devices. They can be used to restore settings.
     -   General description and overview in `readme.md` files
 
--   `./r710/` - **Virtualization**
+-   [`./r710/`](./r710/) - **Virtualization**
     -   Proxmox Virtual Environment configuration files.
     -   `./r710/etc/network/interfaces` - The network configuration for the Proxmox VE host, defining the `vmbr0` bridge and VLAN handling.
+    -   Informations about VMs and CTs.
     -   This directory also contain BIOS files and other notes.
 
--   `./installs/`
+-   [`./installs/`](./installs/)
     -   Photographic documentation of the physical rack installation and the process of terminating copper cables and keystone jacks.
 
--   `./media/network.drawio`
+-   [`./media/network.drawio`](./media/network.drawio)
     -   The source file for the network diagram, editable with diagrams.net (draw.io).
 
 **2. Then, you can take a look at the diagram showing the topology of the homelab. See [Network Diagram](#network-diagram)** 
 
 **3. Afterwards, you might want to check out some related projects. Take a look at [Related Projects](#related-projects)**
+
+**4. If you want, you can take a peek at the physical part of homelabbing. Look at [Physical installation documentation](#physical-installation-documentation)**
 
 ## Lab Architecture
 
@@ -87,6 +93,13 @@ Here are links to separate repositories for specific projects built within this 
 
 -   **[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)** - Deployment of a recursive DNS server. WIP.
 -   **[Simple VLANs on RouterOS](https://github.com/andreansx/routeros-simple-vlans)** - A guide to configuring simple VLANs on MikroTik.
+
+## Physical Installation Documentation
+
+Find photo galleries of the installation process in the links below.
+
+-   **[Server Rack Installation](./installs/installation-rack/)**
+-   **[Cabling and Keystone Jack Installation](./installs/installation-keystones/)**
 
 ## Contact
 
