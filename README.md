@@ -14,12 +14,37 @@ Welcome to the documentation hub for my home lab. This repository serves as the 
 
 ## Table of Contents
 
-1.  [Lab Architecture](#lab-architecture)
+1.  **[Repository Guide](#repository-guide)**
+2.  [Hardware](#hardware)
+3.  [Lab Architecture](#lab-architecture)
     *   [Network Diagram](#network-diagram)
     *   [Logical Topology (VLAN & IP)](#logical-topology-vlan--ip)
-2.  [Hardware](#hardware)
-
 ---
+
+## Repository Guide
+
+This repository contains configuration files, notes, firmware, and photo documentation. A nice way of exploring this repository is depicted below:
+
+**1.   First, you can look through configuration files and descriptions:**
+
+-   `./ccr2004/` & `./crs326/` - **Core Router and Switch**
+    -   Contain `config.rsc` files, which are configuration exports from the MikroTik devices. They can be used to restore settings.
+    -   General description and overview in `readme.md` files
+
+-   `./r710/` - **Virtualization**
+    -   Proxmox Virtual Environment configuration files.
+    -   `./r710/etc/network/interfaces` - The network configuration for the Proxmox VE host, defining the `vmbr0` bridge and VLAN handling.
+    -   This directory also contain BIOS files and other notes.
+
+-   `./installs/`
+    -   Photographic documentation of the physical rack installation and the process of terminating copper cables and keystone jacks.
+
+-   `./media/network.drawio`
+    -   The source file for the network diagram, editable with diagrams.net (draw.io).
+
+**2. Then, you can take a look at the diagram showing the topology of the homelab. See [Network Diagram](#network-diagram)** 
+
+**3. Afterwards, you might want to check out some related projects. Take a look at [Related Projects](#related-projects)**
 
 ## Lab Architecture
 
@@ -27,16 +52,15 @@ Welcome to the documentation hub for my home lab. This repository serves as the 
 
 The diagram below illustrates the overall physical and logical topology of the lab.
 
-
 ![topology](./media/topology.png)
 
 ### Logical Topology (VLAN & IP)
 
-The network is segmented using VLANs to isolate traffic and enhance security. The core of the network is built around a **MikroTik CCR2004** router and a **MikroTik CRS326** switch. The `ip-list.md` file contains a detailed list of all assigned IP addresses.
+The network is segmented using VLANs to isolate traffic and enhance security. The core of the network is built around a **MikroTik CCR2004** router and a **MikroTik CRS326** switch.
 
 | VLAN ID | Name         | Subnet / IP Scheme | Description                                                                                                                              |
 | :------ | :----------- | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
-| 10      | Management   | `10.10.10.0/24`    | Network for managing network devices (router, switches, PDU) and the Proxmox web interface.                                              |
+| 10      | Management   | `10.10.10.0/24`    | Network for managing network devices such as the router and switch.                                              |
 | 20      | Bare-metal   | `10.10.20.0/24`    | Network for physical servers and devices. The R710 server's management interface lives here at `10.10.20.201` (untagged on a hybrid port). |
 | 30      | Users        | `10.10.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
 | 40      | VMs-CTs      | `10.10.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port.                 |
@@ -57,7 +81,12 @@ Below is a list of the key components in the lab. Click the name to navigate to 
 | **Switch**| [Brocade FastIron LS648](./ls648/)      | A device for testing and L3 firmware experimentation.      |
 | **PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
+## Related Projects
 
+Here are links to separate repositories for specific projects built within this lab environment.
+
+-   **[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)** - Deployment of a recursive DNS server. WIP.
+-   **[Simple VLANs on RouterOS](https://github.com/andreansx/routeros-simple-vlans)** - A guide to configuring simple VLANs on MikroTik.
 
 ## Contact
 
