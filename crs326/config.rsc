@@ -1,11 +1,10 @@
-# 2025-07-18 02:58:04 by RouterOS 7.16.2
+# 2025-07-18 18:00:57 by RouterOS 7.16.2
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
 # serial number = HGB09MRF1PQ
 /interface bridge
-add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge \
-    vlan-filtering=yes
+add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge vlan-filtering=yes
 /interface ethernet
 set [ find default-name=sfp-sfpplus1 ] auto-negotiation=no
 set [ find default-name=sfp-sfpplus4 ] auto-negotiation=no
@@ -51,9 +50,9 @@ add bridge=main-bridge interface=sfp-sfpplus1
 add bridge=main-bridge interface=sfp-sfpplus2
 /interface bridge vlan
 add bridge=main-bridge tagged=sfp-sfpplus1 untagged=ether1 vlan-ids=10
-add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus4 vlan-ids=20
 add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus3 vlan-ids=30
 add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus4 vlan-ids=40
+add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus4 vlan-ids=20
 /ip address
 add address=10.10.10.2/24 interface=vlan10-mgmt network=10.10.10.0
 /ip dns
@@ -67,5 +66,4 @@ set show-at-login=no
 /system routerboard settings
 set enter-setup-on=delete-key
 /system swos
-set address-acquisition-mode=static identity=SW_CORE_02 static-ip-address=\
-    10.10.20.13
+set address-acquisition-mode=static identity=SW_CORE_02 static-ip-address=10.10.20.13
