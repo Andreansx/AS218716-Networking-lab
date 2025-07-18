@@ -1,4 +1,4 @@
-# 2025-07-17 19:59:24 by RouterOS 7.16.2
+# 2025-07-18 02:58:04 by RouterOS 7.16.2
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -50,10 +50,10 @@ add bridge=main-bridge interface=sfp-sfpplus24
 add bridge=main-bridge interface=sfp-sfpplus1
 add bridge=main-bridge interface=sfp-sfpplus2
 /interface bridge vlan
+add bridge=main-bridge tagged=sfp-sfpplus1 untagged=ether1 vlan-ids=10
 add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus4 vlan-ids=20
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 untagged=\
-    sfp-sfpplus24,ether1 vlan-ids=10
 add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus3 vlan-ids=30
+add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus4 vlan-ids=40
 /ip address
 add address=10.10.10.2/24 interface=vlan10-mgmt network=10.10.10.0
 /ip dns
