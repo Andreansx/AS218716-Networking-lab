@@ -1,10 +1,16 @@
-# VM 101
+# VM 100 - zenith (FreeBSD 14.3)
 
-This Virtual Machine is running **FreeBSD**  
-It was created for the [unbound homelab](https://github.com/andreansx/unbound-homelab) project.
+A general-purpose FreeBSD virtual machine for testing system administration tasks, ZFS experiments, and hosting lightweight services within the homelab.
 
-## Specification
+### I will use this VM as a part of [unbound homelab](https://github.com/andreansx/unbound-homelab) project.
 
-- Host CPU, 4 cores
-- 8192 MB of RAM
-- FreeBSD 14.3 
+## Network
+- **hostname:** `freebsd-server`  
+- **bridge:**   `vmbr0`  
+- **VLAN Tag:** `20`  
+- **IP Address:** Acquired via DHCP from `10.10.20.0/24`. *(DHCP server running on [ccr2004](../../ccr2004/config.rsc))*
+
+##  Services Hosted
+
+*Currently, no persistent services are running.*
+
