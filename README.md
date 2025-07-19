@@ -6,10 +6,10 @@ Welcome to the documentation hub for my home lab. This repository serves as the 
 ### Tools and Technologies
 
 ![MikroTik](https://img.shields.io/badge/mikrotik-3D2817?style=for-the-badge&logo=mikrotik&logoColor=white)
-![Proxmox](https://img.shields.io/badge/proxmox-762126?style=for-the-badge&logo=proxmox&logoColor=white)
-![Debian](https://img.shields.io/badge/debian-B51B35?style=for-the-badge&logo=debian&logoColor=white)
-![FreeBSD](https://img.shields.io/badge/freebsd-F11444?style=for-the-badge&logo=freebsd&logoColor=white)
-
+![Proxmox](https://img.shields.io/badge/proxmox-6A2322?style=for-the-badge&logo=proxmox&logoColor=white)
+![Debian](https://img.shields.io/badge/debian-971E2E?style=for-the-badge&logo=debian&logoColor=white)
+![FreeBSD](https://img.shields.io/badge/freebsd-C41939?style=for-the-badge&logo=freebsd&logoColor=white)
+![Terraform](https://img.shields.io/badge/terraform-F11444?style=for-the-badge&logo=terraform&logoColor=white)
 ---
 
 ## Table of Contents
