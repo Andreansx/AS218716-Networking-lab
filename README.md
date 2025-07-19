@@ -19,7 +19,7 @@ Welcome to the documentation hub for my home lab. This repository serves as the 
 3.  [Lab Architecture](#lab-architecture)
     *   [Network Diagram](#network-diagram)
     *   [Logical Topology (VLAN & IP)](#logical-topology-vlan--ip)
-4. [Related Projects](#related-projects)
+4. [Projects](#projects)
 5. [Physical Installation Documentation](#physical-installation-documentation)
 6. [Contact](#contact)
 ---
@@ -28,7 +28,11 @@ Welcome to the documentation hub for my home lab. This repository serves as the 
 
 This repository contains configuration files, notes, firmware, and photo documentation. Without any idea on how to look through it, things can get messy. I put a nice way of exploring this repository:
 
-**1.   First, you can look through configuration files and descriptions:**
+**1. First, it may be the best idea to look at the diagram showing the topology of the network. Look at [Network Diagram](#network-diagram)**
+
+**2. Then, the most interesting thing is to look into specific projects and deployments that take place in the lab. They are listed below in the [Projects](#projects) section, and are split into regular and IaC directories**
+
+**3. You can afterwards browse through individual configuration files. The most important ones are listed here:**
 
 -   [`./ccr2004/`](./ccr2004/) & [`./crs326/`](./crs326/) - **Core Router and Switch**
     -   Contain **latest** `config.rsc` files, which are configuration exports from the MikroTik devices. They can be used to restore settings.
@@ -40,15 +44,8 @@ This repository contains configuration files, notes, firmware, and photo documen
     -   Informations about VMs and CTs.
     -   This directory also contain BIOS files and other notes.
 
--   [`./installs/`](./installs/)
-    -   Photographic documentation of the physical rack installation and the process of terminating copper cables and keystone jacks.
-
--   [`./media/network.drawio`](./media/network.drawio)
-    -   The source file for the network diagram, editable with diagrams.net (draw.io).
-
-**2. Then, you can take a look at the diagram showing the topology of the homelab. See [Network Diagram](#network-diagram)** 
-
-**3. Afterwards, you might want to check out some related projects. Take a look at [Related Projects](#related-projects)**
+-   [`./IaC/`](./IaC/) - As said above, **Infrastructure as Code** projects
+    -   Directories for individual deployments. Each contain its own neccessary HCL code and a readme file.
 
 **4. If you want, you can take a peek at the physical part of homelabbing. Look at [Physical installation documentation](#physical-installation-documentation)**
 
@@ -87,12 +84,22 @@ Below is a list of the key components in the lab. Click the name to navigate to 
 | **Switch**| [Brocade FastIron LS648](./ls648/)      | A device for testing and L3 firmware experimentation.      |
 | **PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
-## Related Projects
+## Projects
 
-Here are links to separate repositories for specific projects built within this lab environment.
+Here are listed projects that occur in this lab environment.
+
+### Projects in different repositories
 
 -   **[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)** - Deployment of a recursive DNS server. WIP.
 -   **[Simple VLANs on RouterOS](https://github.com/andreansx/routeros-simple-vlans)** - A guide to configuring simple VLANs on MikroTik.
+
+### IaC Deployments
+
+-   [`IaC/terraform_first_deployment`](./IaC/terraform_first_deployment/)
+    -   First simple Terraform code for deploying a CentOS LXC on my Proxmox VE server
+
+### Networking Projects
+
 
 ## Physical Installation Documentation
 
