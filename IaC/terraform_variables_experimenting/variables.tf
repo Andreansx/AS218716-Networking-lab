@@ -34,6 +34,21 @@ variable "ip_gateway" {
 }
 
 variable "tag" {
-  type = string
+  type = number
   default = "40"
+}
+
+variable "ct_ram" {
+  type = number
+  default = 2048
+}
+
+variable "ct_swap" {
+  type = number
+  default = 512
+}
+
+variable "ct_cores" {
+  type = number
+  default = 2
 }

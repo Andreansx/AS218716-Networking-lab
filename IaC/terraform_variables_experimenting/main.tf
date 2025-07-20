@@ -20,6 +20,10 @@ resource "proxmox_lxc" "terraform_debian_ct" {
   password = var.ct_pass
 
   ostemplate = "local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst"
+  
+  memory = var.ct_ram
+  swap = var.ct_swap
+  cores = var.ct_cores
 
   rootfs {
     storage = var.storage
