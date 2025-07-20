@@ -1,0 +1,17 @@
+**/.terraform/*
+
+*.tfstate
+*.tfstate.*
+*.lock.hcl
+
+crash.log
+
+#.tfvars can contain sensitive data
+*.tfvars
+*.tfvars.json
+terraform_secret
+
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

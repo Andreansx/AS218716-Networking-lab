@@ -1,4 +1,4 @@
-# jul/17/2025 19:50:54 by RouterOS 6.49.18
+# jul/20/2025 18:33:09 by RouterOS 6.49.18
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -47,30 +47,42 @@ add address=10.10.30.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=10.10.30.1
 add address=10.10.40.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=10.10.40.1
 /ip dns
 set servers=1.1.1.1,8.8.8.8
+/ip firewall address-list
+add address=10.10.10.0/24 list=management
+add address=10.10.20.0/24 list=bare-metal
+add address=10.10.30.0/24 list=users
+add address=10.10.40.0/24 list=vms-cts
 /ip firewall filter
 add action=drop chain=input in-interface=sfp-sfpplus12 port=22 protocol=tcp
 add action=accept chain=input connection-state=established,related
-add action=accept chain=input src-address=10.10.10.0/24
+add action=accept chain=input comment="Allow SSH access from management VLAN" \
+    src-address-list=management
 add action=accept chain=input protocol=icmp
 add action=drop chain=input in-interface=sfp-sfpplus12
 add action=accept chain=forward comment=\
-    "allow established, related connections" connection-state=\
+    "Allow established, related connections" connection-state=\
     established,related
 add action=accept chain=forward comment=\
-    "allow management to access everything" src-address=10.10.10.0/24
-add action=accept chain=forward comment="allow users to access servers" \
-    dst-address=10.10.30.0/24 src-address=10.10.20.0/24
+    "Allow management VLAN to access everything" src-address-list=management
 add action=accept chain=forward comment=\
-    "Allow VMs and CTs to access bare-metal servers" dst-address=\
-    10.10.20.0/24 src-address=10.10.40.0/24
-add action=drop chain=forward comment="Drop all VMs accessing Management" \
-    dst-address=10.10.10.0/24 src-address=10.10.40.0/24
+    "Allow users VLAN to access bare-metal VLAN" dst-address-list=bare-metal \
+    src-address-list=users
+add action=accept chain=forward comment=\
+    "Allow VMs/CTs VLAN to access bare-metal VLAN" dst-address-list=\
+    bare-metal src-address-list=vms-cts
 add action=drop chain=forward comment=\
-    "drop any traffic trying to enter mgmt vlan" dst-address=10.10.10.0/24
-add action=drop chain=forward comment="drop servers initiating to users" \
-    dst-address=10.10.30.0/24 src-address=10.10.20.0/24
-add action=accept chain=forward comment="allow vlans to access internet" \
+    "Drop all traffic from VMs/CTs VLAN trying to access Management VLAN" \
+    dst-address-list=management src-address-list=vms-cts
+add action=drop chain=forward comment=\
+    "Drop any traffic trying to enter Management VLAN by default" \
+    dst-address-list=management
+add action=drop chain=forward comment=\
+    "Drop bare-metal VLAN initiating to Users VLAN" dst-address-list=users \
+    src-address-list=bare-metal
+add action=accept chain=forward comment="Allow all VLANs to access internet" \
     out-interface=sfp-sfpplus12
+add action=drop chain=forward comment="Drop any other unrecognized traffic"
+add action=drop chain=input comment="Drop any other input traffic"
 /ip firewall nat
 add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route
