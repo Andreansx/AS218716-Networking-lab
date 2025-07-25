@@ -30,7 +30,7 @@ This repository contains configuration files, notes, firmware, and photo documen
 
 **1. First, it may be the best idea to look at the diagram showing the topology of the network. Look at [Network Diagram](#network-diagram)**
 
-**2. Then, the most interesting thing is to look into specific projects and deployments that take place in the lab. They are listed below in the [Projects](#projects) section, and are split into regular and IaC directories**
+**2. Then, the most interesting thing is to look into specific projects and deployments that take place in the lab. They are listed below in the [Projects](#projects) section, and are split into regular and IaC directories. You can also see [`./docs/`](./docs/). For example there is a new IPv4 addressation plan.**
 
 **3. You can afterwards browse through individual configuration files. The most important ones are listed here:**
 
