@@ -27,7 +27,7 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 # Live projects
 
-Here are listed projects that I'm currently working on.
+Here are listed projects that I’m currently working on.
 
 - [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)
 
@@ -38,8 +38,6 @@ This repository is structured to be a clear and useful reference. Here’s a map
 *   **/[device-name]/** (e.g., [`./ccr2004/`](./ccr2004/), [`./r710/`](./r710/)): Contains the latest configuration files and documentation for each piece of hardware. This is the source of truth for device settings.
 *   **`/IaC/`**: Holds all Infrastructure as Code projects, primarily using Terraform to automate deployments on Proxmox.
 *   **`/docs/`**: Contains details about plans for improving the lab. For example a better addressation plan
-*   **`/installs/`**: Photo galleries documenting the physical installation and cabling of the lab.
-*   **`/media/`**: Stores diagrams, images, and other visual assets used in the documentation.
 
 
 ## Lab Architecture
@@ -50,24 +48,24 @@ This diagram shows the physical and logical topology of the lab.
 
 ![topology](./media/topology.png)
 
-### VLAN & IP Schema
+## VLAN & IP Schema
 
 The network is segmented using VLANs. The core is built on a **MikroTik CCR2004** router and a **CRS326** switch. I am actively implementing IPv6 alongside IPv4.
 
-| VLAN ID | Name         | Subnet / IP Scheme | Description                                                                                                                              |
-| :—— | :———— | :—————— | :————————————————————————————————————————————— |
+| VLAN ID | Name         | Subnet / IP Scheme | Description                        |
+|:— |:—|:—|:—|
 | 10      | Management   | `10.10.10.0/24`    | Network for managing network devices such as the router and switch.                                              |
 | 20      | Bare-metal   | `10.10.20.0/24`    | Network for physical servers and devices. The R710 server’s management interface lives here at `10.10.20.201` (untagged on a hybrid port). |
 | 30      | Users        | `10.10.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
-| 40      | VMs-CTs      | `10.10.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port.                 |
+| 40      | VMs-CTs      | `10.10.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port. |
 
 
-## The Hardware Stack
+## Hardware
 
 A list of the key components in my lab. Click a device name to see its configuration files.
 
 | Device Type      | Model                                   | Role in the Lab                                   |
-| :————— | :————————————— | :———————————————— |
+|:—|:—|:—|
 | **Server Rack**  | [HPE 10636 G2](./hpe-10636-g2/)         | Central mounting point for all equipment.         |
 | **Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
 | **Server**       | [Dell PowerEdge R610](./r610/)          | Currently unused, planned for a giveaway.         |
@@ -75,9 +73,7 @@ A list of the key components in my lab. Click a device name to see its configura
 | **Core Switch**  | [MikroTik CRS326](./crs326/)           | Main switch, VLAN handling, L2/L3 switching. |
 | **Switch**| [Brocade FastIron LS648](./ls648/)      | A device for testing and L3 firmware experimentation.      |
 | **PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
-
-
-## Projects & Experiments
+## Projects
 
 This is where the real learning happens. Here are some of the things I’ve built or am currently working on.
 
