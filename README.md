@@ -28,14 +28,14 @@ Welcome to the documentation hub for my home lab. This repository serves as the 
 
 This repository contains configuration files, notes, firmware, and photo documentation. Without any idea on how to look through it, things can get messy. I put a nice way of exploring this repository:
 
-**1. First, it may be the best idea to look at the diagram showing the topology of the network. Look at [Network Diagram](#network-diagram)**
+**1. First, you can look at the network diagram to get a better understaning of the topology. Look at [Network Diagram](#network-diagram)**
 
-**2. Then, the most interesting thing is to look into specific projects and deployments that take place in the lab. They are listed below in the [Projects](#projects) section, and are split into regular and IaC directories. You can also see [`./docs/`](./docs/). For example there is a new IPv4 addressation plan.**
+**2. Then, I think the most interesting thing to look at are ongoing projects. Look at the [Ongoing projects](#ongoing-projects)** section. You can also check all project/modernization directories. They are in the [Projects](#projects) section and in the [`./docs`](./docs/) directory.
 
 **3. You can afterwards browse through individual configuration files. The most important ones are listed here:**
 
 -   [`./ccr2004/`](./ccr2004/) & [`./crs326/`](./crs326/) - **Core Router and Switch**
-    -   Contain **latest** `config.rsc` files, which are configuration exports from the MikroTik devices. They can be used to restore settings.
+    -   Contains **latest** `config.rsc` files, which are configuration exports from the MikroTik devices. They can be used to restore settings.
     -   General description and overview in `readme.md` files
 
 -   [`./r710/`](./r710/) - **Virtualization**
@@ -44,8 +44,6 @@ This repository contains configuration files, notes, firmware, and photo documen
     -   Informations about VMs and CTs.
     -   This directory also contain BIOS files and other notes.
 
--   [`./IaC/`](./IaC/) - As said above, **Infrastructure as Code** projects
-    -   Directories for individual deployments. Each contain its own neccessary HCL code and a readme file.
 
 **4. If you want, you can take a peek at the physical part of homelabbing. Look at [Physical installation documentation](#physical-installation-documentation)**
 
@@ -88,17 +86,20 @@ Below is a list of the key components in the lab. Click the name to navigate to 
 
 Here are listed projects that occur in this lab environment.
 
-### Projects in different repositories
-
--   **[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)** - Deployment of a recursive DNS server. WIP.
--   **[Simple VLANs on RouterOS](https://github.com/andreansx/routeros-simple-vlans)** - A guide to configuring simple VLANs on MikroTik.
-
 ### IaC Deployments
+
+-   [`IaC/terraform_routeros_wiki_lxc`](./IaC/terraform_routeros_wiki_lxc)
+    -   Local MikroTik RouterOS Wiki deployment in a LXC with Terraform
 
 -   [`IaC/terraform_first_deployment`](./IaC/terraform_first_deployment/)
     -   First simple Terraform code for deploying a CentOS LXC on my Proxmox VE server
 
 ### Networking Projects
+
+### Projects in different repositories
+
+-   **[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)** - Deployment of a recursive DNS server. WIP.
+-   **[Simple VLANs on RouterOS](https://github.com/andreansx/routeros-simple-vlans)** - A guide to configuring simple VLANs on MikroTik.
 
 
 ## Physical Installation Documentation
