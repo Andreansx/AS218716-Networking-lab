@@ -1,79 +1,73 @@
+# Lab for learning
 
-# Networking Homelab - Documentation Hub
+This repository serves as a documentation of infrastructure, configurations, projects etc. that take place in my lab as a way of developing skills that are neccesary in my dream field of work. I would love to work in a datacenter environment, especially in things like backbone engineering and server administration.  
 
-Welcome to the documentation hub for my home lab. This repository serves as the main overview of the infrastructure, configurations, and projects I'm working on as I develop my skills towards a career in network engineering, server administration, and cloud solutions.
 
-### Tools and Technologies
+<div align=“center”>
 
 ![MikroTik](https://img.shields.io/badge/mikrotik-3D2817?style=for-the-badge&logo=mikrotik&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/proxmox-6A2322?style=for-the-badge&logo=proxmox&logoColor=white)
 ![Debian](https://img.shields.io/badge/debian-971E2E?style=for-the-badge&logo=debian&logoColor=white)
 ![FreeBSD](https://img.shields.io/badge/freebsd-C41939?style=for-the-badge&logo=freebsd&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-F11444?style=for-the-badge&logo=terraform&logoColor=white)
----
+
+</div>
+
 
 ## Table of Contents
-
-1.  **[Repository Guide](#repository-guide)**
-2.  [Hardware](#hardware)
+1.  [Live Projects](#live-projects)
+2.  [How This Repository Is Organized](#how-this-repository-is-organized)
 3.  [Lab Architecture](#lab-architecture)
     *   [Network Diagram](#network-diagram)
-    *   [Logical Topology (VLAN & IP)](#logical-topology-vlan--ip)
-4. [Projects](#projects)
-5. [Physical Installation Documentation](#physical-installation-documentation)
-6. [Contact](#contact)
----
+    *   [VLAN & IP Schema](#vlan—ip-schema)
+4.  [Hardware](#hardware)
+5.  [Projects](#projects)
+6.  [Physical Build Log](#physical-build-log)
+7.  [Contact](#contact)
 
-## Repository Guide
+# Live projects
 
-This repository contains configuration files, notes, firmware, and photo documentation. Without any idea on how to look through it, things can get messy. I put a nice way of exploring this repository:
+Here are listed projects that I'm currently working on.
 
-**1. First, you can look at the network diagram to get a better understaning of the topology. Look at [Network Diagram](#network-diagram)**
+- [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)
 
-**2. Then, I think the most interesting thing to look at are ongoing projects. Look at the [Ongoing projects](#ongoing-projects)** section. You can also check all project/modernization directories. They are in the [Projects](#projects) section and in the [`./docs`](./docs/) directory.
+## How This Repository Is Organized
 
-**3. You can afterwards browse through individual configuration files. The most important ones are listed here:**
+This repository is structured to be a clear and useful reference. Here’s a map of the key directories:
 
--   [`./ccr2004/`](./ccr2004/) & [`./crs326/`](./crs326/) - **Core Router and Switch**
-    -   Contains **latest** `config.rsc` files, which are configuration exports from the MikroTik devices. They can be used to restore settings.
-    -   General description and overview in `readme.md` files
+*   **/[device-name]/** (e.g., [`./ccr2004/`](./ccr2004/), [`./r710/`](./r710/)): Contains the latest configuration files and documentation for each piece of hardware. This is the source of truth for device settings.
+*   **`/IaC/`**: Holds all Infrastructure as Code projects, primarily using Terraform to automate deployments on Proxmox.
+*   **`/docs/`**: Contains details about plans for improving the lab. For example a better addressation plan
+*   **`/installs/`**: Photo galleries documenting the physical installation and cabling of the lab.
+*   **`/media/`**: Stores diagrams, images, and other visual assets used in the documentation.
 
--   [`./r710/`](./r710/) - **Virtualization**
-    -   Proxmox Virtual Environment configuration files.
-    -   `./r710/etc/network/interfaces` - The network configuration for the Proxmox VE host, defining the `vmbr0` bridge and VLAN handling.
-    -   Informations about VMs and CTs.
-    -   This directory also contain BIOS files and other notes.
-
-
-**4. If you want, you can take a peek at the physical part of homelabbing. Look at [Physical installation documentation](#physical-installation-documentation)**
 
 ## Lab Architecture
 
 ### Network Diagram
 
-The diagram below illustrates the overall physical and logical topology of the lab.
+This diagram shows the physical and logical topology of the lab.
 
 ![topology](./media/topology.png)
 
-### Logical Topology (VLAN & IP)
+### VLAN & IP Schema
 
-The network is segmented using VLANs to isolate traffic and enhance security. The core of the network is built around a **MikroTik CCR2004** router and a **MikroTik CRS326** switch.
+The network is segmented using VLANs. The core is built on a **MikroTik CCR2004** router and a **CRS326** switch. I am actively implementing IPv6 alongside IPv4.
 
 | VLAN ID | Name         | Subnet / IP Scheme | Description                                                                                                                              |
-| :------ | :----------- | :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| :—— | :———— | :—————— | :————————————————————————————————————————————— |
 | 10      | Management   | `10.10.10.0/24`    | Network for managing network devices such as the router and switch.                                              |
-| 20      | Bare-metal   | `10.10.20.0/24`    | Network for physical servers and devices. The R710 server's management interface lives here at `10.10.20.201` (untagged on a hybrid port). |
+| 20      | Bare-metal   | `10.10.20.0/24`    | Network for physical servers and devices. The R710 server’s management interface lives here at `10.10.20.201` (untagged on a hybrid port). |
 | 30      | Users        | `10.10.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
 | 40      | VMs-CTs      | `10.10.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port.                 |
 
----
 
-## Hardware
+## The Hardware Stack
 
-Below is a list of the key components in the lab. Click the name to navigate to its specific documentation and configuration files.
+A list of the key components in my lab. Click a device name to see its configuration files.
 
 | Device Type      | Model                                   | Role in the Lab                                   |
-| :--------------- | :-------------------------------------- | :------------------------------------------------ |
+| :————— | :————————————— | :———————————————— |
 | **Server Rack**  | [HPE 10636 G2](./hpe-10636-g2/)         | Central mounting point for all equipment.         |
 | **Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
 | **Server**       | [Dell PowerEdge R610](./r610/)          | Currently unused, planned for a giveaway.         |
@@ -82,32 +76,28 @@ Below is a list of the key components in the lab. Click the name to navigate to 
 | **Switch**| [Brocade FastIron LS648](./ls648/)      | A device for testing and L3 firmware experimentation.      |
 | **PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
-## Projects
 
-Here are listed projects that occur in this lab environment.
+## Projects & Experiments
 
-### IaC Deployments
+This is where the real learning happens. Here are some of the things I’ve built or am currently working on.
 
--   [`IaC/terraform_routeros_wiki_lxc`](./IaC/terraform_routeros_wiki_lxc)
-    -   Local MikroTik RouterOS Wiki deployment in a LXC with Terraform
+### Infrastructure as Code (IaC)
+*   **[Terraform RouterOS Wiki LXC](./IaC/terraform_routeros_wiki_lxc/)**: Deploys a local copy of the MikroTik Wiki in an LXC using Terraform.
+*   **[Terraform First Deployment](./IaC/terraform_first_deployment/)**: My initial project for deploying a simple CentOS LXC on Proxmox.
 
--   [`IaC/terraform_first_deployment`](./IaC/terraform_first_deployment/)
-    -   First simple Terraform code for deploying a CentOS LXC on my Proxmox VE server
-
-### Networking Projects
-
-### Projects in different repositories
-
--   **[Unbound DNS Resolver](https://github.com/andreansx/unbound-homelab)** - Deployment of a recursive DNS server. WIP.
--   **[Simple VLANs on RouterOS](https://github.com/andreansx/routeros-simple-vlans)** - A guide to configuring simple VLANs on MikroTik.
+### Guides & External Repositories
+*   **[Unbound DNS Resolver (repo)](https://github.com/andreansx/unbound-homelab)**: WIP - Deployment of a recursive DNS server for the lab.
+*   **[Simple VLANs on RouterOS (repo)](https://github.com/andreansx/routeros-simple-vlans)**: A guide to basic VLAN configuration on MikroTik devices.
 
 
-## Physical Installation Documentation
+## Physical Build Log
 
-Find photo galleries of the installation process in the links below.
+See how the lab was physically assembled and cabled.
 
--   **[Server Rack Installation](./installs/installation-rack/)**
--   **[Cabling and Keystone Jack Installation](./installs/installation-keystones/)**
+*   **[Server Rack Installation](./installs/installation-rack/)**
+*   **[Cabling and Keystone Jack Installation](./installs/installation-keystones/)**
+
+—
 
 ## Contact
 
