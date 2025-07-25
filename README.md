@@ -50,10 +50,10 @@ This diagram shows the physical and logical topology of the lab.
 
 ## VLAN & IP Schema
 
-The network is segmented using VLANs. The core is built on a **MikroTik CCR2004** router and a **CRS326** switch. I am actively implementing IPv6 alongside IPv4.
+The network is segmented using VLANs. The core is built on a **MikroTik CCR2004** router and a **CRS326** switch.  
 
 | VLAN ID | Name         | Subnet / IP Scheme | Description                        |
-|:— |:—|:—|:—|
+|:--- |:---|:---|:---|
 | 10      | Management   | `10.10.10.0/24`    | Network for managing network devices such as the router and switch.                                              |
 | 20      | Bare-metal   | `10.10.20.0/24`    | Network for physical servers and devices. The R710 server’s management interface lives here at `10.10.20.201` (untagged on a hybrid port). |
 | 30      | Users        | `10.10.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
@@ -65,7 +65,7 @@ The network is segmented using VLANs. The core is built on a **MikroTik CCR2004*
 A list of the key components in my lab. Click a device name to see its configuration files.
 
 | Device Type      | Model                                   | Role in the Lab                                   |
-|:—|:—|:—|
+|:---|:---|:---|
 | **Server Rack**  | [HPE 10636 G2](./hpe-10636-g2/)         | Central mounting point for all equipment.         |
 | **Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
 | **Server**       | [Dell PowerEdge R610](./r610/)          | Currently unused, planned for a giveaway.         |
@@ -73,6 +73,7 @@ A list of the key components in my lab. Click a device name to see its configura
 | **Core Switch**  | [MikroTik CRS326](./crs326/)           | Main switch, VLAN handling, L2/L3 switching. |
 | **Switch**| [Brocade FastIron LS648](./ls648/)      | A device for testing and L3 firmware experimentation.      |
 | **PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
+
 ## Projects
 
 This is where the real learning happens. Here are some of the things I’ve built or am currently working on.
