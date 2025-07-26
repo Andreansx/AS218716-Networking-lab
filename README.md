@@ -54,10 +54,10 @@ The network is segmented using VLANs. The core is built on a **MikroTik CCR2004*
 
 | VLAN ID | Name         | Subnet / IP Scheme | Description                        |
 |:--- |:---|:---|:---|
-| 10      | Management   | `10.10.10.0/24`    | Network for managing network devices such as the router and switch.                                              |
-| 20      | Bare-metal   | `10.10.20.0/24`    | Network for physical servers and devices. The R710 server’s management interface lives here at `10.10.20.201` (untagged on a hybrid port). |
-| 30      | Users        | `10.10.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
-| 40      | VMs-CTs      | `10.10.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port. |
+| 10      | Management   | `10.100.10.0/28`    | Network for management interfaces for example the core router or core swicth (CPU address).                                              |
+| 20      | Bare-metal   | `10.100.20.0/28`    | Network for physical servers and devices. The Proxmox VE web panel is here at `10.100.20.2` (untagged on a hybrid port). |
+| 30      | Users        | `10.100.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
+| 40      | VMs-CTs      | `10.100.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port on the core switch. |
 
 
 ## Hardware
@@ -79,10 +79,12 @@ A list of the key components in my lab. Click a device name to see its configura
 This is where the real learning happens. Here are some of the things I’ve built or am currently working on.
 
 ### Infrastructure as Code (IaC)
+
 *   **[Terraform RouterOS Wiki LXC](./IaC/terraform_routeros_wiki_lxc/)**: Deploys a local copy of the MikroTik Wiki in an LXC using Terraform.
 *   **[Terraform First Deployment](./IaC/terraform_first_deployment/)**: My initial project for deploying a simple CentOS LXC on Proxmox.
 
 ### Guides & External Repositories
+
 *   **[Unbound DNS Resolver (repo)](https://github.com/andreansx/unbound-homelab)**: WIP - Deployment of a recursive DNS server for the lab.
 *   **[Simple VLANs on RouterOS (repo)](https://github.com/andreansx/routeros-simple-vlans)**: A guide to basic VLAN configuration on MikroTik devices.
 
