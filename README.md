@@ -27,7 +27,9 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 # Live projects
 
-Here are listed projects that I’m currently working on.
+Here are listed things that I’m currently working on.
+
+- **[IPv6](./IPv6/)** - **This is what I am most focused on.** You can check out this directory to see what I'm doing on my way to get a IPv6 routed /64 block (or maybe even /48 )
 
 - [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)
 
