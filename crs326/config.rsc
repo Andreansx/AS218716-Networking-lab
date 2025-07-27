@@ -1,4 +1,4 @@
-# 2025-07-25 23:33:35 by RouterOS 7.19.3
+# 2025-07-27 15:07:31 by RouterOS 7.19.3
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -8,6 +8,7 @@ add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge \
     vlan-filtering=yes
 /interface vlan
 add interface=main-bridge name=vlan10-mgmt vlan-id=10
+add interface=main-bridge name=vlan99-ospf vlan-id=99
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
 /port
@@ -51,12 +52,20 @@ add bridge=main-bridge tagged=sfp-sfpplus1 untagged=ether1 vlan-ids=10
 add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus3 vlan-ids=30
 add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus4 vlan-ids=40
 add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus4 vlan-ids=20
+add bridge=main-bridge tagged=sfp-sfpplus1 vlan-ids=99
 /ip address
 add address=10.100.10.2/28 interface=vlan10-mgmt network=10.100.10.0
+add address=10.100.255.2/30 interface=vlan99-ospf network=10.100.255.0
 /ip dns
 set servers=1.1.1.1,8.8.8.8
 /ip route
 add gateway=10.100.10.1
+/ip service
+set ftp disabled=yes
+set ssh address=10.100.10.0/28
+set www disabled=yes
+set winbox address=10.100.10.0/28
+set api disabled=yes
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity

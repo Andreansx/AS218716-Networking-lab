@@ -1,4 +1,4 @@
-# 2025-07-25 23:33:29 by RouterOS 7.19.3
+# 2025-07-27 15:07:25 by RouterOS 7.19.3
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -10,6 +10,7 @@ add interface=sfp-sfpplus11 name=vlan10-management vlan-id=10
 add interface=sfp-sfpplus11 name=vlan20-bare-metal vlan-id=20
 add interface=sfp-sfpplus11 name=vlan30-users vlan-id=30
 add interface=sfp-sfpplus11 name=vlan40-vms-cts vlan-id=40
+add interface=sfp-sfpplus11 name=vlan99-ospf vlan-id=99
 /interface lte apn
 set [ find default=yes ] ip-type=ipv4 use-network-apn=no
 /ip pool
@@ -46,6 +47,8 @@ add address=10.100.30.1/24 comment="gateway for users" interface=vlan30-users \
     network=10.100.30.0
 add address=10.100.40.1/24 comment="gateway for vms, cts" interface=\
     vlan40-vms-cts network=10.100.40.0
+add address=10.100.255.1/30 comment="Inter-router link" interface=vlan99-ospf \
+    network=10.100.255.0
 /ip dhcp-server network
 add address=10.100.10.0/28 dns-server=1.1.1.1,8.8.8.8 gateway=10.100.10.1
 add address=10.100.20.0/28 dns-server=1.1.1.1,8.8.8.8 gateway=10.100.20.1
@@ -95,10 +98,10 @@ add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
 /ip service
 set ftp disabled=yes
-set ssh address=10.10.10.0/24,10.100.10.0/28
+set ssh address=10.100.10.0/28
 set telnet disabled=yes
 set www disabled=yes
-set winbox address=10.10.10.0/24,10.100.10.0/28
+set winbox address=10.100.10.0/28
 set api disabled=yes
 /system clock
 set time-zone-name=Europe/Warsaw
