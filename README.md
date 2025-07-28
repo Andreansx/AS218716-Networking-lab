@@ -31,6 +31,8 @@ Here are listed things that I’m currently working on.
 
 - **[IPv6](./IPv6/)** - **This is what I am most focused on.** You can check out this directory to see what I'm doing on my way to get a IPv6 routed /64 block (or maybe even /48 )
 
+- **Repurposing an unused 10GbE RJ45 NIC to enable network access in another room.**
+
 - [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)
 
 ## How This Repository Is Organized
@@ -57,9 +59,11 @@ The network is segmented using VLANs. The core is built on a **MikroTik CCR2004*
 | VLAN ID | Name         | Subnet / IP Scheme | Description                        |
 |:--- |:---|:---|:---|
 | 10      | Management   | `10.100.10.0/28`    | Network for management interfaces for example the core router or core swicth (CPU address).                                              |
-| 20      | Bare-metal   | `10.100.20.0/28`    | Network for physical servers and devices. The Proxmox VE web panel is here at `10.100.20.2` (untagged on a hybrid port). |
+| 20      | Bare-metal   | `10.100.10.16/28`    | Network for physical servers and devices. The Proxmox VE web panel is here at `10.100.10.18` (untagged on a hybrid port). |
 | 30      | Users        | `10.100.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
 | 40      | VMs-CTs      | `10.100.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port on the core switch. |
+| 50      | Active Directory | `10.100.50.0/24`    | Network dedicated for experimenting with Windows Server Active Directory technology |
+
 
 
 ## Hardware
