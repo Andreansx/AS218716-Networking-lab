@@ -1,4 +1,4 @@
-# 2025-07-27 15:07:31 by RouterOS 7.19.3
+# 2025-07-28 19:38:20 by RouterOS 7.19.3
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -57,7 +57,7 @@ add bridge=main-bridge tagged=sfp-sfpplus1 vlan-ids=99
 add address=10.100.10.2/28 interface=vlan10-mgmt network=10.100.10.0
 add address=10.100.255.2/30 interface=vlan99-ospf network=10.100.255.0
 /ip dns
-set servers=1.1.1.1,8.8.8.8
+set servers=10.100.40.99
 /ip route
 add gateway=10.100.10.1
 /ip service

@@ -1,4 +1,4 @@
-# 2025-07-27 15:07:25 by RouterOS 7.19.3
+# 2025-07-28 19:38:14 by RouterOS 7.19.3
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -6,16 +6,17 @@
 /interface bridge
 add name=br-mgmt port-cost-mode=short
 /interface vlan
-add interface=sfp-sfpplus11 name=vlan10-management vlan-id=10
-add interface=sfp-sfpplus11 name=vlan20-bare-metal vlan-id=20
-add interface=sfp-sfpplus11 name=vlan30-users vlan-id=30
-add interface=sfp-sfpplus11 name=vlan40-vms-cts vlan-id=40
-add interface=sfp-sfpplus11 name=vlan99-ospf vlan-id=99
+add interface=sfp-sfpplus1 name=vlan10-management vlan-id=10
+add interface=sfp-sfpplus1 name=vlan20-bare-metal vlan-id=20
+add interface=sfp-sfpplus1 name=vlan30-users vlan-id=30
+add interface=sfp-sfpplus1 name=vlan40-vms-cts vlan-id=40
+add interface=sfp-sfpplus1 name=vlan50-active-directory vlan-id=50
+add interface=sfp-sfpplus1 name=vlan99-ospf vlan-id=99
 /interface lte apn
 set [ find default=yes ] ip-type=ipv4 use-network-apn=no
 /ip pool
 add name=pool-management ranges=10.100.10.3-10.100.10.14
-add name=pool-bare-metal ranges=10.100.20.3-10.100.20.14
+add name=pool-bare-metal ranges=10.100.10.18-10.100.10.30
 add name=pool-users ranges=10.100.30.100-10.100.30.200
 add name=pool-vms-cts ranges=10.100.40.100-10.100.40.200
 /ip dhcp-server
@@ -41,24 +42,27 @@ add address=10.0.0.150/24 comment=WAN interface=sfp-sfpplus12 network=\
     10.0.0.0
 add address=10.100.10.1/28 comment="gateway for mgmt" interface=br-mgmt \
     network=10.100.10.0
-add address=10.100.20.1/28 comment="gateway for servers" interface=\
-    vlan20-bare-metal network=10.100.20.0
+add address=10.100.10.17/28 comment="gateway for servers" interface=\
+    vlan20-bare-metal network=10.100.10.16
 add address=10.100.30.1/24 comment="gateway for users" interface=vlan30-users \
     network=10.100.30.0
 add address=10.100.40.1/24 comment="gateway for vms, cts" interface=\
     vlan40-vms-cts network=10.100.40.0
-add address=10.100.255.1/30 comment="Inter-router link" interface=vlan99-ospf \
-    network=10.100.255.0
+add address=10.100.50.1/28 comment="gateway for future AD VLAN" interface=\
+    vlan50-active-directory network=10.100.50.0
 /ip dhcp-server network
-add address=10.100.10.0/28 dns-server=1.1.1.1,8.8.8.8 gateway=10.100.10.1
-add address=10.100.20.0/28 dns-server=1.1.1.1,8.8.8.8 gateway=10.100.20.1
-add address=10.100.30.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=10.100.30.1
-add address=10.100.40.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=10.100.40.1
+add address=10.100.10.0/28 dns-server=1.1.1.1 gateway=10.100.10.1
+add address=10.100.10.16/28 dns-server=10.100.40.99,1.1.1.1 gateway=\
+    10.100.10.17
+add address=10.100.30.0/24 dns-server=10.100.40.99,1.1.1.1 gateway=\
+    10.100.30.1
+add address=10.100.40.0/24 dns-server=10.100.40.99,1.1.1.1 gateway=\
+    10.100.40.1
 /ip dns
-set servers=1.1.1.1,8.8.8.8
+set servers=10.100.40.99,1.1.1.1
 /ip firewall address-list
 add address=10.100.10.0/28 list=management
-add address=10.100.20.0/28 list=bare-metal
+add address=10.100.10.16/28 list=bare-metal
 add address=10.100.30.0/24 list=users
 add address=10.100.40.0/24 list=vms-cts
 /ip firewall filter
@@ -76,6 +80,9 @@ add action=accept chain=forward comment=\
 add action=accept chain=forward comment=\
     "Allow users VLAN to access bare-metal VLAN" dst-address-list=bare-metal \
     src-address-list=users
+add action=accept chain=forward comment=\
+    "Allow bare-metal VLAN to access VMs/CTs VLAN" dst-address-list=vms-cts \
+    src-address-list=bare-metal
 add action=accept chain=forward comment=\
     "Allow VMs/CTs VLAN to access bare-metal VLAN" dst-address-list=\
     bare-metal src-address-list=vms-cts
