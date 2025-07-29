@@ -1,4 +1,4 @@
-# 2025-07-28 19:38:20 by RouterOS 7.19.3
+# 2025-07-30 01:52:13 by RouterOS 7.19.3
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -23,7 +23,6 @@ add bridge=main-bridge interface=qsfpplus2-1
 add bridge=main-bridge interface=qsfpplus2-2
 add bridge=main-bridge interface=qsfpplus2-3
 add bridge=main-bridge interface=qsfpplus2-4
-add bridge=main-bridge interface=sfp-sfpplus3 pvid=30
 add bridge=main-bridge interface=sfp-sfpplus5
 add bridge=main-bridge interface=sfp-sfpplus6
 add bridge=main-bridge interface=sfp-sfpplus7
@@ -45,13 +44,14 @@ add bridge=main-bridge interface=sfp-sfpplus22
 add bridge=main-bridge interface=sfp-sfpplus23
 add bridge=main-bridge interface=sfp-sfpplus24
 add bridge=main-bridge interface=sfp-sfpplus1
-add bridge=main-bridge interface=sfp-sfpplus2
-add bridge=main-bridge edge=yes interface=sfp-sfpplus4 pvid=20
+add bridge=main-bridge interface=sfp-sfpplus2 pvid=20
+add bridge=main-bridge interface=sfp-sfpplus4
+add bridge=main-bridge interface=sfp-sfpplus3
 /interface bridge vlan
 add bridge=main-bridge tagged=sfp-sfpplus1 untagged=ether1 vlan-ids=10
-add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus3 vlan-ids=30
-add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus4 vlan-ids=40
-add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus4 vlan-ids=20
+add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus2 vlan-ids=30
+add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus2 vlan-ids=40
+add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus2 vlan-ids=20
 add bridge=main-bridge tagged=sfp-sfpplus1 vlan-ids=99
 /ip address
 add address=10.100.10.2/28 interface=vlan10-mgmt network=10.100.10.0

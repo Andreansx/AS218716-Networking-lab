@@ -31,7 +31,7 @@ Here are listed things that I’m currently working on.
 
 - **[IPv6](./IPv6/)** - **This is what I am most focused on.** You can check out this directory to see what I'm doing on my way to get a IPv6 routed /64 block (or maybe even /48 )
 
-- **Repurposing an unused 10GbE RJ45 NIC to enable network access in another room.**
+- [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/vlan30-access-with-nic)
 
 - [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)
 

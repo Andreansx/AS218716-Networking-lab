@@ -1,4 +1,4 @@
-# 2025-07-28 19:38:14 by RouterOS 7.19.3
+# 2025-07-30 01:52:08 by RouterOS 7.19.3
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -67,9 +67,10 @@ add address=10.100.30.0/24 list=users
 add address=10.100.40.0/24 list=vms-cts
 /ip firewall filter
 add action=drop chain=input in-interface=sfp-sfpplus12 port=22 protocol=tcp
-add action=accept chain=input connection-state=established,related
 add action=accept chain=input comment="Allow SSH access from management VLAN" \
     src-address-list=management
+add action=accept chain=input comment="Allow established connection access" \
+    connection-state=established,related
 add action=accept chain=input protocol=icmp
 add action=drop chain=input in-interface=sfp-sfpplus12
 add action=accept chain=forward comment=\
