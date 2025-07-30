@@ -84,6 +84,14 @@ A list of the key components in my lab. Click a device name to see its configura
 
 This is where the real learning happens. Here are some of the things I’ve built or am currently working on.
 
+### Active Directory
+
+*   **[First Active Directory scenario](./projects/01-ActiveDirectory-first-scenario)**
+
+### Networking
+
+*   **[Repurposing a spare NIC for creating 10GbE VLAN access ports without SFP+ transreceivers](./projects/02-vlan30-access-without-sfp-transreceivers)**
+
 ### Infrastructure as Code (IaC)
 
 *   **[Terraform RouterOS Wiki LXC](./IaC/terraform_routeros_wiki_lxc/)**: Deploys a local copy of the MikroTik Wiki in an LXC using Terraform.
