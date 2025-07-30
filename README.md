@@ -50,7 +50,7 @@ This repository is structured to be a clear and useful reference. Here’s a map
 
 This diagram shows the physical and logical topology of the lab.
 
-![topology](./media/topology.png)
+![topology](./media/topology.webp)
 
 ## VLAN & IP Schema
 
