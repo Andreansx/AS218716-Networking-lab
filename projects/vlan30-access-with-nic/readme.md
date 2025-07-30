@@ -4,6 +4,10 @@
 
 ![crs326](./IMG_4613.jpeg)
 
+## Topology
+
+![topology](./topology.png)
+
 ## 1. Objective
 
 The primary objective was to establish 10GbE network connectivity in an adjacent room by utilizing two pre-installed Cat6A ethernet runs. My first consideration was to use SFP+ 10G-RJ45 transceivers in the core Mikrotik CRS326, but this was economically impractical for just my environment.
