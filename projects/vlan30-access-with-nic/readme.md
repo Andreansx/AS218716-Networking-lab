@@ -1,4 +1,8 @@
-# Project: Repurposing a NIC for Cost-Effective VLAN Access Ports on Proxmox VE
+# Project: Repurposing a NIC for Cost-Effective VLAN Access Ports on Proxmox VE  
+
+![crs326](./IMG_4625.jpeg)  
+
+![crs326](./IMG_4613.jpeg)
 
 ## 1. Objective
 
