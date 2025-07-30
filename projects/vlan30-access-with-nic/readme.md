@@ -1,8 +1,5 @@
 # Project: Repurposing a NIC for Cost-Effective VLAN Access Ports on Proxmox VE  
 
-![crs326](./IMG_4625.jpeg)  
-
-![crs326](./IMG_4613.jpeg)
 
 ## Topology
 
@@ -22,6 +19,18 @@ The alternative I thought about was to repurpose a spare dual-port 10GbE RJ45 NI
 -   **Core L2/L3 Switch:** Mikrotik CRS326-24S+2Q+ (RouterOS v7.19.3)
 -   **Core L3 Router/DHCP Server:** Mikrotik CCR2004-1G-12S+2XS
 
+#### Below you can see physical connections.
+
+`enp6s0` ( SFP+ 10G uplink ) is plugged into `sfp-sfpplus2`, which functions also as hybrid port ( PVID 20 ).  
+`sfp-sfpplus1` is the trunk port to core router.   
+![crs326](./IMG_4625.jpeg)   
+
+The cyan cable is the fiber connection from `enp6s0` to `sfp-sfpplus2` on the core switch.   
+The grey ethernet cable is the one providing VLAN 30 access from `enp7s0f1`.   
+![connrctions](./IMG_4634.jpeg)   
+
+The grey ethernet cable from the image above, is connected to the ethernet socket, to provide Access to the network in another room. Ethernet runs are made with high-quality Cat6A Cu cable.  
+![ethernet sockets](./IMG_4635.jpeg)
 ## 3. Configuration & Troubleshooting Iterations
 
 I achieved the final solution through a very long process of implementation and debugging, since I wasn't really that familiar with the Linux networking functions neccessary for this.
