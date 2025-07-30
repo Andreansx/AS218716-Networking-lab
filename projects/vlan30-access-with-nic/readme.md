@@ -21,6 +21,9 @@ The alternative I thought about was to repurpose a spare dual-port 10GbE RJ45 NI
 
 #### Below you can see physical connections.
 
+The project required plugging an additional NIC.  
+![nic](./IMG_4534.jpeg)  
+
 `enp6s0` ( SFP+ 10G uplink ) is plugged into `sfp-sfpplus2`, which functions also as hybrid port ( PVID 20 ).  
 `sfp-sfpplus1` is the trunk port to core router.   
 ![crs326](./IMG_4625.jpeg)   
