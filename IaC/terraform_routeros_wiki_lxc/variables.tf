@@ -1,6 +1,6 @@
 variable "pm_api_url" {
   type = string
-  default = "https://10.100.20.2:8006/api2/json"
+  default = "https://10.100.10.18:8006/api2/json"
 }
 
 variable "proxmox_node" {

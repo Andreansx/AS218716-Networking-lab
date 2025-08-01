@@ -1,4 +1,4 @@
-# 2025-07-30 01:52:08 by RouterOS 7.19.3
+# 2025-08-01 22:58:44 by RouterOS 7.19.3
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -11,12 +11,11 @@ add interface=sfp-sfpplus1 name=vlan20-bare-metal vlan-id=20
 add interface=sfp-sfpplus1 name=vlan30-users vlan-id=30
 add interface=sfp-sfpplus1 name=vlan40-vms-cts vlan-id=40
 add interface=sfp-sfpplus1 name=vlan50-active-directory vlan-id=50
-add interface=sfp-sfpplus1 name=vlan99-ospf vlan-id=99
 /interface lte apn
 set [ find default=yes ] ip-type=ipv4 use-network-apn=no
 /ip pool
 add name=pool-management ranges=10.100.10.3-10.100.10.14
-add name=pool-bare-metal ranges=10.100.10.18-10.100.10.30
+add name=pool-bare-metal ranges=10.100.10.19-10.100.10.30
 add name=pool-users ranges=10.100.30.100-10.100.30.200
 add name=pool-vms-cts ranges=10.100.40.100-10.100.40.200
 /ip dhcp-server
@@ -30,7 +29,6 @@ add address-pool=pool-vms-cts interface=vlan40-vms-cts lease-time=10m name=\
     dhcp-vms-cts
 /port
 set 0 name=serial0
-set 1 name=serial1
 /interface bridge port
 add bridge=br-mgmt comment="access for laptop" ingress-filtering=no \
     interface=ether1 internal-path-cost=10 path-cost=10
@@ -42,12 +40,8 @@ add address=10.0.0.150/24 comment=WAN interface=sfp-sfpplus12 network=\
     10.0.0.0
 add address=10.100.10.1/28 comment="gateway for mgmt" interface=br-mgmt \
     network=10.100.10.0
-add address=10.100.10.17/28 comment="gateway for servers" interface=\
-    vlan20-bare-metal network=10.100.10.16
 add address=10.100.30.1/24 comment="gateway for users" interface=vlan30-users \
     network=10.100.30.0
-add address=10.100.40.1/24 comment="gateway for vms, cts" interface=\
-    vlan40-vms-cts network=10.100.40.0
 add address=10.100.50.1/28 comment="gateway for future AD VLAN" interface=\
     vlan50-active-directory network=10.100.50.0
 /ip dhcp-server network
@@ -104,6 +98,7 @@ add action=drop chain=input comment="Drop any other input traffic"
 add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
+add dst-address=10.100.10.16/28 gateway=10.100.10.2
 /ip service
 set ftp disabled=yes
 set ssh address=10.100.10.0/28
