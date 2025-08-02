@@ -6,7 +6,7 @@ One of the ways to enable faster routing between those two VLANs, is to use **L3
 
 The idea was to just change where the routing between VLANs 20 and 40 takes place. 
 
-> [!IMPORTANT]
+> [!NOTE]
 > For now there seems to be an issue with accessing VLAN 20 when connected to the Management `ether1` port on the CRS326. Although when plugged into `ether1` on the CCR2004, there doesn't seem to be any issue.
 
 
@@ -19,7 +19,7 @@ The idea was to just change where the routing between VLANs 20 and 40 takes plac
 
 First thing that I needed to do was to delete IP addresses from VLANs on the Core Router and assign them on the Core Switch, because now the switch was supposed to be the gateway for them.  
 
-> [![NOTE]]
+> [!IMPORTANT]
 > For now, the route that will be used for communicating with VLANs is through 10.100.10.0/28, since this is the network where both devices have a IP address on the management interface. 
 > Because of the fact that those devices have a direct connection through 10.100.10.0/28, adding an inter-router link is pointless, since it will have lower priotity than the direct connection route. I will split the management IP addresses so those devices will not have a direct connection on the management interface, and instead will communicate through a inter-router link.
 
