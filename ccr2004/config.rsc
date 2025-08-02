@@ -1,4 +1,4 @@
-# 2025-08-01 22:58:44 by RouterOS 7.19.3
+# 2025-08-02 13:48:34 by RouterOS 7.19.3
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -6,6 +6,7 @@
 /interface bridge
 add name=br-mgmt port-cost-mode=short
 /interface vlan
+add interface=sfp-sfpplus1 name=inter-router-link1 vlan-id=201
 add interface=sfp-sfpplus1 name=vlan10-management vlan-id=10
 add interface=sfp-sfpplus1 name=vlan20-bare-metal vlan-id=20
 add interface=sfp-sfpplus1 name=vlan30-users vlan-id=30
@@ -21,10 +22,12 @@ add name=pool-vms-cts ranges=10.100.40.100-10.100.40.200
 /ip dhcp-server
 add address-pool=pool-management interface=br-mgmt lease-time=10m name=\
     dhcp-mgmt
+# No IP address on interface
 add address-pool=pool-bare-metal interface=vlan20-bare-metal lease-time=10m \
     name=dhcp-servers
 add address-pool=pool-users interface=vlan30-users lease-time=10m name=\
     dhcp-users
+# No IP address on interface
 add address-pool=pool-vms-cts interface=vlan40-vms-cts lease-time=10m name=\
     dhcp-vms-cts
 /port
@@ -44,6 +47,8 @@ add address=10.100.30.1/24 comment="gateway for users" interface=vlan30-users \
     network=10.100.30.0
 add address=10.100.50.1/28 comment="gateway for future AD VLAN" interface=\
     vlan50-active-directory network=10.100.50.0
+add address=10.100.255.1/30 comment="gateway for inter-router link" \
+    interface=inter-router-link1 network=10.100.255.0
 /ip dhcp-server network
 add address=10.100.10.0/28 dns-server=1.1.1.1 gateway=10.100.10.1
 add address=10.100.10.16/28 dns-server=10.100.40.99,1.1.1.1 gateway=\
@@ -98,7 +103,8 @@ add action=drop chain=input comment="Drop any other input traffic"
 add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
-add dst-address=10.100.10.16/28 gateway=10.100.10.2
+add dst-address=10.100.10.16/28 gateway=10.100.255.2
+add dst-address=10.100.40.0/24 gateway=10.100.255.2
 /ip service
 set ftp disabled=yes
 set ssh address=10.100.10.0/28
