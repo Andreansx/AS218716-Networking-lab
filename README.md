@@ -29,11 +29,14 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 Here are listed things that I’m currently working on.
 
-- **[IPv6](./IPv6/)** - **This is what I am most focused on.** You can check out this directory to see what I'm doing on my way to get a IPv6 routed /64 block (or maybe even /48 )
+* **[IPv6](./IPv6/)** - This is what I am most focused on. You can check out this directory to see what I'm doing on my way to get a IPv6 routed /64 block (or maybe even /48 )  
 
-- [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)
+*   **[l3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)**  
 
-- [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)
+* [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)  
+
+<!-- [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)
+-->
 
 ## How This Repository Is Organized
 
@@ -89,7 +92,7 @@ This is where the real learning happens. Here are some of the things I’ve buil
 *   **[First Active Directory scenario](./projects/01-ActiveDirectory-first-scenario)**
 
 ### Networking
-
+*   **[l3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)**  
 *   **[Repurposing a spare NIC for creating 10GbE VLAN access ports without SFP+ transreceivers](./projects/02-vlan30-access-without-sfp-transreceivers)**
 
 ### Infrastructure as Code (IaC)
