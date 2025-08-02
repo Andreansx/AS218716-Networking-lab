@@ -18,7 +18,7 @@ The idea was to just change where the routing between VLANs 20 and 40 takes plac
 *   **Core Router:** MikroTik CCR2004-1G-12S+2XS
 *   **Core Switch:** MikroTik CRS326-24S+2Q+RM
 
-[imagehere]
+![hardware](./hardware.JPG)
 
 # Changing the place of inter-VLAN routing from the Core Router to the Core Switch
 
