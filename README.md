@@ -29,6 +29,8 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 Here are the things that I think are the most worth checking out.  
 
+*   **[Better IP addressation plan, with split management network](./docs/ip-plan-v3.md)**
+
 *   **[L3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)** - Super fast port-speed connection for wide bandwith between Virtual Machines !
 
 * **[IPv6](./IPv6/)** - This is what I am most focused on. You can check out this directory to see what I'm doing on my way to get a IPv6 routed /64 block (or maybe even /48 )  
