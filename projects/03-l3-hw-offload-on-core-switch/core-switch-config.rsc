@@ -1,4 +1,4 @@
-# 2025-07-02 12:26:10 by RouterOS 7.19.3
+# 2025-08-03 03:00:25 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -7,7 +7,6 @@
 add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge \
     vlan-filtering=yes
 /interface vlan
-add interface=main-bridge name=inter-router-link1 vlan-id=201
 add interface=main-bridge name=vlan10-mgmt vlan-id=10
 add interface=main-bridge name=vlan20-bare-metal vlan-id=20
 add interface=main-bridge name=vlan40-vms-cts vlan-id=40
@@ -17,7 +16,7 @@ set [ find default=yes ] supplicant-identity=MikroTik
 /port
 set 0 name=serial0
 /interface bridge port
-add bridge=main-bridge interface=ether1 pvid=10
+add bridge=main-bridge interface=ether1 pvid=10 trusted=yes
 add bridge=main-bridge interface=qsfpplus1-1
 add bridge=main-bridge interface=qsfpplus1-2
 add bridge=main-bridge interface=qsfpplus1-3
@@ -27,7 +26,7 @@ add bridge=main-bridge interface=qsfpplus2-2
 add bridge=main-bridge interface=qsfpplus2-3
 add bridge=main-bridge interface=qsfpplus2-4
 add bridge=main-bridge interface=sfp-sfpplus5
-add bridge=main-bridge interface=sfp-sfpplus6
+add bridge=main-bridge interface=sfp-sfpplus6 pvid=30
 add bridge=main-bridge interface=sfp-sfpplus7
 add bridge=main-bridge interface=sfp-sfpplus8
 add bridge=main-bridge interface=sfp-sfpplus9
@@ -52,33 +51,33 @@ add bridge=main-bridge interface=sfp-sfpplus4
 add bridge=main-bridge interface=sfp-sfpplus3
 /interface bridge vlan
 add bridge=main-bridge tagged=sfp-sfpplus1 untagged=ether1 vlan-ids=10
+add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus2 vlan-ids=20
 add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus2 vlan-ids=30
 add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus2 vlan-ids=40
-add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus2 vlan-ids=20
-add bridge=main-bridge tagged=sfp-sfpplus1 vlan-ids=201
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
 /ip address
 add address=10.100.10.2/28 interface=vlan10-mgmt network=10.100.10.0
 add address=10.100.10.17/28 interface=vlan20-bare-metal network=10.100.10.16
 add address=10.100.40.1/24 interface=vlan40-vms-cts network=10.100.40.0
-add address=10.100.255.2/30 comment="inter router link interface" interface=\
-    inter-router-link1 network=10.100.255.0
 /ip dhcp-relay
 add dhcp-server=10.100.10.1 disabled=no interface=vlan20-bare-metal \
-    local-address=10.100.10.16 name=vlan20-dhcp-relay
+    local-address=10.100.10.17 name=vlan20-dhcp-relay
 add dhcp-server=10.100.10.1 disabled=no interface=vlan40-vms-cts \
     local-address=10.100.40.1 name=vlan40-dhcp-relay
 /ip dns
-set servers=10.100.40.99
+set servers=1.1.1.1
 /ip route
-add gateway=10.100.255.1
+add gateway=10.100.10.1
+add dst-address=10.100.30.0/24 gateway=10.100.10.1
 /ip service
 set ftp disabled=yes
 set ssh address=10.100.10.0/28
 set www disabled=yes
 set winbox address=10.100.10.0/28
 set api disabled=yes
+/system clock
+set time-zone-name=Europe/Warsaw
 /system identity
 set name=core-crs326
 /system routerboard settings

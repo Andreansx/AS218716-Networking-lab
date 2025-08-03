@@ -1,4 +1,4 @@
-# 2025-08-02 21:25:37 by RouterOS 7.19.3
+# 2025-08-03 03:00:19 by RouterOS 7.19.3
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -101,6 +101,7 @@ add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route
 add dst-address=10.100.10.16/28 gateway=10.100.10.2
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
+add dst-address=10.100.40.0/24 gateway=10.100.10.2
 /ip service
 set ftp disabled=yes
 set ssh address=10.100.10.0/28
