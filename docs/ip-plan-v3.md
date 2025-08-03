@@ -37,3 +37,11 @@ This means, that if I tried to enable remote access to Management interface (`et
 
 This is why I need to assign the management IP address to the SVI, and not only on the `ether1` interface.
 Of course, I can also just add the `ether1` as a untagged port for the management VLAN (ID 115). But it will not be possible to access the rest of the network through the `ether1` interface on the CRS326.
+
+
+# Final plan before implementing
+
+## CCR2004-1G-12S+2XS
+
+VLAN 111 will be added on the bridge `br-mgmt`, just like `vlan10-management` is now added on the bridge, along with `ether1` to enable direct access.
+
