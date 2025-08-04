@@ -29,7 +29,7 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 Here are the things that I think are the most worth checking out.  
 
-*   **[Better IP addressation plan, with split management network](./docs/ip-plan-v3.md)**
+*   **[Addressation modernization, better management](./projects/04-management-network-split)**
 
 *   **[L3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)** - Super fast port-speed connection for wide bandwith between Virtual Machines !
 
