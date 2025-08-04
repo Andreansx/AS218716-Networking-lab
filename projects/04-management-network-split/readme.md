@@ -45,6 +45,9 @@ The `vlan30` network will change from `10.100.30.0/24` to `10.1.3.0/24`, and the
 
 ## On the CRS326
 
+> [!NOTE]
+> As you will see below, I am not changing the VLAN 10 addresses etc. That is because I don't need to. In fact this is also a sefety measure bacause I can in fact add two management interfaces at the same time. The fact that I am leaving the VLAN 10 network enabled, makes sure that if something goes wrong with the inter-router link or the new management interfaces, I will still be able to access those devices.
+
 First I checked how the IPs are assigned:
 
 ```rsc
@@ -100,3 +103,61 @@ Columns: ADDRESS, GATEWAY, DNS-SERVER
 2 10.1.4.0/24     10.1.4.1     1.1.1.1   
 3 10.100.10.0/28  10.100.10.1  1.1.1.1   
 ```
+
+I went back to CRS326   
+
+For the VLAN 115, there does not have to be any tagged ports. Since this is just a SVI for management.
+
+I created the inter-router link:
+
+```rsc
+[lynx@core-crs326] /interface/vlan> add interface=main-bridge \
+name=inter-router-link0 vlan-id=100
+[lynx@core-crs326] /ip/address> add interface=inter-router-link0 \
+address=10.2.1.2/30
+```
+
+Management VLAN is set up on the CRS326. Now time to set it up on the CCR2004.  
+
+```rsc
+[aether@core-ccr2004] /interface/vlan> add vlan-id=111 \
+name=vlan111-ccr2004-mgmt interface=sfp-sfpplus1
+```
+Then the IP address for the SVI 111
+
+```rsc
+[aether@core-ccr2004] /ip/address> add address=10.1.1.1/30 \ interface=vlan111-ccr2004-mgmt
+```
+Next the inter-router link and assigning a IP for it.
+
+> [!NOTE]
+> As you can see, now the CCR2004 and CRS326 will have two direct connections. As I mentioned above, this is to make the modernization safer. I am simply leaving it in case something goes wrong.
+
+```rsc
+[aether@core-ccr2004] /interface/vlan> add vlan-id=100 \
+name=inter-router-link0 interface=sfp-sfpplus1
+[aether@core-ccr2004] /ip/address> add address=10.2.1.1/30 \
+interface=inter-router-link0 
+```
+Then I checked and surely new dynamic routes appeared in the routing table:
+```rsc
+[aether@core-ccr2004] /ip/route> print
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#     DST-ADDRESS      GATEWAY               ROUTING-TABLE  DISTANCE
+0  As 0.0.0.0/0        10.0.0.1              main                  1
+  DAc 10.0.0.0/24      sfp-sfpplus12         main                  0
+  DAc 10.1.1.0/30      vlan111-ccr2004-mgmt  main                  0
+  DAc 10.1.3.0/24      vlan30-users          main                  0
+  DAc 10.2.1.0/30      inter-router-link0    main                  0
+  DAc 10.100.10.0/28   br-mgmt               main                  0
+1  As 10.100.10.16/28  10.100.10.2           main                  1
+2  As 10.100.40.0/24   10.100.10.2           main                  1
+```
+Routes 1 and 2 are static routes I manually assigned so they still have old VLAN addresses assigned to them. I will of course change them.  
+
+It's also really nice that I can already see new dynamic routes that appeared. Those are only direct connections for now cause I need to set up new routes.
+
+> [!NOTE]
+> Next step after this project will be to delete static routes and implement OSPF dynamic routing. But for now I will set up static routes.
+
