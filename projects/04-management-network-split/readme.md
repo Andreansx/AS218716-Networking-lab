@@ -258,4 +258,102 @@ Now the ping works normally on both the CCR2004 and the CRS326
     sent=2 received=2 packet-loss=0% min-rtt=420us avg-rtt=627us 
    max-rtt=835us 
 ```
+I also added a static route on the CRS326 for the VLAN 30 and tried to ping it to see if everything is handled correctly.  
+```rsc
+[lynx@core-crs326] /ip/route> print
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC; H - HW-OFFLOADED
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#      DST-ADDRESS     GATEWAY              ROUTING-TABLE  DISTANCE
+0  AsH 0.0.0.0/0       10.100.10.1          main                  1
+  DAc  10.1.1.4/30     vlan115-crs326-mgmt  main                  0
+  DAcH 10.1.2.0/27     vlan20-bare-metal    main                  0
+  DAcH 10.1.4.0/24     vlan40-vms-cts       main                  0
+  DAcH 10.2.1.0/30     inter-router-link0   main                  0
+  DAcH 10.100.10.0/28  vlan10-mgmt          main                  0
+1  AsH 10.100.30.0/24  10.100.10.2          main                  1
+[lynx@core-crs326] /ip/route> set 1 dst-address=10.1.3.0/24 \
+gateway=10.2.1.1
+```
+
+Then on the CCR I set static routes for VLANs 20 and 40  
+
+```rsc
+[aether@core-ccr2004] /ip/route> print
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#     DST-ADDRESS      GATEWAY             ROUTING-TABLE  DISTANCE
+0  As 0.0.0.0/0        10.0.0.1            main                  1
+  DAc 10.0.0.0/24      sfp-sfpplus12       main                  0
+  DAc 10.1.1.0/30      ccr2004-mgmt        main                  0
+  DAc 10.1.3.0/24      vlan30-users        main                  0
+  DAc 10.2.1.0/30      inter-router-link0  main                  0
+  DAc 10.100.10.0/28   ccr2004-mgmt        main                  0
+1  As 10.100.10.16/28  10.100.10.2         main                  1
+2  As 10.100.40.0/24   10.100.10.2         main                  1
+[aether@core-ccr2004] /ip/route> set 1 dst-address=10.1.2.0/27 \
+gateway=10.2.1.2
+[aether@core-ccr2004] /ip/route> set 2 dst-address=10.1.4.0/24 \
+gateway=10.2.1.2
+[aether@core-ccr2004] /ip/route> print
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#     DST-ADDRESS     GATEWAY             ROUTING-TABLE  DISTANCE
+0  As 0.0.0.0/0       10.0.0.1            main                  1
+  DAc 10.0.0.0/24     sfp-sfpplus12       main                  0
+  DAc 10.1.1.0/30     ccr2004-mgmt        main                  0
+1  As 10.1.2.0/27     10.2.1.2            main                  1
+  DAc 10.1.3.0/24     vlan30-users        main                  0
+2  As 10.1.4.0/24     10.2.1.2            main                  1
+  DAc 10.2.1.0/30     inter-router-link0  main                  0
+  DAc 10.100.10.0/28  ccr2004-mgmt        main                  0
+[aether@core-ccr2004] /ip/route> 
+```
+Then I needed to change the static IP address on my PVE Host, because now it should be in a totally different network.  
+
+The IP change looked something like this since I wasn't able to copy it, because I had to do it with the Console instead of web panel.
+```bash
+vim /etc/network/interfaces
+
+....
+auto vmbr0
+iface vmbr0 inet static
+    address 10.1.2.30/27 # here i swapped 10.100.10.18/28 with the new IP 
+    gateway 10.1.2.1
+    bridge ports enp6s0 enp7s0f0 enp7s0f1
+    ....
+
+systemctl restart networking
+ping 1.1.1.1
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=55 time=8.57ms
+...
+```
+I think that it is very cool that I am able to do all that without really messing up my network. Other PC in another room barely felt the change. It even nicely got a 10.1.3.200 IP address from DHCP Server.
+
+I checked on both the CCR2004 and the CRS326 and tried to ping the PC in another room
+```rsc
+[aether@core-ccr2004] > ping 10.1.3.200
+  SEQ HOST                                     SIZE TTL TIME       STATUS      
+    0 10.1.3.200                                 56 128 452us     
+    1 10.1.3.200                                 56 128 436us     
+    2 10.1.3.200                                 56 128 486us     
+    sent=3 received=3 packet-loss=0% min-rtt=436us avg-rtt=458us 
+   max-rtt=486us 
+```
+```rsc
+[lynx@core-crs326] > ping 10.1.3.200
+  SEQ HOST                                     SIZE TTL TIME       STATUS
+    0 10.1.3.200                                 56 127 847us
+    1 10.1.3.200                                 56 127 886us
+    sent=2 received=2 packet-loss=0% min-rtt=847us avg-rtt=866us
+   max-rtt=886us
+```
+Looks like the route to VLAN 30 devices works nicely and the inter-router link replaced the before-used Management network.
+```rsc
+[lynx@core-crs326] > /tool traceroute 10.1.3.200
+ADDRESS                          LOSS SENT    LAST     AVG    BEST   WORST
+10.2.1.1                           0%    2   0.3ms     0.4     0.3     0.4
+10.1.3.200                         0%    2   0.7ms     0.7     0.7     0.7
+```
+
+
 
