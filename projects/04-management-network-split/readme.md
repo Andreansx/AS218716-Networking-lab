@@ -148,8 +148,16 @@ name=inter-router-link0 vlan-id=100
 [lynx@core-crs326] /ip/address> add interface=inter-router-link0 \
 address=10.2.1.2/30
 ```
+And now a super important step which I forgot at first and then later it caused issues.
+Iforgot to add the inter-router link VLAN in the bridge VLAN table.  
 
-Management VLAN is set up on the CRS326. Now time to set it up on the CCR2004.  
+It needs to be added and assigned a tagged port.
+```rsc
+[lynx@core-crs326] /interface/bridge/vlan> add bridge=main-bridge \
+tagged=sfp-sfpplus1 vlan-ids=10
+```
+
+Management VLAN and the inter-router link interface is set up on the CRS326. Now time to set it up on the CCR2004.  
 
 > [!IMPORTANT]
 > Below, I am adding the IP interface not on the SVI, but rather on the bridge. From what I know this is a better and more elastic way of doing this. Now if something with the VLAN went wrong, the IP is on the bridge and not on the SVI itself. The `ccr2004-mgmt` bridge is simply a "dumb" switch that connects `ether1` port with the SVI 111. And now it will be possible to access `10.1.1.1/30` Management interface both through `ether1` and through the VLAN 111.
@@ -208,4 +216,46 @@ It's also really nice that I can already see new dynamic routes that appeared. T
 
 > [!NOTE]
 > Next step after this project will be to delete static routes and implement OSPF dynamic routing. But for now I will set up static routes.
+
+## Creating new routes
+
+Now that everything is set up, I think Im good to go with migrating the routes.
+
+First checking if routers can ping each other through inter-router link.   
+On the CCR2004
+```rsc
+[aether@core-ccr2004] > ping 10.2.1.2
+  SEQ HOST                                     SIZE TTL TIME       STATUS
+    0 10.2.1.2                                                     timeout
+    1 10.2.1.2                                                     timeout
+    sent=2 received=0 packet-loss=100%
+```
+As you can see I wasn't able to ping the CRS326 inter-router link interface.   
+This is where the `/interface/bridge/vlan` comes in. 
+As you might have seen above, I first forgot to add a tagged port for the `inter-router-link0` VLAN.
+
+The neccessary fix was this:
+```rsc
+[lynx@core-crs326] /interface/bridge/vlan> add bridge=main-bridge \
+tagged=sfp-sfpplus1 vlan-ids=100
+```
+This ensures that the CRS326 bridge understands the traffic that comes through `sfp-sfpplus1` interface with VLAN tag `100`.  
+
+Now the ping works normally on both the CCR2004 and the CRS326  
+```rsc
+[aether@core-ccr2004] > ping 10.2.1.2
+  SEQ HOST                                     SIZE TTL TIME       STATUS      
+    0 10.2.1.2                                   56  64 314us     
+    1 10.2.1.2                                   56  64 275us     
+    sent=2 received=2 packet-loss=0% min-rtt=275us avg-rtt=294us 
+   max-rtt=314us 
+```
+```rsc
+[lynx@core-crs326] > ping 10.2.1.1
+  SEQ HOST                                     SIZE TTL TIME       STATUS      
+    0 10.2.1.1                                   56  64 835us     
+    1 10.2.1.1                                   56  64 420us     
+    sent=2 received=2 packet-loss=0% min-rtt=420us avg-rtt=627us 
+   max-rtt=835us 
+```
 
