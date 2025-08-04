@@ -37,9 +37,66 @@ The `vlan30` network will change from `10.100.30.0/24` to `10.1.3.0/24`, and the
 *   **CCR2004, VLAN111:** From `10.1.1.0` to `10.1.1.3` (management: `10.1.1.1/30`)
 *   **CRS326, VLAN115:** From `10.1.1.4` to `10.1.1.7` (management: `10.1.1.5/30`)
 
-*   **VLAN20:** From `10.1.1.0` to `10.1.1.31` (gateway: `10.1.1.1/27`) 
+*   **VLAN20:** From `10.1.2.0` to `10.1.2.31` (gateway: `10.1.2.1/27`) 
 *   **VLAN30:** From `10.1.3.0` to `10.1.3.255` (gateway: `10.1.3.1/24`)
 *   **VLAN40:** From `10.1.4.0` to `10.1.4.255` (gateway: `10.1.4.1/24`)
 
-*   **inter-router-link0, VLAN100:** From `10.2.1.0` to `10.2.1.3` (CRS326: `10.2.1.2/301, CCR2004: `10.2.1.1/30`)
+*   **inter-router-link0, VLAN100:** From `10.2.1.0` to `10.2.1.3` (CRS326: `10.2.1.2/301`, CCR2004: `10.2.1.1/30`)
 
+## On the CRS326
+
+First I checked how the IPs are assigned:
+
+```rsc
+[lynx@core-crs326] /ip/address> export
+/ip address
+add address=10.100.10.2/28 interface=vlan10-mgmt network=10.100.10.0
+add address=10.100.10.17/28 interface=vlan20-bare-metal network=10.100.10.16
+add address=10.100.40.1/24 interface=vlan40-vms-cts network=10.100.40.0
+```
+Then I could get into changing the SVIs addresses and add the management interface
+```rsc
+[lynx@core-crs326] /ip/address> set [find interface=vlan20-bare-metal] address=10.1.2.1/27
+[lynx@core-crs326] /ip/address> set [find interface=vlan40-vms-cts] address=10.1.4.1/24
+[lynx@core-crs326] /ip/address> add address=10.1.1.5/30 interface=vlan115-crs326-mgmt
+```
+Then I checked if those IPs were assigned correctly. For now I left the management network, so it would be easier to change non-critical things first.
+```rsc
+[lynx@core-crs326] /ip/address> export
+/ip address
+add address=10.100.10.2/28 interface=vlan10-mgmt network=10.100.10.0
+add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
+add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
+add address=10.1.1.5/30 interface=vlan115-crs326-mgmt network=10.1.1.4
+```
+Then of course the DHCP relay needs to be updated:
+```rsc
+[lynx@core-crs326] /ip/dhcp-relay> set [find interface=vlan20-bare-metal] local-address=10.1.2.1   
+[lynx@core-crs326] /ip/dhcp-relay> set [find interface=vlan40-vms-cts] local-address=10.1.4.1
+```
+## On the CCR2004
+
+First I changed all the dhcp-server netowrks
+```rsc
+[aether@core-ccr2004] /ip/dhcp-server/network> print    
+Columns: ADDRESS, GATEWAY, DNS-SERVER
+# ADDRESS          GATEWAY       DNS-SERVER  
+0 10.100.10.0/28   10.100.10.1   1.1.1.1     
+1 10.100.10.16/28  10.100.10.17  10.100.40.99
+                                 1.1.1.1     
+2 10.100.30.0/24   10.100.30.1   10.100.40.99
+                                 1.1.1.1     
+3 10.100.40.0/24   10.100.40.1   10.100.40.99
+                                 1.1.1.1 
+[aether@core-ccr2004] /ip/dhcp-server/network> set 1 address=10.1.2.0/27 gateway=10.1.2.1
+[aether@core-ccr2004] /ip/dhcp-server/network> set 2 address=10.1.3.0/24 gateway=10.1.3.1
+[aether@core-ccr2004] /ip/dhcp-server/network> set 3 address=10.1.4.0/24 gateway=10.1.4.1
+[aether@core-ccr2004] /ip/dhcp-server/network> set [find] dns-server=1.1.1.1
+[aether@core-ccr2004] /ip/dhcp-server/network> print
+Columns: ADDRESS, GATEWAY, DNS-SERVER
+# ADDRESS         GATEWAY      DNS-SERVER
+0 10.1.2.0/27     10.1.2.1     1.1.1.1   
+1 10.1.3.0/24     10.1.3.1     1.1.1.1   
+2 10.1.4.0/24     10.1.4.1     1.1.1.1   
+3 10.100.10.0/28  10.100.10.1  1.1.1.1   
+```
