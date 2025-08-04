@@ -103,7 +103,39 @@ Columns: ADDRESS, GATEWAY, DNS-SERVER
 2 10.1.4.0/24     10.1.4.1     1.1.1.1   
 3 10.100.10.0/28  10.100.10.1  1.1.1.1   
 ```
-
+Then also IP pools
+```rsc
+[aether@core-ccr2004] /ip/pool> print
+Columns: NAME, RANGES, TOTAL, USED, AVAILABLE
+#  NAME             RANGES                       TOTAL  USED  AVAILABLE
+0  pool-management  10.100.10.3-10.100.10.14        12     1         11
+1  pool-bare-metal  10.100.10.19-10.100.10.30       12     0         12
+2  pool-users       10.100.30.100-10.100.30.200    101     1        100
+3  pool-vms-cts     10.100.40.100-10.100.40.200    101     0        101
+[aether@core-ccr2004] /ip/pool> set 1 ranges=10.1.2.2-10.1.2.30
+[aether@core-ccr2004] /ip/pool> set 2 ranges=10.1.3.50-10.1.3.200
+[aether@core-ccr2004] /ip/pool> set 3 ranges=10.1.4.50-10.1.4.200
+[aether@core-ccr2004] /ip/pool> print
+Columns: NAME, RANGES, TOTAL, USED, AVAILABLE
+#  NAME             RANGES                    TOTAL  USED  AVAILABLE
+0  pool-management  10.100.10.3-10.100.10.14     12     1         11
+1  pool-bare-metal  10.1.2.2-10.1.2.30           29     0         29
+2  pool-users       10.1.3.50-10.1.3.200        151     1        150
+3  pool-vms-cts     10.1.4.50-10.1.4.200        151     0        151
+```
+And firewall ip lists
+```rsc
+[aether@core-ccr2004] /ip/firewall/address-list> print
+Columns: LIST, ADDRESS, CREATION-TIME
+# LIST        ADDRESS          CREATION-TIME
+0 management  10.100.10.0/28   2025-07-02 11:32:42
+1 bare-metal  10.100.10.16/28  2025-07-02 11:32:42
+2 users       10.100.30.0/24   2025-07-02 11:32:42
+3 vms-cts     10.100.40.0/24   2025-07-02 11:32:42
+[aether@core-ccr2004] /ip/firewall/address-list> set 1 address=10.1.2.0/27
+[aether@core-ccr2004] /ip/firewall/address-list> set 2 address=10.1.3.0/24
+[aether@core-ccr2004] /ip/firewall/address-list> set 3 address=10.1.4.0/24
+```
 I went back to CRS326   
 
 For the VLAN 115, there does not have to be any tagged ports. Since this is just a SVI for management.
@@ -119,19 +151,35 @@ address=10.2.1.2/30
 
 Management VLAN is set up on the CRS326. Now time to set it up on the CCR2004.  
 
+> [!IMPORTANT]
+> Below, I am adding the IP interface not on the SVI, but rather on the bridge. From what I know this is a better and more elastic way of doing this. Now if something with the VLAN went wrong, the IP is on the bridge and not on the SVI itself. The `ccr2004-mgmt` bridge is simply a "dumb" switch that connects `ether1` port with the SVI 111. And now it will be possible to access `10.1.1.1/30` Management interface both through `ether1` and through the VLAN 111.
+
+Another important thing is the correct way of connecting a VLAN to a bridge.  
+My first attempt was like this:
 ```rsc
 [aether@core-ccr2004] /interface/vlan> add vlan-id=111 \
-name=vlan111-ccr2004-mgmt interface=sfp-sfpplus1
+name=vlan111-ccr2004-mgmt interface=br-mgmt
 ```
+However this is dead wrong, because now the VLAN is in fact added on the bridge. 
+But it does not have any connection to outside.   
+
+Correct way is by adding the VLAN to the bridge through `/interface/bridge/port. Just like adding a physical interface to a bridge.
+This below is the correct way:
+```rsc
+[aether@core-ccr2004] /interface/vlan> add interface=sfp-sfpplus1 \
+vlan-id=111 name=vlan111-ccr2004-mgmt
+[aether@core-ccr2004] /interface/bridge/port> add bridge=ccr2004-mgmt \ 
+interface=vlan111-ccr2004-mgmt 
+```
+
 Then the IP address for the SVI 111
 
 ```rsc
-[aether@core-ccr2004] /ip/address> add address=10.1.1.1/30 \ interface=vlan111-ccr2004-mgmt
+[aether@core-ccr2004] /ip/address> add address=10.1.1.1/30 \ interface=br-mgmt
 ```
 Next the inter-router link and assigning a IP for it.
 
-> [!NOTE]
-> As you can see, now the CCR2004 and CRS326 will have two direct connections. As I mentioned above, this is to make the modernization safer. I am simply leaving it in case something goes wrong.
+As you can see, now the CCR2004 and CRS326 will have two direct connections. As I mentioned above, this is to make the modernization safer. I am simply leaving it in case something goes wrong.
 
 ```rsc
 [aether@core-ccr2004] /interface/vlan> add vlan-id=100 \
