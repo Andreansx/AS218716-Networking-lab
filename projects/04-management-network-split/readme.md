@@ -459,72 +459,83 @@ Looks like the network is fully migrated to a better addressation and a better m
 
 Now the only thing left is to redo the firewall.  
 
-I thought it would be actually easier to remake all firewall rules instead of modyfying them.
+I thought it would be actually easier to remake all firewall rules instead of modyfying them.  
+
+However, this time I wil use a combination of interface and address lists instead of only address lists.  
+
+This way is more elastic and scalable, beacause it operates on interfaces and not only addresses. 
+For exmaple, a SVI IP can change but the firewall rule is tied to the VLAN interface and not to the specific IP.  
+
+First I created zones on the CCR2004
 ```rsc
-/ip firewall filter
-remove [find]
+[aether@core-ccr2004] /interface/list> add name=ZONE-USERS
+[aether@core-ccr2004] /interface/list> add name=ZONE-CCR2004-MGMT
+[aether@core-ccr2004] /interface/list> add name=ZONE-WAN
+[aether@core-ccr2004] /interface/list> add name=LINK-TO-CRS326
 ```
-I create a new address lists for CCR2004 and CRS326 management interfaces.
+Then I added interfaces to those zones
 ```rsc
-[aether@core-ccr2004] /ip/firewall/address-list> add address=10.1.1.0/30 \
-list=ccr2004-mgmt
-[aether@core-ccr2004] /ip/firewall/address-list> add address=10.1.1.4/30 \
-list=crs326-mgmt
+[aether@core-ccr2004] /interface/list/member> add list=ZONE-USERS \
+interface=vlan30-users 
+[aether@core-ccr2004] /interface/list/member> add list=ZONE-WAN \
+interface=sfp-sfpplus12 
+[aether@core-ccr2004] /interface/list/member> add list=ZONE-CCR2004-MGMT \
+interface=ccr2004-mgmt 
+[aether@core-ccr2004] /interface/list/member> add list=LINK-TO-CRS326 \
+interface=inter-router-link0 
 ```
-First I add a rule to reject all SSH traffic incoming on WAN interface.
+Then I added address lists.
 ```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=drop chain=input \
-in-interface=sfp-sfpplus12 protocol=tcp port=22
+[aether@core-ccr2004] /ip/firewall/address-list> add \
+address=10.1.1.4/30 list=CRS326-MGMT
+[aether@core-ccr2004] /ip/firewall/address-list> add \
+address=10.1.2.0/27 list=SERVERs-NET
+[aether@core-ccr2004] /ip/firewall/address-list> add \
+address=10.1.4.0/24 list=VMs/LXCs-NET
 ```
-Then I allow SSH access from VLAN 111 and allow all established connections
+Then I add rules for accepting all established connections.
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
+chain=input connection-state=established,related
+```
+This allows to manage the CCR2004 from the management VLAN.
 ```rsc
 [aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
-protocol=tcp port=22 src-address-list=ccr2004-mgmt 
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
-connection-state=established,related
-```
-Then I allow for ICMP traffic from outside
-```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
-in-interface=sfp-sfpplus12 protocol=icmp
-```
-Then I allow all forwarding of all established connections and drop all other incoming input traffic from WAN interface.
-```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
-chain=forward connection-state=established,related 
-[aether@core-ccr2004] /ip/firewall/filter> add action=drop chain=input \
-in-interface=sfp-sfpplus12  
-```
-Then I allow CCR2004 management VLAN to access everything.
-```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
-chain=forward src-address-list=ccr2004-mgmt
-```
-Next I allow VLAN 20 and VLAN 40 to access each other. 
-This doesn't really do anything, since traffic between VLANs 20 and 40 isn't routed on the CCR2004. It's handled by the CRS326.
-However, I think for clarity, I can add this.
-```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=forward src-address-list=bare-metal dst-address-list=vms-cts
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=forward src-address-list=vms-cts dst-address-list=bare-metal
-```
-Next I prohibit VLAN 30 from accessing VLANs 20 and 40 thorugh SSH and HTTP/HTTPS. However, I will allow ICMP traffic.
-```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=drop \
-chain=forward src-address-list=users \
-dst-address-list=bare-metal,vms-cts protocol=tcp port=22
-[aether@core-ccr2004] /ip/firewall/filter> add action=drop \
-chain=forward src-address-list=users \
-dst-address-list=bare-metal,vms-cts protocol=tcp port=80,443
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
-chain=forward src-address-list=users \
-dst-address-list=bare-metal,vms-cts protocol=icmp
-```
-Then I allow SSH and HTTP,HTTPS from CCR2004 Management VLAN to VLAN 20 and 40.
-```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
-chain=forward src-address-list=ccr2004-mgmt \
-dst-address-list=bare-metal,vms-cts protocol=tcp port=22,80,443
+in-interface-list=ZONE-CCR2004-MGMT 
 ```
 
+Here Im adding a rule that allows ICMP input traffic on the CCR2004 from everywhere except WAN interface
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
+in-interface-list=!ZONE-WAN protocol=icmp
+```
+
+Then I add a very important rule which uses a combination of Zones and Address lists.
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
+chain=forward in-interface-list=ZONE-CCR2004-MGMT \
+out-interface-list=LINK-TO-CRS326 dst-address-list=CRS326-MGMT \
+protocol=tcp port=22,8291 \
+comment="Accept traffic between CCR2004 Management and CRS326 Management" 
+```
+Now the firewall rules look like this:
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> print
+Flags: X - disabled, I - invalid; D - dynamic 
+ 0    chain=input action=accept connection-state=established,related 
+
+ 1    chain=input action=accept in-interface-list=ZONE-CCR2004-MGMT 
+
+ 2    chain=input action=accept protocol=icmp in-interface-list=!ZONE-WAN 
+
+ 3    ;;; Accept traffic between CCR2004 Management and CRS326 Management
+      chain=forward action=accept protocol=tcp dst-address-list=CRS326-MGMT 
+      in-interface-list=ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326 
+      port=22,8291 
+
+ 4    chain=input action=drop 
+```
+
+However I still need to add more rules for forwarding
 
 

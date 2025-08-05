@@ -63,12 +63,9 @@ The network is segmented using VLANs. The core is built on a **MikroTik CCR2004*
 
 | VLAN ID | Name         | Subnet / IP Scheme | Description                        |
 |:--- |:---|:---|:---|
-| 10      | Management   | `10.100.10.0/28`    | (This is being deprecated) Network for management interfaces for example the core router or core swicth (CPU address).                                              |
 | 20      | Bare-metal   | `10.100.10.16/28`    | Network for physical servers and devices. The Proxmox VE web panel is here at `10.100.10.18` (untagged on a hybrid port). |
 | 30      | Users        | `10.100.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
 | 40      | VMs-CTs      | `10.100.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port on the core switch. |
-| 50      | Active Directory | `10.100.50.0/24`    | Network dedicated for experimenting with Windows Server Active Directory technology |
-
 
 
 ## Hardware
