@@ -1,4 +1,4 @@
-# 2025-08-05 16:52:44 by RouterOS 7.19.4
+# 2025-08-05 20:27:09 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -68,6 +68,15 @@ add dhcp-server=10.2.1.1 disabled=no interface=vlan40-vms-cts local-address=\
     10.1.4.1 name=vlan40-dhcp-relay
 /ip dns
 set servers=1.1.1.1
+/ip firewall address-list
+add address=10.1.1.4/30 list=CRS326-MGMT
+add address=10.1.4.0/24 list=VMs/LXCs
+add address=10.1.2.0/27 list=SERVERs
+/ip firewall filter
+add action=drop chain=input dst-address-list=CRS326-MGMT src-address-list=\
+    SERVERs
+add action=drop chain=input dst-address-list=CRS326-MGMT src-address-list=\
+    VMs/LXCs
 /ip route
 add gateway=10.2.1.1
 add dst-address=10.1.3.0/24 gateway=10.2.1.1

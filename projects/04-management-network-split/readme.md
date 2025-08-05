@@ -493,49 +493,69 @@ address=10.1.2.0/27 list=SERVERs-NET
 [aether@core-ccr2004] /ip/firewall/address-list> add \
 address=10.1.4.0/24 list=VMs/LXCs-NET
 ```
-Then I add rules for accepting all established connections.
+Below are firewall rules for the CCR2004. 
+There was a lot of moving them around so I am here placing them in a final version.   
+
+
+Allowing all established connections
 ```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
-chain=input connection-state=established,related
+/ip firewall filter
+add action=accept chain=input connection-state=established,related
+add action=accept chain=forward comment=\
+    "Allowing already established connections" connection-state=\
+    established,related
 ```
-This allows to manage the CCR2004 from the management VLAN.
+Allowing all traffic from CCR2004 Management
 ```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
-in-interface-list=ZONE-CCR2004-MGMT 
+add action=accept chain=input in-interface-list=ZONE-CCR2004-MGMT
 ```
-
-Here Im adding a rule that allows ICMP input traffic on the CCR2004 from everywhere except WAN interface
+Allowing ICMP from networks behind inter-router link to CRS326
 ```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
-in-interface-list=!ZONE-WAN protocol=icmp
+add action=accept chain=input in-interface-list=LINK-TO-CRS326 protocol=icmp
 ```
-
-Then I add a very important rule which uses a combination of Zones and Address lists.
+Allowing CCR2004 Management to access networks behind inter-router link and the users VLAN.
 ```rsc
-[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
-chain=forward in-interface-list=ZONE-CCR2004-MGMT \
-out-interface-list=LINK-TO-CRS326 dst-address-list=CRS326-MGMT \
-protocol=tcp port=22,8291 \
-comment="Accept traffic between CCR2004 Management and CRS326 Management" 
+add action=accept chain=forward dst-address-list=SERVERs-NET,VMs/LXCs-NET \
+    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326
+add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
+    out-interface-list=ZONE-USERS
 ```
-Now the firewall rules look like this:
+Allowing the CCR2004 Management to access CRS326 Management interface
 ```rsc
-[aether@core-ccr2004] /ip/firewall/filter> print
-Flags: X - disabled, I - invalid; D - dynamic 
- 0    chain=input action=accept connection-state=established,related 
-
- 1    chain=input action=accept in-interface-list=ZONE-CCR2004-MGMT 
-
- 2    chain=input action=accept protocol=icmp in-interface-list=!ZONE-WAN 
-
- 3    ;;; Accept traffic between CCR2004 Management and CRS326 Management
-      chain=forward action=accept protocol=tcp dst-address-list=CRS326-MGMT 
-      in-interface-list=ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326 
-      port=22,8291 
-
- 4    chain=input action=drop 
+add action=accept chain=forward comment=\
+    "Accept traffic between CCR2004 Management and CRS326 Management" \
+    dst-address-list=CRS326-MGMT in-interface-list=ZONE-CCR2004-MGMT \
+    out-interface-list=LINK-TO-CRS326 port=22,8291 protocol=tcp
+```
+Blocking users from accessing anything thats behind the inter-router link to CRS326.
+```rsc
+add action=drop chain=forward comment=\
+    "Block traffic from users to networks behind CRS326" in-interface-list=\
+    ZONE-USERS out-interface-list=LINK-TO-CRS326
+```
+Allowing all networks to access the internet
+```rsc
+add action=accept chain=forward in-interface-list=ZONE-USERS \
+    out-interface-list=ZONE-WAN
+add action=accept chain=forward in-interface-list=LINK-TO-CRS326 \
+    out-interface-list=ZONE-WAN
+add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
+    out-interface-list=ZONE-WAN
+```
+Denying all other traffic by default
+```rsc
+add action=drop chain=input
+add action=drop chain=forward comment="Dropping all other forward traffic"
 ```
 
-However I still need to add more rules for forwarding
+Now just a simple firewall rule for the other router.  
 
+The CRS326 handles inter-VLAN routing between VLANs 20 and 40, so it has to know to not let them access it's management VLAN.  
 
+```rsc
+/ip firewall filter
+add action=drop chain=input dst-address-list=CRS326-MGMT src-address-list=\
+    SERVERs,VMs/LXCs
+```
+
+Seems like everything is done.
