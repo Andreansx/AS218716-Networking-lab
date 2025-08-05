@@ -41,7 +41,7 @@ The `vlan30` network will change from `10.100.30.0/24` to `10.1.3.0/24`, and the
 *   **VLAN30:** From `10.1.3.0` to `10.1.3.255` (gateway: `10.1.3.1/24`)
 *   **VLAN40:** From `10.1.4.0` to `10.1.4.255` (gateway: `10.1.4.1/24`)
 
-*   **inter-router-link0, VLAN100:** From `10.2.1.0` to `10.2.1.3` (CRS326: `10.2.1.2/301`, CCR2004: `10.2.1.1/30`)
+*   **inter-router-link0, VLAN100:** From `10.2.1.0` to `10.2.1.3` (CRS326: `10.2.1.2/30`, CCR2004: `10.2.1.1/30`)
 
 ## On the CRS326
 
@@ -154,7 +154,7 @@ Iforgot to add the inter-router link VLAN in the bridge VLAN table.
 It needs to be added and assigned a tagged port.
 ```rsc
 [lynx@core-crs326] /interface/bridge/vlan> add bridge=main-bridge \
-tagged=sfp-sfpplus1 vlan-ids=10
+tagged=sfp-sfpplus1 vlan-ids=100
 ```
 
 Management VLAN and the inter-router link interface is set up on the CRS326. Now time to set it up on the CCR2004.  
@@ -258,7 +258,7 @@ Now the ping works normally on both the CCR2004 and the CRS326
     sent=2 received=2 packet-loss=0% min-rtt=420us avg-rtt=627us 
    max-rtt=835us 
 ```
-I also added a static route on the CRS326 for the VLAN 30 and tried to ping it to see if everything is handled correctly.  
+Then I added a route for the VLAN 30 through the inter-router link on the CRS326
 ```rsc
 [lynx@core-crs326] /ip/route> print
 Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC; H - HW-OFFLOADED
@@ -354,6 +354,108 @@ ADDRESS                          LOSS SENT    LAST     AVG    BEST   WORST
 10.2.1.1                           0%    2   0.3ms     0.4     0.3     0.4
 10.1.3.200                         0%    2   0.7ms     0.7     0.7     0.7
 ```
+Then on my laptop plugged with an ethernet cable to `ether1` interface on the CCR2004, I used nmcli to assign myself a static IP from the same subnet that the CCR2004 has a new management interface on.  
+```zsh
+❯ nmcli con modify 'Połączenie przewodowe 1' ipv4.method manual ipv4.gateway '10.1.1.1' ipv4.address '10.1.1.2/30'
+❯ nmcli con down 'Połączenie przewodowe 1'
+❯ nmcli con up 'Połączenie przewodowe 1'
+❯ ping 10.2.1.2
+PING 10.2.1.2 (10.2.1.2) 56(84) bytes of data.
+64 bytes from 10.2.1.2: icmp_seq=1 ttl=63 time=0.516 ms
+64 bytes from 10.2.1.2: icmp_seq=2 ttl=63 time=0.412 ms
+❯ ping 10.1.2.30
+PING 10.1.2.30 (10.1.2.30) 56(84) bytes of data.
+64 bytes from 10.1.2.30: icmp_seq=1 ttl=62 time=0.333 ms
+64 bytes from 10.1.2.30: icmp_seq=2 ttl=62 time=0.246 ms
+^C
+```
+And it looks like I can ping the CRS326 interface on the inter-router link and also my Proxmox VE.  
+However I cannot ping `10.1.1.5` which is the CRS326 new management interface. So time to add the correct route on the CCR2004.  
+```rsc
+[aether@core-ccr2004] /ip/route> add dst-address=10.1.1.4/30 \
+gateway=10.2.1.2
+[aether@core-ccr2004] /ip/route> print
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#     DST-ADDRESS     GATEWAY             ROUTING-TABLE  DISTANCE
+0  As 0.0.0.0/0       10.0.0.1            main                  1
+  DAc 10.0.0.0/24     sfp-sfpplus12       main                  0
+  DAc 10.1.1.0/30     ccr2004-mgmt        main                  0
+1  As 10.1.1.4/30     10.2.1.2            main                  1
+2  As 10.1.2.0/27     10.2.1.2            main                  1
+  DAc 10.1.3.0/24     vlan30-users        main                  0
+3  As 10.1.4.0/24     10.2.1.2            main                  1
+  DAc 10.2.1.0/30     inter-router-link0  main                  0
+  DAc 10.100.10.0/28  ccr2004-mgmt        main                  0
+```
+The route seems to be correct. Now from my laptop with `10.1.1.2` IP address, I can in fact ping the CRS326 new management interface.
+```zsh
+❯ ping 10.1.1.5
+PING 10.1.1.5 (10.1.1.5) 56(84) bytes of data.
+64 bytes from 10.1.1.5: icmp_seq=1 ttl=63 time=0.408 ms
+64 bytes from 10.1.1.5: icmp_seq=2 ttl=63 time=0.419 ms
+```
+Now everything seems to be finally coming closer to the end. However I need to change the default route on the CRS326.  
+```rsc
+[lynx@core-crs326] /ip/route> set 0 gateway=10.2.1.1
+[lynx@core-crs326] /ip/route> print
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC; H - HW-OFFLOADED
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#      DST-ADDRESS     GATEWAY              ROUTING-TABLE  DISTANCE
+0  AsH 0.0.0.0/0       10.2.1.1             main                  1
+  DAc  10.1.1.4/30     vlan115-crs326-mgmt  main                  0
+  DAcH 10.1.2.0/27     vlan20-bare-metal    main                  0
+1  AsH 10.1.3.0/24     10.2.1.1             main                  1
+  DAcH 10.1.4.0/24     vlan40-vms-cts       main                  0
+  DAcH 10.2.1.0/30     inter-router-link0   main                  0
+  DAcH 10.100.10.0/28  vlan10-mgmt          main                  0
+```
+Looks like now the network is ready for the clean-up. 
+I will delete old Management network, and since `/tool traceroute` already showed that all traffic is already going through the inter-router link, there shouldn't be any more issues.
 
+I changed the IPs from old ones to correct new ones in my `.ssh/config` file.  
 
+After changing the IPs in the config file, I of course had to accept new fingerprints, but seems like I was able to fully log into the CRS326 on it's new management interface (`10.1.1.5`) from my laptop (`10.1.1.2`) plugged into `ether1` on the CCR2004.  
+
+Then just in case I used Safe Mode on the CRS326 and deleted the old management interface IP address.
+```rsc
+[lynx@core-crs326] >
+Taking Safe Mode session... Success!
+[lynx@core-crs326] <SAFE> ip address/remove [find interface=vlan10-mgmt]
+```
+There was not even any slight hiccup so I can go forward with fully deleting vlan 10.  
+I also need to add `ether1` as a untagged port on the CRS326 for the VLAN 115. 
+This will act as a saftety measure if something sometime went wrong with remote access.  
+
+```rsc
+[lynx@core-crs326] /interface/bridge/vlan> set [find vlan-ids=115] \
+untagged=ether1
+[lynx@core-crs326] /interface/bridge/vlan> remove [find vlan-ids=10]
+[lynx@core-crs326] /interface/vlan> remove [find vlan-id=10]
+```
+Now I fully removed the old VLAN 10. 
+I need also to correct the `dhcp-server` in DHCP Relay configuration on the CRS326.
+```rsc
+[lynx@core-crs326] /ip/dhcp-relay> set [find dhcp-server=10.100.10.1] dhcp-server=10.2.1.1
+```
+This adds the CCR2004 inter-router link interface as the one that will handle DHCP requests.
+And since the CCR2004 already has DHCP server running on the trunk port, even though there is no IP address on them, it has all those VLANs (20,30,40) still on the `sfp-sfpplus1` interface.   
+
+There doesn't seem to be much work to do anymore on the CRS326, so time to get back to the CCR2004.  
+
+On the CCR2004 I can also fully delete the old VLAN 10.  
+```rsc
+[aether@core-ccr2004] /interface/vlan> remove [find vlan-id=10]
+[aether@core-ccr2004] /ip/pool> remove [find name=pool-management]
+[aether@core-ccr2004] /ip/address> remove numbers=1
+[aether@core-ccr2004] /ip/dhcp-server> remove [find interface=ccr2004-mgmt]
+[aether@core-ccr2004] /ip/firewall/address-list> remove \
+[find list=management]
+[aether@core-ccr2004] /ip/dhcp-server/network> remove \
+[find gateway=10.100.10.1]
+```
+
+Looks like the network is fully migrated to a better addressation and a better management!  
+
+Now the only thing left is to redo the firewall. 
 
