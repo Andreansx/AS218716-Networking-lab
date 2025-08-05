@@ -1,4 +1,4 @@
-# 2025-08-05 01:54:21 by RouterOS 7.19.4
+# 2025-08-05 16:52:37 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -31,8 +31,6 @@ set 0 name=serial0
 /interface bridge port
 add bridge=ccr2004-mgmt comment="access for laptop" ingress-filtering=no \
     interface=ether1 internal-path-cost=10 path-cost=10
-add bridge=ccr2004-mgmt comment="connects vlan10 to this bridge" \
-    ingress-filtering=no interface=*12 internal-path-cost=10 path-cost=10
 add bridge=ccr2004-mgmt interface=vlan111-ccr2004-mgmt
 /ip address
 add address=10.0.0.150/24 comment=WAN interface=sfp-sfpplus12 network=\
@@ -50,45 +48,29 @@ set servers=10.100.40.99,1.1.1.1
 add address=10.1.2.0/27 list=bare-metal
 add address=10.1.3.0/24 list=users
 add address=10.1.4.0/24 list=vms-cts
+add address=10.1.1.0/30 list=ccr2004-mgmt
+add address=10.1.1.4/30 list=crs326-mgmt
 /ip firewall filter
-add action=drop chain=input disabled=yes in-interface=sfp-sfpplus12 port=22 \
-    protocol=tcp
-add action=accept chain=input comment="Allow SSH access from management VLAN" \
-    disabled=yes src-address-list=management
-add action=accept chain=input comment="Allow established connection access" \
-    connection-state=established,related disabled=yes
-add action=accept chain=input disabled=yes protocol=icmp
-add action=drop chain=input disabled=yes in-interface=sfp-sfpplus12
-add action=accept chain=forward comment=\
-    "Allow established, related connections" connection-state=\
-    established,related disabled=yes
-add action=accept chain=forward comment=\
-    "Allow management VLAN to access everything" disabled=yes \
-    src-address-list=management
-add action=accept chain=forward comment=\
-    "Allow users VLAN to access bare-metal VLAN" disabled=yes \
-    dst-address-list=bare-metal src-address-list=users
-add action=accept chain=forward comment=\
-    "Allow bare-metal VLAN to access VMs/CTs VLAN" disabled=yes \
-    dst-address-list=vms-cts src-address-list=bare-metal
-add action=accept chain=forward comment=\
-    "Allow VMs/CTs VLAN to access bare-metal VLAN" disabled=yes \
-    dst-address-list=bare-metal src-address-list=vms-cts
-add action=drop chain=forward comment=\
-    "Drop all traffic from VMs/CTs VLAN trying to access Management VLAN" \
-    disabled=yes dst-address-list=management src-address-list=vms-cts
-add action=drop chain=forward comment=\
-    "Drop any traffic trying to enter Management VLAN by default" disabled=\
-    yes dst-address-list=management
-add action=drop chain=forward comment=\
-    "Drop bare-metal VLAN initiating to Users VLAN" disabled=yes \
-    dst-address-list=users src-address-list=bare-metal
-add action=accept chain=forward comment="Allow all VLANs to access internet" \
-    disabled=yes out-interface=sfp-sfpplus12
-add action=drop chain=forward comment="Drop any other unrecognized traffic" \
-    disabled=yes
-add action=drop chain=input comment="Drop any other input traffic" disabled=\
-    yes
+add action=drop chain=input in-interface=sfp-sfpplus12 port=22 protocol=tcp
+add action=accept chain=input port=22 protocol=tcp src-address-list=\
+    ccr2004-mgmt
+add action=accept chain=input connection-state=established,related
+add action=accept chain=input in-interface=sfp-sfpplus12 protocol=icmp
+add action=accept chain=forward connection-state=established,related
+add action=drop chain=input in-interface=sfp-sfpplus12
+add action=accept chain=forward src-address-list=ccr2004-mgmt
+add action=accept chain=forward dst-address-list=vms-cts src-address-list=\
+    bare-metal
+add action=accept chain=forward dst-address-list=bare-metal src-address-list=\
+    vms-cts
+add action=drop chain=forward dst-address-list=bare-metal,vms-cts port=22 \
+    protocol=tcp src-address-list=users
+add action=drop chain=forward dst-address-list=bare-metal,vms-cts port=80,443 \
+    protocol=tcp src-address-list=users
+add action=accept chain=forward dst-address-list=bare-metal,vms-cts protocol=\
+    icmp src-address-list=users
+add action=accept chain=forward dst-address-list=bare-metal,vms-cts port=\
+    22,80,443 protocol=tcp src-address-list=ccr2004-mgmt
 /ip firewall nat
 add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route

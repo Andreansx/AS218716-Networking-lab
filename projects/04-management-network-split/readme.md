@@ -457,5 +457,74 @@ On the CCR2004 I can also fully delete the old VLAN 10.
 
 Looks like the network is fully migrated to a better addressation and a better management!  
 
-Now the only thing left is to redo the firewall. 
+Now the only thing left is to redo the firewall.  
+
+I thought it would be actually easier to remake all firewall rules instead of modyfying them.
+```rsc
+/ip firewall filter
+remove [find]
+```
+I create a new address lists for CCR2004 and CRS326 management interfaces.
+```rsc
+[aether@core-ccr2004] /ip/firewall/address-list> add address=10.1.1.0/30 \
+list=ccr2004-mgmt
+[aether@core-ccr2004] /ip/firewall/address-list> add address=10.1.1.4/30 \
+list=crs326-mgmt
+```
+First I add a rule to reject all SSH traffic incoming on WAN interface.
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=drop chain=input \
+in-interface=sfp-sfpplus12 protocol=tcp port=22
+```
+Then I allow SSH access from VLAN 111 and allow all established connections
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
+protocol=tcp port=22 src-address-list=ccr2004-mgmt 
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
+connection-state=established,related
+```
+Then I allow for ICMP traffic from outside
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=input \
+in-interface=sfp-sfpplus12 protocol=icmp
+```
+Then I allow all forwarding of all established connections and drop all other incoming input traffic from WAN interface.
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
+chain=forward connection-state=established,related 
+[aether@core-ccr2004] /ip/firewall/filter> add action=drop chain=input \
+in-interface=sfp-sfpplus12  
+```
+Then I allow CCR2004 management VLAN to access everything.
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
+chain=forward src-address-list=ccr2004-mgmt
+```
+Next I allow VLAN 20 and VLAN 40 to access each other. 
+This doesn't really do anything, since traffic between VLANs 20 and 40 isn't routed on the CCR2004. It's handled by the CRS326.
+However, I think for clarity, I can add this.
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=forward src-address-list=bare-metal dst-address-list=vms-cts
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept chain=forward src-address-list=vms-cts dst-address-list=bare-metal
+```
+Next I prohibit VLAN 30 from accessing VLANs 20 and 40 thorugh SSH and HTTP/HTTPS. However, I will allow ICMP traffic.
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=drop \
+chain=forward src-address-list=users \
+dst-address-list=bare-metal,vms-cts protocol=tcp port=22
+[aether@core-ccr2004] /ip/firewall/filter> add action=drop \
+chain=forward src-address-list=users \
+dst-address-list=bare-metal,vms-cts protocol=tcp port=80,443
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
+chain=forward src-address-list=users \
+dst-address-list=bare-metal,vms-cts protocol=icmp
+```
+Then I allow SSH and HTTP,HTTPS from CCR2004 Management VLAN to VLAN 20 and 40.
+```rsc
+[aether@core-ccr2004] /ip/firewall/filter> add action=accept \
+chain=forward src-address-list=ccr2004-mgmt \
+dst-address-list=bare-metal,vms-cts protocol=tcp port=22,80,443
+```
+
+
 
