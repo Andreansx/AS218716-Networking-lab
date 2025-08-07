@@ -59,14 +59,21 @@ This diagram shows the physical and logical topology of the lab.
 
 ## VLAN & IP Schema
 
-The network is segmented using VLANs. The core is built on a **MikroTik CCR2004** router and a **CRS326** switch.  
+The network is segmented using VLANs. For now there are three main VLANs.
 
-| VLAN ID | Name         | Subnet / IP Scheme | Description                        |
-|:--- |:---|:---|:---|
-| 20      | Bare-metal   | `10.100.10.16/28`    | Network for physical servers and devices. The Proxmox VE web panel is here at `10.100.10.18` (untagged on a hybrid port). |
-| 30      | Users        | `10.100.30.0/24`    | Main network for end-user devices like laptops and phones.                                                                               |
-| 40      | VMs-CTs      | `10.100.40.0/24`    | Dedicated network for VMs and Containers on the Proxmox host. Traffic is tagged and carried over the hybrid SFP+ port on the core switch. |
+| ID  & Name    | Network | Where | Description                                   |
+|:---|:---|:---|:---|
+| 20 - Bare Metal | 10.1.2.0/27         | Routed on Core-CRS326 | Here are bare-metal devices. For example, the PVE Host is here on 10.1.2.30/27.        |
+| 30 - Users | 10.1.3.0/24         | Routed on Core-CCR2004 | This is the VLAN for users.     |
+| 40 - VMs/LXCs | 10.1.4.0/24       | Routed on Core-CRS326  | Here are placed Virtual Machines accessible through `vmbr0` |
 
+There are also dedicated VLANs for management and traffic tranzit.
+
+*   **VLAN 100** - This is the VLAN used for the `inter-router-link0` interface. Both the CCR2004 and CRS326 have interfaces in this VLAN. 
+    CCR2004 - `10.2.1.1/30`
+    CRS326  - `10.2.1.2/30`
+*   **VLAN 111** - This is where the management SVI for the CCR2004 is. The CCR2004 has a `10.1.1.1/30` IP here.
+*   **VLAN 115** - Here is the management SVI for the CRS326 on the `10.1.1.5/30` IP Address.
 
 ## Hardware
 
