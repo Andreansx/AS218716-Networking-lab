@@ -57,6 +57,19 @@ This diagram shows the physical and logical topology of the lab.
 
 ![topology](./media/topology.png)
 
+## Key Features
+
+Below is a descrition of how generally my lab is built.  
+
+The network consists of two main Routers:
+*   **CCR2004-1G-12S+2XS** - This incredibly powerful router handles DHCP Servers, NAT, Routing etc.
+*   **CRS326-24S+2Q+RM** - This one has a gigantic capabilities for port-speed switching. It handles inter-VLAN Routing with L3 Hardware offload, and generally VLANs. It's also a DHCP Relay for VLANs 20 and 40.  
+Both of those routers are connected through a inter-router link. Each of them has a separate, small `/30` network for management.  
+
+The main Server in my lab is a Dell PowerEdge R710. It's running Proxmox VE and it's equipped with 1x 10GbE SFP+ NIC, and another 2x 10GbE RJ45 NIC. 
+The dual-port card acts like a "dumb" switch, providing access to VLAN 30 for end devices. 
+The SFP+ NIC is the main network connection for this server. It's connected to `sfp-sfpplus2` interface on the CRS326, and it carries both tagged and untagged traffic.
+
 ## VLAN & IP Schema
 
 The network is segmented using VLANs. For now there are three main VLANs.
