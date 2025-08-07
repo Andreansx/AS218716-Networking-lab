@@ -1,4 +1,4 @@
-# 2025-08-05 20:27:03 by RouterOS 7.19.4
+# 2025-08-06 15:17:02 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -23,14 +23,10 @@ add name=pool-bare-metal ranges=10.1.2.2-10.1.2.29
 add name=pool-users ranges=10.1.3.50-10.1.3.200
 add name=pool-vms-cts ranges=10.1.4.50-10.1.4.200
 /ip dhcp-server
-# No IP address on interface
-add address-pool=pool-bare-metal interface=vlan20-bare-metal lease-time=10m \
-    name=dhcp-servers
 add address-pool=pool-users interface=vlan30-users lease-time=10m name=\
     dhcp-users
-# No IP address on interface
-add address-pool=pool-vms-cts interface=vlan40-vms-cts lease-time=10m name=\
-    dhcp-vms-cts
+add address-pool=pool-vms-cts interface=inter-router-link0 name=\
+    DHCP-for-RELAY relay=10.2.1.2
 /port
 set 0 name=serial0
 /interface bridge port
@@ -49,7 +45,7 @@ add address=10.1.3.1/24 interface=vlan30-users network=10.1.3.0
 add address=10.1.1.1/30 interface=ccr2004-mgmt network=10.1.1.0
 add address=10.2.1.1/30 interface=inter-router-link0 network=10.2.1.0
 /ip dhcp-server network
-add address=10.1.1.0/27 dns-server=1.1.1.1 gateway=10.1.1.1
+add address=10.1.2.0/27 dns-server=1.1.1.1 gateway=10.1.2.1
 add address=10.1.3.0/24 dns-server=1.1.1.1 gateway=10.1.3.1
 add address=10.1.4.0/24 dns-server=1.1.1.1 gateway=10.1.4.1
 /ip dns
@@ -65,7 +61,7 @@ add action=accept chain=forward comment=\
     established,related
 add action=accept chain=input in-interface-list=ZONE-CCR2004-MGMT
 add action=accept chain=input in-interface-list=LINK-TO-CRS326 protocol=icmp
-add action=accept chain=forward dst-address-list=SERVERs-NET,VMs/LXCs-NET \
+add action=accept chain=forward dst-address-list=SERVERs-NET \
     in-interface-list=ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326
 add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
     out-interface-list=ZONE-USERS

@@ -1,4 +1,4 @@
-# 2025-08-05 20:27:09 by RouterOS 7.19.4
+# 2025-08-06 15:17:08 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -48,12 +48,16 @@ add bridge=main-bridge interface=sfp-sfpplus23
 add bridge=main-bridge interface=sfp-sfpplus2 pvid=20
 add bridge=main-bridge interface=sfp-sfpplus4
 add bridge=main-bridge interface=sfp-sfpplus3
-add bridge=main-bridge interface=sfp-sfpplus1
+add bridge=main-bridge interface=sfp-sfpplus1 trusted=yes
 /interface bridge vlan
-add bridge=main-bridge tagged=sfp-sfpplus1 untagged=sfp-sfpplus2 vlan-ids=20
-add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus2 vlan-ids=30
-add bridge=main-bridge tagged=sfp-sfpplus1,sfp-sfpplus2 vlan-ids=40
-add bridge=main-bridge tagged=sfp-sfpplus1 untagged=ether1 vlan-ids=100
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 untagged=sfp-sfpplus2 \
+    vlan-ids=20
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1,sfp-sfpplus2 vlan-ids=\
+    30
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1,sfp-sfpplus2 vlan-ids=\
+    40
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
+add bridge=main-bridge tagged=main-bridge vlan-ids=115
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
 /ip address
@@ -62,10 +66,10 @@ add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
 add address=10.1.1.5/30 interface=vlan115-crs326-mgmt network=10.1.1.4
 add address=10.2.1.2/30 interface=inter-router-link0 network=10.2.1.0
 /ip dhcp-relay
-add dhcp-server=10.2.1.1 disabled=no interface=vlan20-bare-metal \
-    local-address=10.1.1.1 name=vlan20-dhcp-relay
-add dhcp-server=10.2.1.1 disabled=no interface=vlan40-vms-cts local-address=\
-    10.1.4.1 name=vlan40-dhcp-relay
+add dhcp-server=10.2.1.1 disabled=no interface=vlan20-bare-metal name=\
+    vlan20-dhcp-relay
+add dhcp-server=10.2.1.1 disabled=no interface=vlan40-vms-cts name=\
+    vlan40-dhcp-relay
 /ip dns
 set servers=1.1.1.1
 /ip firewall address-list
@@ -73,10 +77,8 @@ add address=10.1.1.4/30 list=CRS326-MGMT
 add address=10.1.4.0/24 list=VMs/LXCs
 add address=10.1.2.0/27 list=SERVERs
 /ip firewall filter
-add action=drop chain=input dst-address-list=CRS326-MGMT src-address-list=\
-    SERVERs
-add action=drop chain=input dst-address-list=CRS326-MGMT src-address-list=\
-    VMs/LXCs
+add action=drop chain=input disabled=yes dst-address-list=CRS326-MGMT \
+    src-address-list=SERVERs,VMs/LXCs
 /ip route
 add gateway=10.2.1.1
 add dst-address=10.1.3.0/24 gateway=10.2.1.1

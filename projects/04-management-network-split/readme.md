@@ -14,6 +14,9 @@ Each network device such as the CCR2004 Core Router, will have it's own `/30` ne
 Usually, none of this would happen in a casual router-on-a-stick topology. 
 However, because of the L3 Hardware offload implementation on the CRS326 along with making it the gateway for VLANs 20 and 40 instead of letting the CCR2004 handle all inter-VLAN routing, this topology gets more advanced and I need to add the correct separation of the Control and Data Planes.  
 
+> [!CAUTION]
+> I recently found out that with steps depicted here, the DHCP won't work. Fix is coming so please check out [DHCP Relay fix](../05-dhcp-relay).
+
 ## Addresses
 
 Here is a brief overview on how I will change the addresses:   
