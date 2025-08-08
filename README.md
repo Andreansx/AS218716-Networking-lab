@@ -37,8 +37,7 @@ Here are the things that I think are the most worth checking out.
 
 * [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)  
 
-<!-- [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)
--->
+<!-- [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)-->
 
 ## How This Repository Is Organized
 
@@ -83,8 +82,8 @@ The network is segmented using VLANs. For now there are three main VLANs.
 There are also dedicated VLANs for management and traffic tranzit.
 
 *   **VLAN 100** - This is the VLAN used for the `inter-router-link0` interface. Both the CCR2004 and CRS326 have interfaces in this VLAN. 
-    CCR2004 - `10.2.1.1/30`
-    CRS326  - `10.2.1.2/30`
+    CCR2004 - `172.16.255.1/30`
+    CRS326  - `172.16.255.2/30`
 *   **VLAN 111** - This is where the management SVI for the CCR2004 is. The CCR2004 has a `10.1.1.1/30` IP here.
 *   **VLAN 115** - Here is the management SVI for the CRS326 on the `10.1.1.5/30` IP Address.
 
