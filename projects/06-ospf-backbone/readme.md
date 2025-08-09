@@ -56,7 +56,7 @@ Then I created a new area and assigned the networks that I wanted to be advertis
 /routing ospf area 
 add instance=backbonev2 area-id=0.0.0.0 name=backbone0v2
 /routing ospf interface-template
-add area=backbone0v2 networks=172.16.255.0/30 passive
+add area=backbone0v2 networks=172.16.255.0/30
 add area=backbone0v2 networks=172.16.0.1/32 passive
 ```
 Then The same thing on the CRS326:
