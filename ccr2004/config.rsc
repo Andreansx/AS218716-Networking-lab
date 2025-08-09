@@ -1,4 +1,4 @@
-# 2025-08-09 14:31:57 by RouterOS 7.19.4
+# 2025-08-09 14:57:54 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
