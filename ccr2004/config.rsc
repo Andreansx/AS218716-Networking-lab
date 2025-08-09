@@ -1,10 +1,11 @@
-# 2025-08-06 15:17:02 by RouterOS 7.19.4
+# 2025-08-09 14:31:57 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
 # serial number = D4F00DCEEFD0
 /interface bridge
 add name=ccr2004-mgmt port-cost-mode=short
+add name=loopback0
 /interface vlan
 add interface=sfp-sfpplus1 name=inter-router-link0 vlan-id=100
 add interface=sfp-sfpplus1 name=vlan20-bare-metal vlan-id=20
@@ -25,10 +26,16 @@ add name=pool-vms-cts ranges=10.1.4.50-10.1.4.200
 /ip dhcp-server
 add address-pool=pool-users interface=vlan30-users lease-time=10m name=\
     dhcp-users
-add address-pool=pool-vms-cts interface=inter-router-link0 name=\
-    DHCP-for-RELAY relay=10.2.1.2
+add address-pool=pool-vms-cts interface=inter-router-link0 name=dhcp-vlan40 \
+    relay=10.1.4.1
+add address-pool=pool-bare-metal interface=inter-router-link0 name=\
+    dhcp-vlan20 relay=10.1.2.1
 /port
 set 0 name=serial0
+/routing ospf instance
+add disabled=no name=backbonev2 router-id=172.16.0.1
+/routing ospf area
+add disabled=no instance=backbonev2 name=backbone0v2
 /interface bridge port
 add bridge=ccr2004-mgmt comment="access for laptop" ingress-filtering=no \
     interface=ether1 internal-path-cost=10 path-cost=10
@@ -43,7 +50,8 @@ add address=10.0.0.150/24 comment=WAN interface=sfp-sfpplus12 network=\
     10.0.0.0
 add address=10.1.3.1/24 interface=vlan30-users network=10.1.3.0
 add address=10.1.1.1/30 interface=ccr2004-mgmt network=10.1.1.0
-add address=10.2.1.1/30 interface=inter-router-link0 network=10.2.1.0
+add address=172.16.255.1/30 interface=inter-router-link0 network=172.16.255.0
+add address=172.16.0.1 interface=loopback0 network=172.16.0.1
 /ip dhcp-server network
 add address=10.1.2.0/27 dns-server=1.1.1.1 gateway=10.1.2.1
 add address=10.1.3.0/24 dns-server=1.1.1.1 gateway=10.1.3.1
@@ -55,43 +63,52 @@ add address=10.1.1.4/30 list=CRS326-MGMT
 add address=10.1.2.0/24 list=SERVERs-NET
 add address=10.1.4.0/24 list=VMs/LXCs-NET
 /ip firewall filter
-add action=accept chain=input connection-state=established,related
+add action=accept chain=input connection-state=established,related disabled=\
+    yes
 add action=accept chain=forward comment=\
     "Allowing already established connections" connection-state=\
-    established,related
-add action=accept chain=input in-interface-list=ZONE-CCR2004-MGMT
-add action=accept chain=input in-interface-list=LINK-TO-CRS326 protocol=icmp
-add action=accept chain=forward dst-address-list=SERVERs-NET \
+    established,related disabled=yes
+add action=accept chain=input disabled=yes in-interface-list=\
+    ZONE-CCR2004-MGMT
+add action=accept chain=input disabled=yes in-interface-list=LINK-TO-CRS326 \
+    protocol=icmp
+add action=accept chain=forward disabled=yes dst-address-list=SERVERs-NET \
     in-interface-list=ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326
-add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
-    out-interface-list=ZONE-USERS
+add action=accept chain=forward disabled=yes dst-address-list=VMs/LXCs-NET \
+    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326
+add action=accept chain=forward disabled=yes in-interface-list=\
+    ZONE-CCR2004-MGMT out-interface-list=ZONE-USERS
 add action=accept chain=forward comment=\
     "Accept traffic between CCR2004 Management and CRS326 Management" \
-    dst-address-list=CRS326-MGMT in-interface-list=ZONE-CCR2004-MGMT \
-    out-interface-list=LINK-TO-CRS326 port=22,8291 protocol=tcp
+    disabled=yes dst-address-list=CRS326-MGMT in-interface-list=\
+    ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326 port=22,8291 \
+    protocol=tcp
 add action=drop chain=forward comment=\
-    "Block traffic from users to networks behind CRS326" in-interface-list=\
-    ZONE-USERS out-interface-list=LINK-TO-CRS326
-add action=accept chain=forward in-interface-list=ZONE-USERS \
+    "Block traffic from users to networks behind CRS326" disabled=yes \
+    in-interface-list=ZONE-USERS out-interface-list=LINK-TO-CRS326
+add action=accept chain=forward disabled=yes in-interface-list=ZONE-USERS \
     out-interface-list=ZONE-WAN
-add action=accept chain=forward in-interface-list=LINK-TO-CRS326 \
+add action=accept chain=forward disabled=yes in-interface-list=LINK-TO-CRS326 \
     out-interface-list=ZONE-WAN
-add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
-    out-interface-list=ZONE-WAN
-add action=drop chain=input
-add action=drop chain=forward comment="Dropping all other forward traffic"
+add action=accept chain=forward disabled=yes in-interface-list=\
+    ZONE-CCR2004-MGMT out-interface-list=ZONE-WAN
+add action=drop chain=input disabled=yes
+add action=drop chain=forward comment="Dropping all other forward traffic" \
+    disabled=yes
 /ip firewall nat
 add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route
-add dst-address=10.1.2.0/27 gateway=10.2.1.2
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
-add dst-address=10.1.4.0/24 gateway=10.2.1.2
-add dst-address=10.1.1.4/30 gateway=10.2.1.2
+add dst-address=10.1.1.4/30 gateway=172.16.255.2
 /ip service
 set ftp disabled=yes
 set telnet disabled=yes
 set www disabled=yes
 set api disabled=yes
+/routing ospf interface-template
+add area=backbone0v2 disabled=no networks=172.16.0.1/32 passive
+add area=backbone0v2 disabled=no networks=172.16.255.0/30
+add area=backbone0v2 disabled=no networks=10.1.3.0/24 passive
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity

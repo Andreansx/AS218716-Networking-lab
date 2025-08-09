@@ -1,9 +1,10 @@
-# 2025-08-06 15:17:08 by RouterOS 7.19.4
+# 2025-08-09 14:32:03 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
 # serial number = HGB09MRF1PQ
 /interface bridge
+add name=loopback0
 add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge \
     vlan-filtering=yes
 /interface vlan
@@ -16,8 +17,12 @@ add interface=main-bridge name=vlan115-crs326-mgmt vlan-id=115
 set [ find default=yes ] supplicant-identity=MikroTik
 /port
 set 0 name=serial0
+/routing ospf instance
+add disabled=no name=backbonev2 router-id=172.16.0.2
+/routing ospf area
+add disabled=no instance=backbonev2 name=backbone0v2
 /interface bridge port
-add bridge=main-bridge interface=ether1 pvid=10 trusted=yes
+add bridge=main-bridge interface=ether1 pvid=115 trusted=yes
 add bridge=main-bridge interface=qsfpplus1-1
 add bridge=main-bridge interface=qsfpplus1-2
 add bridge=main-bridge interface=qsfpplus1-3
@@ -57,14 +62,15 @@ add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1,sfp-sfpplus2 vlan-ids=\
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1,sfp-sfpplus2 vlan-ids=\
     40
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
-add bridge=main-bridge tagged=main-bridge vlan-ids=115
+add bridge=main-bridge tagged=main-bridge untagged=ether1 vlan-ids=115
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
 /ip address
 add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
 add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
 add address=10.1.1.5/30 interface=vlan115-crs326-mgmt network=10.1.1.4
-add address=10.2.1.2/30 interface=inter-router-link0 network=10.2.1.0
+add address=172.16.255.2/30 interface=inter-router-link0 network=172.16.255.0
+add address=172.16.0.2 interface=loopback0 network=172.16.0.2
 /ip dhcp-relay
 add dhcp-server=10.2.1.1 disabled=no interface=vlan20-bare-metal name=\
     vlan20-dhcp-relay
@@ -80,12 +86,16 @@ add address=10.1.2.0/27 list=SERVERs
 add action=drop chain=input disabled=yes dst-address-list=CRS326-MGMT \
     src-address-list=SERVERs,VMs/LXCs
 /ip route
-add gateway=10.2.1.1
-add dst-address=10.1.3.0/24 gateway=10.2.1.1
+add gateway=172.16.255.1
 /ip service
 set ftp disabled=yes
 set www disabled=yes
 set api disabled=yes
+/routing ospf interface-template
+add area=backbone0v2 disabled=no networks=172.16.0.2/32 passive
+add area=backbone0v2 disabled=no networks=172.16.255.0/30
+add area=backbone0v2 disabled=no networks=10.1.2.0/27 passive
+add area=backbone0v2 disabled=no networks=10.1.4.0/24 passive
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity

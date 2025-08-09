@@ -2,6 +2,10 @@
 
 Here I will cover the process in which I implement OSPF Dynamic Routing Protocol on an inter-router link between my two Core Routers.
 
+## Topology
+
+![topology](./ospf.png)
+
 ### Hardware
 
 *   **CCR2004-1G-12S+2XS**
@@ -50,7 +54,7 @@ add name=backbonev2 version=2 router-id=172.16.0.1
 Then I created a new area and assigned the networks that I wanted to be advertised by OSPF. At first I added only loopbacks and the inter-router link network.
 ```rsc
 /routing ospf area 
-add instance=backbonev2 name=backbone0v2
+add instance=backbonev2 area-id=0.0.0.0 name=backbone0v2
 /routing ospf interface-template
 add area=backbone0v2 networks=172.16.255.0/30 passive
 add area=backbone0v2 networks=172.16.0.1/32 passive
@@ -60,7 +64,7 @@ Then The same thing on the CRS326:
 /routing ospf instance
 add name=backbonev2 router-id=172.16.0.2
 /routing ospf area
-add instance=backbonev2 name=backbone0v2
+add instance=backbonev2 area-id=0.0.0.0 name=backbone0v2
 /routing ospf interface-template
 add area=backbone0v2 networks=172.16.0.2/32 passive
 add area=backbone0v2 networks=172.16.255.0/30
