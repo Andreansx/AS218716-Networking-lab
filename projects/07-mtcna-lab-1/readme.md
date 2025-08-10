@@ -14,6 +14,9 @@ The goal here was to create a small network with a single router that would feat
 *   Security that would allow corporate devices to access guest devices but not vice-versa
 *   Router Management access from Corporate network.
 
+> [!NOTE] 
+> The full configuration is available in the **[ConfigCHR0-MCTNALAB1](./ConfigCHR0-MTNALAB1.rsc)** file
+
 
 The first thing that I thought about, was how can I simulate a Dynamic IP Address from an ISP in my lab.  
 What I figured was that I already have a DHCP Server for VMs running on my CCR2004. 
@@ -60,12 +63,52 @@ A important thing was to add NAT to masquerade all outgoing traffic as one IP ad
 ![nat](./nat.png)   
 
 Then of course the firewall.  
-The key thing was to restrict access from LanGuest to LanCorp. I chose a deny-by-default policy. Im only allowing specific allowed traffic and then just dropping everything that didn't fit to any of the rules above.  
+The key thing was to restrict access from LanGuest to LanCorp. I chose a deny-by-default policy. Im only allowing specific traffic and all already established connections, then just dropping everything that didn't fit to any of the rules above.  
 
 ![firewall](./firewall.png)  
 
 The last things was to add NTP servers and DNS servers  
 
 ![ntp](./ntp.png)   
-![dns](./dns.png)
+![dns](./dns.png)  
+
+Now the testing part.
+
+* The GuestLXC should not be able to ping CorpLXC but the CorpLXC should be able to ping GuestLXC.  
+* Both LXCs should not be able to ping their gateways.
+* Both LXCs should be able to ping `1.1.1.1`.
+
+As you can see below, the GuestLXC has a vNIC on the bridge which the LanGuest is on.  
+
+![guest.png](./guest.png)  
+
+And the CorpLXC has a vNIC on the LanCorp bridge.   
+
+![corp.png](./corp.png)  
+
+
+The IPs are below:
+*   CorpLXC - Dynamic 192.168.88.200
+*   GuestLXC - Dynamic 172.16.0.200  
+
+As you can see, the Guest cannot ping Corporate device:  
+![guestping](./guestping.png)  
+
+But the Corporate device can ping Guest:  
+![corpping](./corpping.png)  
+
+
+Below you can also see output of `traceroute` on the CorpLXC.   
+
+![traceroute](./traceroute.png)
+
+*   First hop is the Gateway on the CHR0.
+*   Second hop is the VLAN 40 Gateway on the CRS326.
+*   Third hop is the inter-router link between CRS326 and CCR2004.
+*   Fourth hop is the ISP-provided router gateway
+*   And fifth hop is the ISP-provided router WAN address in ISPs network.
+
+The flow of a packet from CorpLXC to outside network is like this:  
+
+`CorpLXC` -> Gateway `CHR0` WAN -> `vmbr0` tags as VLAN 40 -> `sfp-sfpplus2` CRS326 `sfp-sfpplus1` -> `inter-router-link0` -> `sfp-sfpplus1` CCR2004 takes off tag WAN -> Internet 
 

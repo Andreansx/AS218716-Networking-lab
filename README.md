@@ -31,6 +31,8 @@ Here are the things that I think are the most worth checking out.
 
 *   **[Finally OSPF Implementation !](./projects/06-ospf-backbone)** - Area 0 between CCR2004 and CRS326   
 
+*   **[First MTCNA Lab](./projects/07-mtcna-lab-1/readme.md)**
+
 *   **[Addressation modernization, better management](./projects/04-management-network-split)**
 
 *   **[L3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)** - Super fast port-speed connection for wide bandwith between Virtual Machines !
