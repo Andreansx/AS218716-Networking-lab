@@ -49,4 +49,23 @@ Then I assigned IP addresses
 
 Then I created neccessary pools of IP addresses for DHCP  
 
-![pools](./pools.png)
+![pools](./pools.png)   
+
+Then the DHCP Servers and networks for them. I also added the CHR0 as a DNS server itself so the repeatable DNS queries would be faster.  
+
+![dhcp](./dhcp.png)   
+
+A important thing was to add NAT to masquerade all outgoing traffic as one IP address (the CHR0 WAN IP)  
+
+![nat](./nat.png)   
+
+Then of course the firewall.  
+The key thing was to restrict access from LanGuest to LanCorp. I chose a deny-by-default policy. Im only allowing specific allowed traffic and then just dropping everything that didn't fit to any of the rules above.  
+
+![firewall](./firewall.png)  
+
+The last things was to add NTP servers and DNS servers  
+
+![ntp](./ntp.png)   
+![dns](./dns.png)
+
