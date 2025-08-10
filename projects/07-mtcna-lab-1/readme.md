@@ -27,7 +27,7 @@ A very important thing was to add a VLAN tag to the vNIC in the VM settings. You
 Earlier I created 4 bridges:   
 
 
-![vmbrs.png](./vmbrs.png)
+![vmbrs.png](./vmbrs.png)  
 
 Since all vNICs and bridges are set up, I can then get into the actual configuration.  
 
@@ -35,6 +35,18 @@ I configured the `CHR0` through the Proxmox NoVNC Console.
 
 First thing to do was to add a DHCP Client on the `etherWAN` interface.
 
-![dhcpclient](./dhcpclient.png)
+![dhcpclient](./dhcpclient.png)  
 
+After a while I checked if the `etherWAN` interface got a IP address from my VMs VLAN and it worked:  
 
+![dhcpclient1](./dhcpclientip.png)  
+
+I won't place a screenshot of every single command since that would be a lot of copying and pasting. I will just place bigger fragments of configuration  
+
+Then I assigned IP addresses
+
+![ips](./ips.png)
+
+Then I created neccessary pools of IP addresses for DHCP  
+
+![pools](./pools.png)
