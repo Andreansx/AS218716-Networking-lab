@@ -5,3 +5,28 @@ My first lab oriented to be like a task similar to the MTCNA exam.
 ## Topology
 
 ![topology](./topology.png)
+
+
+The goal here was to create a small network with a single router that would feature the things below:
+*   One network for corporate devices
+*   One network for guests
+*   Dynamic IP address on WAN interface (rotated by ISP)
+*   Security that would allow corporate devices to access guest devices but not vice-versa
+*   Router Management access from Corporate network.
+
+
+The first thing that I thought about, was how can I simulate a Dynamic IP Address from an ISP in my lab.  
+What I figured was that I already have a DHCP Server for VMs running on my CCR2004. 
+So instead of creating another `vmbr` for WAN interface, I simply added a vNIC for the CHR on the `vmbr0`. 
+The CHR would get assigned an IP from my VLAN 40 without being aware about any VLAN Tagging.  
+
+A very important thing was to add a VLAN tag to the vNIC in the VM settings. You can see that below  
+
+![vlan40tag](./vlan40tag.png)
+
+Earlier I created 4 bridges:   
+
+
+![vmbrs.png](./vmbrs.png)
+
+
