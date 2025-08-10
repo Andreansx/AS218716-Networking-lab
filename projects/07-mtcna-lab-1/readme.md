@@ -29,4 +29,12 @@ Earlier I created 4 bridges:
 
 ![vmbrs.png](./vmbrs.png)
 
+Since all vNICs and bridges are set up, I can then get into the actual configuration.  
+
+I configured the `CHR0` through the Proxmox NoVNC Console.   
+
+First thing to do was to add a DHCP Client on the `etherWAN` interface.
+
+![dhcpclient](./dhcpclient.png)
+
 
