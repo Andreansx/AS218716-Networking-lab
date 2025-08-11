@@ -45,7 +45,7 @@ Management access for Home Routers and ISP Central Router is only possible from 
 
 
 <details>
-<summary>**CHR0 Configuration**</summary>
+<summary><h2>CHR0 Configuration</h2></summary>
 
 ```rsc
 # 2025-08-11 15:44:25 by RouterOS 7.19.4
@@ -89,7 +89,8 @@ set line-count=40
 </details>
 
 <details>
-<summary>**CHR1 Configuration**</summary>
+<summary><h2>CHR1 Configuration</h2></summary>
+
 ```rsc
 # 2025-08-11 15:49:47 by RouterOS 7.19.4
 # system id = Wp+T0I1KPqD
@@ -122,7 +123,8 @@ add action=masquerade chain=srcnat out-interface=pppoe-out1
 </details>
 
 <details>
-<summary>**CHR2 Configuratoin**</summary>
+<summary><h2>CHR2 Configuratoin</h2></summary>
+
 ```rsc
 # 2025-08-11 15:51:14 by RouterOS 7.19.4
 # system id = gtPyFiX7hJK

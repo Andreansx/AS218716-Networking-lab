@@ -31,6 +31,8 @@ Here are the things that I think are the most worth checking out.
 
 *   **[Finally OSPF Implementation !](./projects/06-ospf-backbone)** - Area 0 between CCR2004 and CRS326   
 
+*   **[PPPoE, three CHRs, mini-ISP scenario with clients](./projects/08-mtcna-lab-2)** - Second MTCNA-oriented Lab
+
 *   **[First MTCNA Lab](./projects/07-mtcna-lab-1/readme.md)**
 
 *   **[Addressation modernization, better management](./projects/04-management-network-split)**
