@@ -2,7 +2,7 @@
 
 Here I wanted to create a bit more advanced topology and simulate PPPoE connection with an ISP from the Home Router.  
 
-This project was intended to be a simulation of a small ISP network environment where subscribers have to authenticate themselves through PPPoE before being able to access the internet.  
+This project was intended to be a simulation of a small ISP network environment where subscribers have to authenticate themselves through PPPoE before being able to access the internet. It features Proxmox VE as the hypervisor and MikroTik CHRs as the Routers.
 
 > [!NOTE]
 > As much as I would like to add QoS based on the PPPoE customers profile, I cannot do that because the free version of CHR already limits all interfaces to 1Mbps.
@@ -28,6 +28,13 @@ Key things to achieve:
     *   `vmbr_PPPoE` - Simulates the physical connection for the clients.
     *   `vmbr_Home/vmbr_Home2` - Isolated home networks for each client.
     *   `vmbr_mgmt` - Dedicated network for ISP router management.
+
+### Key terms
+
+Since some terms might be not very clear, here are abbreviations of the shortened names
+*   **CHR** - Cloud Hosted Router - MikroTik's implementation of RouterOS for virtual machines
+*   **LXC** - Linux Container - A more lightweight alternative for VMs. It shares the kernel with the host machine.
+*   **vNIC** - Virtual Network Interface Card - Simply a virtualized network adapter like `VMware vxnet3`
 
 
 To make this environment scalable and elastic I specified one PPPoE profile that defines the service, IP Pool, DNS etc. and then I create separate secrets for each client.
@@ -295,10 +302,10 @@ Then the crucial authentication to be able to access the network
 add add-default-route=yes dial-on-demand=yes disabled=no interface=etherPPPoE name=pppoe-out1 service-name=pppoeservice user=customer0
 ```
 > [!IMPORTANT]
-> There are a couple of important things to note in this part:
-> `add-default-route` - This is very important as without this I would need to manually set `ip route add dst-address=0.0.0.0/0 gateway=100.64.0.1`.
-> `name=pppoe-out1` - This is also a pretty important thing as this is not just a name for the setting but this will create a interface with that name which is relevant later.
-> `dial-on-demand=yes` - At first I did not set this and I was suprised why the PPP authentication didn't work.
+> There are a couple of important things to note in this part:   
+> `add-default-route` - This is very important as without this I would need to manually set `ip route add dst-address=0.0.0.0/0 gateway=100.64.0.1`.   
+> `name=pppoe-out1` - This is also a pretty important thing as this is not just a name for the setting but this will create a interface with that name which is relevant later.   
+> `dial-on-demand=yes` - At first I did not set this and I was suprised why the PPP authentication didn't work.   
 
 Then I set the IP pool and the DHCP server and network for the Home Lan.
 ```rsc

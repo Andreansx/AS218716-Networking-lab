@@ -111,13 +111,19 @@ A list of the key components in my lab. Click a device name to see its configura
 
 This is where the real learning happens. Here are some of the things I’ve built or am currently working on.
 
+### Networking
+
+*   **[OSPF Implementation](./projects/06-ospf-backbone)** - Area 0 between CCR2004 and CRS326   
+*   **[Second MTCNA Lab](./projects/08-mtcna-lab-2)** - PPPoE, three CHRs, mini-ISP scenario with clients
+*   **[First MTCNA Lab](./projects/07-mtcna-lab-1/readme.md)**
+*   **[Addressation modernization, better management](./projects/04-management-network-split)**
+*   **[l3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)**  
+*   **[Repurposing a spare NIC for creating 10GbE VLAN access ports without SFP+ transreceivers](./projects/02-vlan30-access-without-sfp-transreceivers)**
+
 ### Active Directory
 
 *   **[First Active Directory scenario](./projects/01-ActiveDirectory-first-scenario)**
 
-### Networking
-*   **[l3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)**  
-*   **[Repurposing a spare NIC for creating 10GbE VLAN access ports without SFP+ transreceivers](./projects/02-vlan30-access-without-sfp-transreceivers)**
 
 ### Infrastructure as Code (IaC)
 
@@ -126,7 +132,6 @@ This is where the real learning happens. Here are some of the things I’ve buil
 
 ### Guides & External Repositories
 
-*   **[Unbound DNS Resolver (repo)](https://github.com/andreansx/unbound-homelab)**: WIP - Deployment of a recursive DNS server for the lab.
 *   **[Simple VLANs on RouterOS (repo)](https://github.com/andreansx/routeros-simple-vlans)**: A guide to basic VLAN configuration on MikroTik devices.
 
 
