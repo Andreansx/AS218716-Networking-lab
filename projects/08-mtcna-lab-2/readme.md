@@ -156,3 +156,39 @@ add action=masquerade chain=srcnat out-interface=pppoe-out1
 ```
 </details>
 
+
+# Configuration
+
+First thing to do was to set up the isolated environment for the lab.  
+
+I created neccessary bridges:  
+![vmbrs.png](./vmbrs.png)  
+
+Then I added two vNICs for each Home Router and three vNICs for the Central ISP Router.  
+
+> [!IMPORTANT]
+> I don't really know why but I am not able to get more than ~3-4Gbps of bandwidth in inter-VLAN routing between a bare-metal machine and a VM using a vNIC type `VMware vxnet3`.
+> This vNIC should fully work since it's made for virtualization. However since it doesn't provide full line-speed transfer, I switched to VirtIO vNIC.
+
+
+*   **CHR0**
+    *   net0 - `vmbr0`, `tag 40`
+    *   net1 - `vmbr_PPPoE`
+    *   net2 - `vmbr_mgmt`
+*   **CHR1**
+    *   net0 - `vmbr_PPPoE`
+    *   net1 - `vmbr_Home`
+*   **CHR2**
+    *   net0 - `vmbr_PPPoE`
+    *   net1 - `vmbr_Home2`
+
+And also one vNIC for each LXC
+
+*   **MgmtLXC**
+    *   `mgmteth0` - `vmbr_mgmt`
+*   **HomeLXC**
+    *   `laneth0` - `vmbr_Home`
+*   **HomeLXC**
+    *   `laneth0` - `vmbr_Home2`
+
+
