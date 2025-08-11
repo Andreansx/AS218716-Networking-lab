@@ -40,11 +40,12 @@ Administrative access is available only from this exact network and physical int
 Management access for Home Routers and ISP Central Router is only possible from dedicated ISP Management Network.  
 
 > [!NOTE]
-> Here are full configurations for the Routers. 
-> However if you want to see more how I did all that you can check below.
+> Here are full configurations for the Routers. Just click on the triangle symbol to extend them.
+> However if you want to see more how I did all that you can check farther below.
+
 
 <details>
-<summary>CHR0 Configuration</summary>
+<summary>**CHR0 Configuration**</summary>
 
 ```rsc
 # 2025-08-11 15:44:25 by RouterOS 7.19.4
@@ -85,6 +86,71 @@ add name=customer1 profile=CustomerProfile0 service=pppoe
 /system console screen
 set line-count=40
 ```
+</details>
 
+<details>
+<summary>**CHR1 Configuration**</summary>
+```rsc
+# 2025-08-11 15:49:47 by RouterOS 7.19.4
+# system id = Wp+T0I1KPqD
+#
+/interface ethernet
+set [ find default-name=ether2 ] disable-running-check=no name=HomeLan
+set [ find default-name=ether1 ] disable-running-check=no name=etherPPPoE
+/interface pppoe-client
+add add-default-route=yes dial-on-demand=yes disabled=no interface=etherPPPoE name=pppoe-out1 service-name=pppoeservice user=customer0
+/ip pool
+add name=HomeLanPool ranges=192.168.0.100-192.168.0.254
+/ip dhcp-server
+add address-pool=HomeLanPool interface=HomeLan lease-time=4w2d name=HomeLanDHCP
+/ip address
+add address=192.168.0.1/24 interface=HomeLan network=192.168.0.0
+/ip dhcp-server network
+add address=192.168.0.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=192.168.0.1
+/ip firewall filter
+add action=accept chain=forward connection-state=established,related
+add action=accept chain=input connection-state=established,related
+add action=accept chain=input dst-port=22 protocol=tcp src-address=192.168.252.8/30
+add action=accept chain=input protocol=icmp
+add action=accept chain=forward protocol=icmp
+add action=accept chain=forward out-interface=pppoe-out1
+add action=drop chain=input
+add action=drop chain=forward
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=pppoe-out1
+```
+</details>
+
+<details>
+<summary>**CHR2 Configuratoin**</summary>
+```rsc
+# 2025-08-11 15:51:14 by RouterOS 7.19.4
+# system id = gtPyFiX7hJK
+#
+/interface ethernet
+set [ find default-name=ether2 ] disable-running-check=no name=HomeLan2
+set [ find default-name=ether1 ] disable-running-check=no name=etherPPPoE
+/interface pppoe-client
+add add-default-route=yes dial-on-demand=yes disabled=no interface=etherPPPoE name=pppoe-out1 service-name=pppoeservice user=customer1
+/ip pool
+add name=HomeLanPool ranges=192.168.0.100-192.168.0.254
+/ip dhcp-server
+add address-pool=HomeLanPool interface=HomeLan2 lease-time=4w2d name=HomeLanDHCP
+/ip address
+add address=192.168.0.1/24 interface=HomeLan2 network=192.168.0.0
+/ip dhcp-server network
+add address=192.168.0.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=192.168.0.1
+/ip firewall filter
+add action=accept chain=forward connection-state=established,related
+add action=accept chain=input connection-state=established,related
+add action=accept chain=input dst-port=22 protocol=tcp src-address=192.168.252.8/30
+add action=accept chain=input protocol=icmp
+add action=accept chain=forward protocol=icmp
+add action=accept chain=forward out-interface=pppoe-out1
+add action=drop chain=input
+add action=drop chain=forward
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=pppoe-out1
+```
 </details>
 
