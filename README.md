@@ -29,6 +29,8 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 Here are the things that I think are the most worth checking out.  
 
+*   **[IPIP Tunnel, Three CHRs, Third MTCNA Lab](./projects/09-mtcna-lab-3/readme.md)**
+
 *   **[Finally OSPF Implementation !](./projects/06-ospf-backbone)** - Area 0 between CCR2004 and CRS326   
 
 *   **[PPPoE, three CHRs, mini-ISP scenario with clients](./projects/08-mtcna-lab-2)** - Second MTCNA-oriented Lab
@@ -66,7 +68,7 @@ This diagram shows the physical and logical topology of the lab.
 
 Below is a descrition of how generally my lab is built.  
 
-The network consists of two main Routers:
+The network consists of two main Routers, both of which belong to OSPF Area 0:
 *   **CCR2004-1G-12S+2XS** - This incredibly powerful router handles DHCP Servers, NAT, Routing etc.
 *   **CRS326-24S+2Q+RM** - This one has a gigantic capabilities for port-speed switching. It handles inter-VLAN Routing with L3 Hardware offload, and generally VLANs. It's also a DHCP Relay for VLANs 20 and 40.  
 Both of those routers are connected through a inter-router link. Each of them has a separate, small `/30` network for management.  
