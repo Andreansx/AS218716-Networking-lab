@@ -5,8 +5,9 @@ The primary technology I used here is an IPIP Tunnel which creates a virtual Lay
 
 Both offices of the company have Public IP addresses, and I wanted to connect those offices so that they could connect like they were in the same network.  
 
-What I achieved was a Layer 3 virtual connection between those two offices and Router management from local office and also from remote office.
-
+What was achieved: 
+*   Layer 3 virtual connection between two offices using IPIP
+*   Remote router management for both officess from one to another
 
 # Topology
 
@@ -17,30 +18,32 @@ So I created three CHRs and five Linux bridges.
 The main CHR simulates the global internet in a super simple way. 
 The only thing it really does is route traffic between inter-router links to the two company offices.  
 
-Below is a list of the vNICs added to the Routers and the PCs in those two offices.   
+Below is a list of the vNICs added to the Routers and the PCs in those two offices and also the IP addresses.   
 
 
 *   **CHR-Internet** - Simulates global network
-    *   `net0`, `ethWAN_A` - `vmbr_WAN_A`
-    *   `net1`, `ethWAN_B` - `vmbr_WAN_B`
-    *   `net2`, `ethMGMT`  - `ISP_MGMT`
+    *   `net0`, `ethWAN_A` - `vmbr_WAN_A` - `203.0.113.1/30`
+    *   `net1`, `ethWAN_B` - `vmbr_WAN_B` - `203.0.113.5/30`
+    *   `net2`, `ethMGMT`  - `ISP_MGMT`   - `172.30.255.9/30`
 
 *   **CHR-A** - Office A of the company
-    *   `net0`, `ethWAN_A` - `vmbr_WAN_A`
-    *   `net1`, `ethLAN_A` - `vmbr_LAN_A`
+    *   `net0`, `ethWAN_A` - `vmbr_WAN_A` - `203.0.113.2/30`
+    *   `net1`, `ethLAN_A` - `vmbr_LAN_A` - `192.168.10.1/24`
+    *   `ipip-to-b` - `10.255.255.1/30`
 
 *   **CHR-B** - Office B of the company
-    *   `net0`, `ethWAN_B` - `vmbr_WAN_B`
-    *   `net1`, `ethLAN_B` - `vmbr_LAN_B`    
+    *   `net0`, `ethWAN_B` - `vmbr_WAN_B` - `203.0.113.6/30`
+    *   `net1`, `ethLAN_B` - `vmbr_LAN_B` - `192.168.20.1/24`   
+    *   `ipip-to-a` - `10.255.255.2/30`
 
 *   **LXC-A** - A PC in office A
-    *   `eth0` - `vmbr_LAN_A`
+    *   `eth0` - `vmbr_LAN_A` - DHCP
 
 *   **LXC-B** - A PC in office B
-    *   `eth0` - `vmbr_LAN_B`
+    *   `eth0` - `vmbr_LAN_B` - DHCP
 
 *   **LXC-MGMT** - Administrative access for the `CHR Internet`
-    *   `eth0` - `ISP_MGMT`
+    *   `eth0` - `ISP_MGMT` - `172.30.255.10/30`
 
 
 Here are the full configurations for the devices. 
@@ -66,8 +69,6 @@ add interface=ethMGMT list=NET_MGMT
 add address=203.0.113.1/30 interface=ethWAN_A network=203.0.113.0
 add address=203.0.113.5/30 interface=ethWAN_B network=203.0.113.4
 add address=172.30.255.9/30 interface=ethMGMT network=172.30.255.8
-/ip dhcp-client
-add interface=ethWAN_A
 /ip firewall filter
 add action=accept chain=forward in-interface-list=NET_A out-interface-list=NET_B
 add action=accept chain=forward in-interface-list=NET_B out-interface-list=NET_A
@@ -157,4 +158,50 @@ add dst-address=192.168.10.0/24 gateway=10.255.255.1
 ```
 
 </details>
+
+
+## Now the configuration part
+
+First I changed the names of the interfaces on all routers.   
+
+CHR-Internet:
+```rsc
+/interface ethernet
+set [ find default-name=ether3 ] name=ethMGMT
+set [ find default-name=ether1 ] name=ethWAN_A
+set [ find default-name=ether2 ] name=ethWAN_B
+```
+
+CHR-A:
+```rsc
+/interface ethernet
+set [ find default-name=ether2 ] name=ethLAN_A
+set [ find default-name=ether1 ] name=ethWAN_A
+```
+
+CHR-B:
+```rsc
+/interface ethernet
+set [ find default-name=ether2 ] name=ethLAN_B
+set [ find default-name=ether1 ] name=ethWAN_B
+```
+
+Then I set IPs on the point-to-point links to the Offices on the CHR Internet
+```rsc
+/ip address
+add address=203.0.113.1/30 interface=ethWAN_A
+add address=203.0.113.5/30 interface=ethWAN_B
+```
+Then the appropriate IPs on the WAN interfaces in both offices  
+Office A:  
+```rsc
+/ip address
+add address=203.0.113.2/30 interface=ethWAN_A
+```
+Office B:  
+```rsc
+/ip address
+add address=203.0.113.6/30 interface=ethWAN_B
+```
+
 
