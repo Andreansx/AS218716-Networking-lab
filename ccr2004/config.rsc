@@ -1,4 +1,4 @@
-# 2025-08-09 14:57:54 by RouterOS 7.19.4
+# 2025-08-13 00:27:38 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -24,12 +24,12 @@ add name=pool-bare-metal ranges=10.1.2.2-10.1.2.29
 add name=pool-users ranges=10.1.3.50-10.1.3.200
 add name=pool-vms-cts ranges=10.1.4.50-10.1.4.200
 /ip dhcp-server
-add address-pool=pool-users interface=vlan30-users lease-time=10m name=\
+add address-pool=pool-users interface=vlan30-users lease-time=5d name=\
     dhcp-users
-add address-pool=pool-vms-cts interface=inter-router-link0 name=dhcp-vlan40 \
-    relay=10.1.4.1
-add address-pool=pool-bare-metal interface=inter-router-link0 name=\
-    dhcp-vlan20 relay=10.1.2.1
+add address-pool=pool-vms-cts interface=inter-router-link0 lease-time=5d \
+    name=dhcp-vlan40 relay=10.1.4.1
+add address-pool=pool-bare-metal interface=inter-router-link0 lease-time=5d \
+    name=dhcp-vlan20 relay=10.1.2.1
 /port
 set 0 name=serial0
 /routing ospf instance

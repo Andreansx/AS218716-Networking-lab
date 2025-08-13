@@ -1,4 +1,4 @@
-# 2025-08-09 14:58:00 by RouterOS 7.19.4
+# 2025-08-13 00:27:46 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -72,9 +72,9 @@ add address=10.1.1.5/30 interface=vlan115-crs326-mgmt network=10.1.1.4
 add address=172.16.255.2/30 interface=inter-router-link0 network=172.16.255.0
 add address=172.16.0.2 interface=loopback0 network=172.16.0.2
 /ip dhcp-relay
-add dhcp-server=10.2.1.1 disabled=no interface=vlan20-bare-metal name=\
+add dhcp-server=172.16.255.1 disabled=no interface=vlan20-bare-metal name=\
     vlan20-dhcp-relay
-add dhcp-server=10.2.1.1 disabled=no interface=vlan40-vms-cts name=\
+add dhcp-server=172.16.255.1 disabled=no interface=vlan40-vms-cts name=\
     vlan40-dhcp-relay
 /ip dns
 set servers=1.1.1.1
