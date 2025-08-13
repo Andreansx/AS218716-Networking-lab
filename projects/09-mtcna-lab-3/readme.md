@@ -187,6 +187,18 @@ set [ find default-name=ether1 ] name=ethWAN_B
 ```
 
 Then I set IPs on the point-to-point links to the Offices on the CHR Internet
+
+> [!IMPORTANT]
+> You might be wondering why am I using public IP addresses here. The first reason is that it makes this scenario more realistic and this lab is fully isolated which means that no traffic at all will be able to exit it and go to the external network. Also, the `203.0.113.0/24` is not a typical IPv4 public IP address.  
+> Section Three of RFC 5737 states:   
+>  
+>   The blocks 192.0.2.0/24 (TEST-NET-1), 198.51.100.0/24 (TEST-NET-2),  
+>   and 203.0.113.0/24 (TEST-NET-3) are provided for use in  
+>   documentation.  
+> 
+> This is why I used this IP block. It does not hurt anyone and I was able to build a lab with more realistic IPs while not causing any damage to the global network.
+
+
 ```rsc
 /ip address
 add address=203.0.113.1/30 interface=ethWAN_A
@@ -203,5 +215,65 @@ Office B:
 /ip address
 add address=203.0.113.6/30 interface=ethWAN_B
 ```
+Then the LAN network configuration.  
+Setting up the IP pool
+```rsc
+/ip pool
+add name=PoolLanA ranges=192.168.10.50-192.168.10.254
+```
+DHCP server and network 
+```rsc
+/ip dhcp-server
+add address-pool=PoolLanA interface=ethLAN_A lease-time=60d name=DHCP_A
+/ip dhcp-server network
+add address=192.168.10.0/24 gateway=192.168.10.1 dns-server=1.1.1.1,8.8.8.8
+```
+and a IP address on the LAN interfaces
+```rsc
+/ip address
+add address=192.168.10.1/24 interface=ethLAN_A
+```
+This was almost exactly the same on the Office B router, just with different IPs.
+```rsc
+/ip pool
+add name=PoolLanB ranges=192.168.20.50-192.168.20.254
+/ip dhcp-server
+add address-pool=PoolLanB interface=ethLAN_B lease-time=60d name=DHCP_B
+/ip dhcp-server network
+add address=192.168.20.0/24 gateway=192.168.20.1 dns-server=1.1.1.1,8.8.8.8
+/ip address
+add address=192.168.20.1/24 interface=ethLAN_B
+```
+Then Network address translation
+For Office A:
+```rsc
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=ethWAN_A
+```
+For office B:
+```rsc
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=ethWAN_B
+```
+After that I could check if the PCs in those officess are able to ping the CHR Internet's side of the point-to-point links.
+```bash
+root@LXC-A:~# ping 203.0.113.1
+PING 203.0.113.1 (203.0.113.1) 56(84) bytes of data.
+64 bytes from 203.0.113.1: icmp_seq=1 ttl=63 time=0.819 ms
+64 bytes from 203.0.113.1: icmp_seq=2 ttl=63 time=1.18 ms
+```
+```bash
+root@LXC-B:~# ping 203.0.113.5
+PING 203.0.113.5 (203.0.113.5) 56(84) bytes of data.
+64 bytes from 203.0.113.5: icmp_seq=1 ttl=63 time=3.09 ms
+64 bytes from 203.0.113.5: icmp_seq=2 ttl=63 time=0.870 ms
+^C
+--- 203.0.113.5 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.870/1.978/3.086/1.108 ms
+```
+And it looks like communication to the Internet works good.
+
+
 
 
