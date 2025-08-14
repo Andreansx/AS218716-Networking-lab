@@ -304,8 +304,9 @@ Router B:
 /ip address
 add address=10.255.255.2/30 interface=ipip-to-A
 ```
-Now two very important things.
-First of all, it's neccessary to add another static route so the traffic from one office to another gets routed to the `ipip` interface and not straight through the WAN interface, since it needs to get encapsulated first and then it can go from the `ipip` interface to the WAN interface and ONLY then it can get NATted.  
+> [!IMPORTANT]
+> Now two very important things.
+> First of all, it's neccessary to add another static route so the traffic from one office to another gets routed to the `ipip` interface and not straight through the WAN interface, since it needs to get encapsulated first and then it can go from the `ipip` interface to the WAN interface and ONLY then it can get NATted.  
 > And this brings me to the second thing which is NAT. 
 > The traffic going from office A (`192.168.10.0/24`) to office B (`192.168.20.0/24`) and vice-versa through the IPIP Tunnel, must keep the original `src-address`.
 > So it's important to add a rule that excludes the IPIP tunnel traffic from getting NATted. 
@@ -331,14 +332,105 @@ The **"!"** is a very important thing here.
 RouterOS provides a clean way of excluding IPs etc. with simply a exclamation mark.
 This above basically states that NAT should happen when the `dst-address` is every single address **except** `192.168.20.0/24` or `192.168.10.0/24`.  
 
-Let's look at a example traffic going from office A to office B.  
+#### Let's look at a example traffic going from office A to office B.  
 
 So the traffic will properly go without NATting to the `ipip-to-B` interface. Then it will get properly encapsulated and addressed to `203.0.113.6`. 
 And only after getting handled by the `ipip` interface, it will get routed to external network and the router will see that now the `dst-address` is not `192.168.20.0/24` but rather `203.0.113.6`. 
-So of course it will go through NAT and the new `src-address` will be `203.0.113.2`. 
+However it will **NOT** go through NAT. That's because the IPIP encapsulation takes place on the router itself so it will have the router's WAN IP address. 
+And the new `src-address` will be `203.0.113.2`. 
 And guess where `203.0.113.2` was mentioned.  
 
 It's the WAN address of the Router A, and it's the remote address for the `ipip-to-A` interface on Router B. 
 
+Now what's left is the firewall.  
+First the firewall on the CHR Internet Router.
+I used interface lists instead of hardcoded interface names to make this more elastic and scalable. 
+```rsc
+/interface list
+add name=NET_A
+add name=NET_B
+add name=NET_MGMT
+/interface list member
+add interface=ethWAN_A list=NET_A
+add interface=ethWAN_B list=NET_B
+add interface=ethMGMT list=NET_MGMT
+```
+Then the firewall rules.
+```rsc
+/ip firewall filter
+add action=accept chain=forward in-interface-list=NET_A out-interface-list=NET_B
+add action=accept chain=forward in-interface-list=NET_B out-interface-list=NET_A
+add action=accept chain=input in-interface-list=NET_MGMT port=22,8291 protocol=tcp
+add action=drop chain=forward
+add action=drop chain=input
+```
+Of course I used "deny-by-deafult" policy. 
+Im simply allowing all traffic from Router A to Router B and allowing management only from dedicated management interface.
+Then as usual, dropping all unrecognized traffic.  
+This ensures that this router works more realistically as the global internet and it does not neccessarly provide any security for those two offices.  
 
+Then firewall for office A:
+```rsc
+/ip firewall filter
+add action=accept chain=forward connection-state=established,related
+add action=accept chain=input connection-state=established,related
+add action=accept chain=forward dst-address=192.168.20.0/24 src-address=192.168.10.0/24
+add action=accept chain=forward dst-address=192.168.10.0/24 src-address=192.168.20.0/24
+add action=accept chain=input port=22,8291 protocol=tcp src-address=192.168.10.0/24
+add action=accept chain=input port=22,8291 protocol=tcp src-address=192.168.20.0/24
+add action=accept chain=forward out-interface=ipip-to-B
+add action=accept chain=forward out-interface=ethWAN_A
+add action=drop chain=input
+add action=drop chain=forward
+```
+First Im allowing all already ongoing connections.  
+Then Im allowing all traffic between this office and the other one in both directions.  
+Then I allowed management from both networks so both offices can manage routers remotely.   
+Next I allowed all traffic forwarded to the IPIP tunnel and traffic exiting the network through `ethWAN_A`.  
+And the last thing which is again dropping all unrecongized traffic.  
 
+The firewall for router B is fairly the same:
+```rsc
+/ip firewall filter
+add action=accept chain=forward connection-state=established,related
+add action=accept chain=input connection-state=established,related
+add action=accept chain=forward dst-address=192.168.20.0/24 src-address=192.168.10.0/24
+add action=accept chain=forward dst-address=192.168.10.0/24 src-address=192.168.20.0/24
+add action=accept chain=input port=22,8291 protocol=tcp src-address=192.168.10.0/24
+add action=accept chain=input port=22,8291 protocol=tcp src-address=192.168.20.0/24
+add action=accept chain=forward out-interface=ipip-to-A
+add action=accept chain=forward out-interface=ethWAN_B
+add action=drop chain=forward
+add action=drop chain=input
+```
+
+Now the testing part.  
+Below you can see the output of `traceroute` command run on LXC in network A:
+```bash
+root@LXC-A:~# traceroute 192.168.20.254
+traceroute to 192.168.20.254 (192.168.20.254), 30 hops max, 60 byte packets
+ 1  192.168.10.1 (192.168.10.1)  0.341 ms  0.305 ms  0.283 ms
+ 2  10.255.255.2 (10.255.255.2)  1.288 ms  1.272 ms  1.251 ms
+ 3  192.168.20.254 (192.168.20.254)  1.497 ms  1.477 ms  1.457 ms
+```
+As you can see, the WAN interfaces are not at all visible when trying to access network B from network A.  
+
+*   First hop is the network A gateway
+*   Second hop is the Router B's interface in the IPIP Tunnel
+*   Third and the last hop is the LXC in network B.
+
+However what happens when simply trying to access the internet?  
+As you can see below:
+```rsc
+root@LXC-A:~# traceroute 1.1.1.1
+traceroute to 1.1.1.1 (1.1.1.1), 30 hops max, 60 byte packets
+ 1  192.168.10.1 (192.168.10.1)  2.091 ms  2.040 ms  2.021 ms
+ 2  203.0.113.1 (203.0.113.1)  2.004 ms !N * *
+```
+The router correctly recognizes that when trying to access every other network than `192.168.20.0/24`, it should normally get NATted and sent through the inter-router link between the local router and the `CHR Internet`.
+
+*   First hop is as always the gateway.
+*   The second hop is the `CHR Internet's` side of the point-to-point link.
+
+> [!NOTE]
+> The traceroute returnet `!N * *` on the second hop and that is in fact intended. I purposefully removed any connection to the external network for this lab.
