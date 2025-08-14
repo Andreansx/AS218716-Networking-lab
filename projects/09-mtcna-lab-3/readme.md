@@ -272,8 +272,73 @@ PING 203.0.113.5 (203.0.113.5) 56(84) bytes of data.
 2 packets transmitted, 2 received, 0% packet loss, time 1001ms
 rtt min/avg/max/mdev = 0.870/1.978/3.086/1.108 ms
 ```
-And it looks like communication to the Internet works good.
+And it looks like communication to the Internet works good.  
 
+After that I could get to the IPIP tunnel setup.  
+
+First I created the interface for the IPIP tunnel.  
+
+> [!NOTE]
+> A important thing here is the IPs for the interfaces. Both the local and remote address need to be the IP on the WAN interface of both routers.  
+> I also choose the `10.255.255.0/30` network for the tunnel so it does not waste addresses and keeps the transit network clearly separate from the LAN networks.  
+
+in office A:
+```rsc
+/interface ipip
+add local-address=203.0.113.2 name=ipip-to-B remote-address=203.0.113.6
+```
+in office B:
+```rsc
+/interface ipip
+add local-address=203.0.113.6 name=ipip-to-A remote-address=203.0.113.2
+```
+Then I assigned IP addresses on the `ipip` interfaces.  
+
+RouterA:
+```rsc
+/ip address
+add address=10.255.255.1/30 interface=ipip-to-B
+```
+Router B:
+```rsc
+/ip address
+add address=10.255.255.2/30 interface=ipip-to-A
+```
+Now two very important things.
+First of all, it's neccessary to add another static route so the traffic from one office to another gets routed to the `ipip` interface and not straight through the WAN interface, since it needs to get encapsulated first and then it can go from the `ipip` interface to the WAN interface and ONLY then it can get NATted.  
+> And this brings me to the second thing which is NAT. 
+> The traffic going from office A (`192.168.10.0/24`) to office B (`192.168.20.0/24`) and vice-versa through the IPIP Tunnel, must keep the original `src-address`.
+> So it's important to add a rule that excludes the IPIP tunnel traffic from getting NATted. 
+> Good thing that NAT is actually the last thing that happens when routing. 
+> First the router will check the networks, if routing actually needs to happen, then it will go through the available routes, and only after that it decides if NAT should take place.  
+
+So let's change the NAT rule on both routers.  
+No need for a new rule. I just added another condition for the NAT.  
+
+Router A:
+```rsc
+/ip firewall nat
+set 0 dst-address=!192.168.20.0/24
+```
+Router B:
+```rsc
+/ip firewall nat
+set 0 dst-address=!192.168.10.0/24
+```
+
+This is I think a clever way to do this. 
+The **"!"** is a very important thing here. 
+RouterOS provides a clean way of excluding IPs etc. with simply a exclamation mark.
+This above basically states that NAT should happen when the `dst-address` is every single address **except** `192.168.20.0/24` or `192.168.10.0/24`.  
+
+Let's look at a example traffic going from office A to office B.  
+
+So the traffic will properly go without NATting to the `ipip-to-B` interface. Then it will get properly encapsulated and addressed to `203.0.113.6`. 
+And only after getting handled by the `ipip` interface, it will get routed to external network and the router will see that now the `dst-address` is not `192.168.20.0/24` but rather `203.0.113.6`. 
+So of course it will go through NAT and the new `src-address` will be `203.0.113.2`. 
+And guess where `203.0.113.2` was mentioned.  
+
+It's the WAN address of the Router A, and it's the remote address for the `ipip-to-A` interface on Router B. 
 
 
 
