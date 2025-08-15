@@ -542,7 +542,7 @@ I go behind the rack, to see a patchcord connecting `enp7s0f0` to `enp7s0f1`..
 
 Both ports light up on green stating that there was a 10G link between them.  
 
-![loop](./loop.JPEG)  
+![loop](./loop.jpeg)  
 
 To be honest I am actually so embarassed by that cause I spend almost the whole day going after some barely visible bug since every configuration seemed correct.  
 
