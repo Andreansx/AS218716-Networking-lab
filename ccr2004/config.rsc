@@ -1,4 +1,4 @@
-# 2025-08-13 00:27:38 by RouterOS 7.19.4
+# 2025-08-15 14:32:32 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -11,6 +11,7 @@ add interface=sfp-sfpplus1 name=inter-router-link0 vlan-id=100
 add interface=sfp-sfpplus1 name=vlan20-bare-metal vlan-id=20
 add interface=sfp-sfpplus1 name=vlan30-users vlan-id=30
 add interface=sfp-sfpplus1 name=vlan40-vms-cts vlan-id=40
+add interface=sfp-sfpplus1 name=vlan50-kubernetes vlan-id=50
 add interface=sfp-sfpplus1 name=vlan111-ccr2004-mgmt vlan-id=111
 /interface list
 add name=ZONE-USERS
@@ -23,6 +24,7 @@ set [ find default=yes ] ip-type=ipv4 use-network-apn=no
 add name=pool-bare-metal ranges=10.1.2.2-10.1.2.29
 add name=pool-users ranges=10.1.3.50-10.1.3.200
 add name=pool-vms-cts ranges=10.1.4.50-10.1.4.200
+add name=pool-kubernetes ranges=10.1.5.2-10.1.5.30
 /ip dhcp-server
 add address-pool=pool-users interface=vlan30-users lease-time=5d name=\
     dhcp-users
@@ -30,6 +32,8 @@ add address-pool=pool-vms-cts interface=inter-router-link0 lease-time=5d \
     name=dhcp-vlan40 relay=10.1.4.1
 add address-pool=pool-bare-metal interface=inter-router-link0 lease-time=5d \
     name=dhcp-vlan20 relay=10.1.2.1
+add address-pool=pool-kubernetes interface=inter-router-link0 lease-time=1w3d \
+    name=dhcp-kubernetes relay=10.1.5.1
 /port
 set 0 name=serial0
 /routing ospf instance
@@ -56,45 +60,42 @@ add address=172.16.0.1 interface=loopback0 network=172.16.0.1
 add address=10.1.2.0/27 dns-server=1.1.1.1 gateway=10.1.2.1
 add address=10.1.3.0/24 dns-server=1.1.1.1 gateway=10.1.3.1
 add address=10.1.4.0/24 dns-server=1.1.1.1 gateway=10.1.4.1
+add address=10.1.5.0/27 dns-server=1.1.1.1,8.8.8.8 gateway=10.1.5.1
 /ip dns
-set servers=10.100.40.99,1.1.1.1
+set servers=1.1.1.1,8.8.8.8
 /ip firewall address-list
 add address=10.1.1.4/30 list=CRS326-MGMT
 add address=10.1.2.0/24 list=SERVERs-NET
 add address=10.1.4.0/24 list=VMs/LXCs-NET
 /ip firewall filter
-add action=accept chain=input connection-state=established,related disabled=\
-    yes
+add action=accept chain=input connection-state=established,related
 add action=accept chain=forward comment=\
     "Allowing already established connections" connection-state=\
-    established,related disabled=yes
-add action=accept chain=input disabled=yes in-interface-list=\
-    ZONE-CCR2004-MGMT
-add action=accept chain=input disabled=yes in-interface-list=LINK-TO-CRS326 \
-    protocol=icmp
-add action=accept chain=forward disabled=yes dst-address-list=SERVERs-NET \
+    established,related
+add action=accept chain=input in-interface-list=ZONE-CCR2004-MGMT
+add action=accept chain=input in-interface-list=LINK-TO-CRS326 protocol=icmp
+add action=accept chain=input in-interface-list=LINK-TO-CRS326 protocol=ospf
+add action=accept chain=forward dst-address-list=SERVERs-NET \
     in-interface-list=ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326
-add action=accept chain=forward disabled=yes dst-address-list=VMs/LXCs-NET \
+add action=accept chain=forward dst-address-list=VMs/LXCs-NET \
     in-interface-list=ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326
-add action=accept chain=forward disabled=yes in-interface-list=\
-    ZONE-CCR2004-MGMT out-interface-list=ZONE-USERS
+add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
+    out-interface-list=ZONE-USERS
 add action=accept chain=forward comment=\
     "Accept traffic between CCR2004 Management and CRS326 Management" \
-    disabled=yes dst-address-list=CRS326-MGMT in-interface-list=\
-    ZONE-CCR2004-MGMT out-interface-list=LINK-TO-CRS326 port=22,8291 \
-    protocol=tcp
+    dst-address-list=CRS326-MGMT in-interface-list=ZONE-CCR2004-MGMT \
+    out-interface-list=LINK-TO-CRS326 port=22,8291 protocol=tcp
 add action=drop chain=forward comment=\
-    "Block traffic from users to networks behind CRS326" disabled=yes \
-    in-interface-list=ZONE-USERS out-interface-list=LINK-TO-CRS326
-add action=accept chain=forward disabled=yes in-interface-list=ZONE-USERS \
+    "Block traffic from users to networks behind CRS326" in-interface-list=\
+    ZONE-USERS out-interface-list=LINK-TO-CRS326
+add action=accept chain=forward in-interface-list=ZONE-USERS \
     out-interface-list=ZONE-WAN
-add action=accept chain=forward disabled=yes in-interface-list=LINK-TO-CRS326 \
+add action=accept chain=forward in-interface-list=LINK-TO-CRS326 \
     out-interface-list=ZONE-WAN
-add action=accept chain=forward disabled=yes in-interface-list=\
-    ZONE-CCR2004-MGMT out-interface-list=ZONE-WAN
-add action=drop chain=input disabled=yes
-add action=drop chain=forward comment="Dropping all other forward traffic" \
-    disabled=yes
+add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
+    out-interface-list=ZONE-WAN
+add action=drop chain=input
+add action=drop chain=forward comment="Dropping all other forward traffic"
 /ip firewall nat
 add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route

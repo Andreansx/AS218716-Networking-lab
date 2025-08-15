@@ -1,4 +1,4 @@
-# 2025-08-13 00:27:46 by RouterOS 7.19.4
+# 2025-08-15 14:32:38 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -11,7 +11,7 @@ add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge \
 add interface=main-bridge name=inter-router-link0 vlan-id=100
 add interface=main-bridge name=vlan20-bare-metal vlan-id=20
 add interface=main-bridge name=vlan40-vms-cts vlan-id=40
-add interface=main-bridge name=vlan99-ospf vlan-id=99
+add interface=main-bridge name=vlan50-kubernetes vlan-id=50
 add interface=main-bridge name=vlan115-crs326-mgmt vlan-id=115
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
@@ -50,19 +50,21 @@ add bridge=main-bridge interface=sfp-sfpplus20
 add bridge=main-bridge interface=sfp-sfpplus21
 add bridge=main-bridge interface=sfp-sfpplus22
 add bridge=main-bridge interface=sfp-sfpplus23
-add bridge=main-bridge interface=sfp-sfpplus2 pvid=20
+add bridge=main-bridge edge=yes interface=sfp-sfpplus2
 add bridge=main-bridge interface=sfp-sfpplus4
 add bridge=main-bridge interface=sfp-sfpplus3
 add bridge=main-bridge interface=sfp-sfpplus1 trusted=yes
 /interface bridge vlan
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 untagged=sfp-sfpplus2 \
-    vlan-ids=20
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1,sfp-sfpplus2 vlan-ids=\
+    20
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1,sfp-sfpplus2 vlan-ids=\
     30
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1,sfp-sfpplus2 vlan-ids=\
     40
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
 add bridge=main-bridge tagged=main-bridge untagged=ether1 vlan-ids=115
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1,sfp-sfpplus2 vlan-ids=\
+    50
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
 /ip address
@@ -71,11 +73,14 @@ add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
 add address=10.1.1.5/30 interface=vlan115-crs326-mgmt network=10.1.1.4
 add address=172.16.255.2/30 interface=inter-router-link0 network=172.16.255.0
 add address=172.16.0.2 interface=loopback0 network=172.16.0.2
+add address=10.1.5.1/27 interface=vlan50-kubernetes network=10.1.5.0
 /ip dhcp-relay
 add dhcp-server=172.16.255.1 disabled=no interface=vlan20-bare-metal name=\
     vlan20-dhcp-relay
 add dhcp-server=172.16.255.1 disabled=no interface=vlan40-vms-cts name=\
     vlan40-dhcp-relay
+add dhcp-server=172.16.255.1 disabled=no interface=vlan50-kubernetes name=\
+    kubernetes-dhcp-relay
 /ip dns
 set servers=1.1.1.1
 /ip firewall address-list
@@ -83,8 +88,8 @@ add address=10.1.1.4/30 list=CRS326-MGMT
 add address=10.1.4.0/24 list=VMs/LXCs
 add address=10.1.2.0/27 list=SERVERs
 /ip firewall filter
-add action=drop chain=input disabled=yes dst-address-list=CRS326-MGMT \
-    src-address-list=SERVERs,VMs/LXCs
+add action=drop chain=input dst-address-list=CRS326-MGMT src-address-list=\
+    SERVERs,VMs/LXCs
 /ip route
 add gateway=172.16.255.1
 /ip service
@@ -96,6 +101,7 @@ add area=backbone0v2 disabled=no networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=no networks=172.16.255.0/30
 add area=backbone0v2 disabled=no networks=10.1.2.0/27 passive
 add area=backbone0v2 disabled=no networks=10.1.4.0/24 passive
+add area=backbone0v2 disabled=no networks=10.1.5.0/27 passive
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity
