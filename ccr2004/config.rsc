@@ -1,4 +1,4 @@
-# 2025-08-15 14:32:32 by RouterOS 7.19.4
+# 2025-08-16 01:28:31 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -62,7 +62,7 @@ add address=10.1.3.0/24 dns-server=1.1.1.1 gateway=10.1.3.1
 add address=10.1.4.0/24 dns-server=1.1.1.1 gateway=10.1.4.1
 add address=10.1.5.0/27 dns-server=1.1.1.1,8.8.8.8 gateway=10.1.5.1
 /ip dns
-set servers=1.1.1.1,8.8.8.8
+set servers=10.1.4.20,1.1.1.1
 /ip firewall address-list
 add address=10.1.1.4/30 list=CRS326-MGMT
 add address=10.1.2.0/24 list=SERVERs-NET
