@@ -1,5 +1,7 @@
 # Project: Repurposing a NIC for Cost-Effective VLAN Access Ports on Proxmox VE  
 
+> [!CAUTION]
+> I recently encountered a problem with the PVE network configuration established here. As far as the config might work (as it did for me for like a month) it recently caused a massive broadcast storm which disabled contact with PVE and even OSPF backbone. Please read [OSPF, L2 loop troubleshooting](../11-ospf-and-l2-loop)
 
 ## Topology
 

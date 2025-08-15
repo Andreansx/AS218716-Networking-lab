@@ -2,6 +2,11 @@
 
 Here I will cover the process in which I implement OSPF Dynamic Routing Protocol on an inter-router link between my two Core Routers.
 
+> [!CAUTION]
+> My dumbass forgot to re-enable firewall on the CCR2004 before starting with the OSPF setup. Everything mentioned here will not normally work, unless you turned off the firewall like me. All steps are all right but as I said it's crucial to enable OSPF traffic in the firewall if you use "deny-by-default" policy.   
+> Please read [OSPF, L2 loop troubleshooting](../11-ospf-and-l2-loop)
+
+
 ## Topology
 
 ![topology](./ospf.png)

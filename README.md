@@ -13,6 +13,12 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 </div>
 
+> [!CAUTION]
+> There has been a big issue with the last network configuration especially on PVE. Contact with web GUI was completly cut off and even OSPF backbone went down. 
+> All because of a massive broadcast storm and loops that occured between the CRS326 and the Proxmox VE. 
+Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) as it may be really relevant in case some other things might have stopped working. 
+> I now used the correct approach to do what I intended but without the risk of a gigantic broadcast storm.
+
 
 ## Table of Contents
 1.  [Featured Projects](#featured-projects)
