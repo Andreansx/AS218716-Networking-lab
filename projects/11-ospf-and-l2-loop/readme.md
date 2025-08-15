@@ -3,6 +3,9 @@
 In this case study I would like to talk about a massive issue that happened to me in my lab. 
 It took down the entire OSPF Instance and completly disabled access from two ends of my network to each other.  
 
+> [!NOTE]
+> The solutions I did here are related to [02-vlan30-access-without-sfp-transreceivers](../02-vlan30-access-without-sfp-transreceivers) and [06-ospf-backbone](../06-ospf-backbone)
+
 First I would like to state every IP address for clarity.   
 
 *   **CCR2004**
@@ -292,4 +295,87 @@ post-up bridge vlan add dev vmbr0 vid 20 pvid untagged self
 
 # First issue
 
+The first thing that I noticed was dead OSPF. 
+I simply restarted both routers as usual but after that the OSPF adjacency state didn't want to go past "Init" state.
+The "Init" state meaned that the CRS326 got "Hello" packets from the CCR2004 but the CCR2004 didn't hear any response.  
+
+The first thing that I thought about was the connection tracking but I didn't even reset it so I thought that it must be something different.  
+Then I looked at was the firewall. 
+I thought that this may be the cause of the CCR2004 being able to send Hello packets but not being able to receive them.  
+
+Now here's the thing.  
+
+The firewall was disabled for like two full days. 
+I was fixing other issue and for diagnostic reasons I turned it off, and I just forgot to turn it back on.
+I added a new rule:
+```rsc
+/ip firewall filter
+add action=accept chain=input protocol=ospf
+```
+After adding this rule, the Routers immediately got into "Full" adjacency state.  
+
+But here is the kicker.
+
+The firewall was **disabled**.  
+
+I thought that the reason for the OSPF instance breaking was the firewall which was blocking it.
+So it's like it was working for two days when the firewall was disabled, then it broke, then I added a rule to the firewall which was completly disabled and it fixed the issue.  
+
+I don't have any idea what kind of magic is that.   
+
+Below is the log from adding new firewall rule, to establishing "Full" adjacency state.
+```rsc
+ 2025-08-15 00:47:51 system,info filter rule added by ssh:aether@10.1.1.2 (*22 = /ip firewall filter add action=accept chain=input in-interface-list=LINK-TO-CRS326 protocol=ospf)
+ 2025-08-15 00:48:03 system,info filter rule moved by ssh:aether@10.1.1.2 ()
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: Down } state change to Init
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: Init } state change to TwoWay
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor election
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } state change to Backup DR
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } change DR: 172.16.0.2 BDR: me
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: TwoWay } state change to ExStart
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: ExStart } state change to ExStart
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: ExStart } negotiation done
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: ExStart } state change to Exchange
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: Exchange } exchange lsdb size 1
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: Exchange } exchange done
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: Exchange } state change to Loading
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: Loading } loading done
+ 2025-08-15 00:48:09 route,ospf,info backbonev2 { version: 2 router-id: 172.16.0.1 } backbone0v2 { 0.0.0.0 } interface { broadcast 172.16.255.1%inter-router-link0 } neighbor { router-id: 172.16.0.2 state: Loading } state change to Full
+```
+There is a lot there but I will break it down.  
+First I added the rule allowing the OSPF. (Remember that firewall was disabled at that time)
+```rsc
+ 2025-08-15 00:47:51 system,info filter rule added by ssh:aether@10.1.1.2 (*22 = /ip firewall filter add action=accept chain=input in-interface-list=LINK-TO-CRS326 protocol=ospf)
+```
+Then immediately after that, routers start going throught all adjacency states and finish at "Full" in literally a second. 
+
+
+# Second issue
+
+Another problem that was even worse was that I could not access the CRS326 through SSH.  
+
+After some tinkering with physical connections because I thought maybe some cables were loose, I unplugged the fiber connection to the PVE Host and suddenly the CRS326 came back to life.  
+I tested this a couple more times and it confirmed that after connecting the PVE host to the CRS326, the CRS326 immediately went down. 
+All SSH access returned no response.
+It didn't respond even to ICMP traffic.
+So I looked on MikroTik forum and found some articles that suggested that things like that are usually loops on L2.  
+
+
+After again unplugging the PVE host from the CRS326, I checked the logs on the CRS326.
+The most important thing I saw was the looped ethernet frames:
+```rsc
+2025-08-15 13:33:04 interface,warning sfp-sfpplus2: bridge RX looped packet - MAC d4:01:c3:75:18:94 -> ff:ff:ff:ff:ff:ff VID 40 ETHERTYPE 0x0800 IP UDP 10.1.4.1:5678 -> 255.255.255.255:5678
+ 2025-08-15 13:33:09 interface,warning sfp-sfpplus2: bridge RX looped packet - MAC d4:01:c3:75:18:94 -> ff:ff:ff:ff:ff:ff VID 50 ETHERTYPE 0x0800 IP UDP 10.1.5.1:5678 -> 255.255.255.255:5678
+ 2025-08-15 13:33:14 interface,warning sfp-sfpplus2: bridge RX looped packet - MAC d4:01:c3:75:18:94 -> ff:ff:ff:ff:ff:ff VID 40 ETHERTYPE 0x0800 IP UDP 10.1.4.1:5678 -> 255.255.255.255:5678
+ 2025-08-15 13:33:18 interface,warning sfp-sfpplus2 excessive broadcasts/multicasts, probably a loop
+ 2025-08-15 13:33:19 interface,warning sfp-sfpplus2: bridge RX looped packet - MAC d4:01:c3:75:18:94 -> ff:ff:ff:ff:ff:ff VID 40 ETHERTYPE 0x0800 IP UDP 10.1.4.1:5678 -> 255.255.255.255:5678
+ 2025-08-15 13:33:24 interface,warning sfp-sfpplus2: bridge RX looped packet - MAC d4:01:c3:75:18:94 -> ff:ff:ff:ff:ff:ff VID 20 ETHERTYPE 0x0800 IP UDP 10.1.2.1:5678 -> 255.255.255.255:5678
+ 2025-08-15 13:33:29 interface,info sfp-sfpplus2 link down
+ 2025-08-15 13:33:29 interface,warning sfp-sfpplus2: bridge RX looped packet - MAC d4:01:c3:75:18:94 -> ff:ff:ff:ff:ff:ff VID 20 ETHERTYPE 0x0800 IP UDP 10.1.2.1:5678 -> 255.255.255.255:5678
+```
+As you can see it's clear that those looped packeds are coming from the PVE Host.   
+
+However, I want to mention a important thing. 
+For over a month it worked flawlessly. 
+There weren't any loops whatsoever.
 
