@@ -1,11 +1,24 @@
-# OSPF Area 0 routers locked in "Init" state 
+# Troubleshooting OSPF, L2 loop and PVE network configuration
 
-Recently I encountered an issue with OSPF backbone area between my core routers.  
+In this case study I would like to talk about a massive issue that happened to me in my lab. 
+It took down the entire OSPF Instance and completly disabled access from two ends of my network to each other.  
 
-The first thing I saw was that I wasn't able to connect to my PVE host.  
+First I would like to state every IP address for clarity.   
 
-I was using my lapotp (`10.1.1.2/30`) connected to `ether1` on CCR2004 (`10.1.1.1/30`). 
-There is OSPF running between this CCR2004 and the CRS326 on their inter-router link (`172.16.255.0/30`) interfaces.
-The VLAN 20 where the PVE host has it's web panel, is available through the `sfp-sfpplus2`, SVI 20 interface on the CRS326. 
+*   **CCR2004**
+    *   `ccr2004-mgmt`, `SVI 111` - `10.1.1.1/30` on `ether1`
+    *   `inter-router-link0`, `SVI 100` - `172.16.255.1/30` 
+
+*   **CRS326**
+    *   `crs326-mgmt`, `SVI 115` - `10.1.1.5/30` on `ether1`
+    *   `inter-router-link0`, `SVI 100` - `172.16.255.2/30`
+    *   `vlan20-bare-metal`, `SVI 20` - `10.1.2.1/27` - untagged `vid 20` on `sfp-sfpplus2`
+    *   `vlan40-vms-cts`, `SVI 40` - `10.1.4.1/24` - tagged `vid 40` on `sfp-sfpplus2`
+
+*   **thinkpad**
+    *   `enp0s25` - `10.1.1.2/30`
+
+*   **PVE**
+    *   `vmbr0` - `10.1.2.30/27` - untagged `vid 20`, tagged `vid 30, 40`
 
 

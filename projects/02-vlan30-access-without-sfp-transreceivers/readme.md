@@ -57,6 +57,11 @@ I achieved the final solution through a very long process of implementation and 
 
 In the final working version I used `post-up` commands to use the Linux built-it network bridge functions.
 
+> [!CAUTION]
+> The block of code below is the immediate cause of the later broadcast storm that I encountered and that took down my entire OSPF. Please **DO NOT** use it as a template for your own similar topology. 
+> Instead look at [OSPF, L2 loop troubleshooting](../11-ospf-and-l2-loop). I explained there what was wrong and what is the correct approach.
+> My solution below does in fact technically work. But it's a really big risk of a massive loop.
+
 ### 4.1. Final `/etc/network/interfaces`
 
 ```ini
