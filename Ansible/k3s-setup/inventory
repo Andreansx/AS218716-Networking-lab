@@ -1,0 +1,4 @@
+k3s_node_1 ansible_host=10.1.5.30 ansible_user=k3s
+k3s_node_2 ansible_host=10.1.5.29 ansible_user=k3s
+k3s_node_3 ansible_host=10.1.5.28 ansible_user=k3s
+

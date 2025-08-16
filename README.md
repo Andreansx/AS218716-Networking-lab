@@ -7,7 +7,7 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 ![MikroTik](https://img.shields.io/badge/mikrotik-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white)
-![Debian](https://img.shields.io/badge/debian-7D3742?style=for-the-badge&logo=debian&logoColor=white)
+![Debian](https://img.shields.io/badge/ansible-7D3742?style=for-the-badge&logo=ansible&logoColor=white)
 ![FreeBSD](https://img.shields.io/badge/freebsd-A54E3E?style=for-the-badge&logo=freebsd&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-CE653B?style=for-the-badge&logo=terraform&logoColor=white)
 
@@ -17,8 +17,8 @@ This repository serves as a documentation of infrastructure, configurations, pro
 > There has been a big issue with the last network configuration especially on PVE. Contact with web GUI was completly cut off and even OSPF backbone went down. 
 > All because of a massive broadcast storm and loops that occured between the CRS326 and the Proxmox VE. 
 Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) as it may be really relevant in case some other things might have stopped working. 
-> I now used the correct approach to do what I intended but without the risk of a gigantic broadcast storm.
-
+> I now used the correct approach to do what I intended but without the risk of a gigantic broadcast storm.  
+> (It turned out that everything was caused by a L1 Loop)
 
 ## Table of Contents
 1.  [Featured Projects](#featured-projects)
