@@ -60,7 +60,7 @@ This repository is structured to be a clear and useful reference. Here’s a map
 *   **/[device-name]/** (e.g., [`./ccr2004/`](./ccr2004/), [`./r710/`](./r710/)): Contains the latest configuration files and documentation for each piece of hardware. This is the source of truth for device settings.
 *   **`/IaC/`**: Holds all Infrastructure as Code projects, primarily using Terraform to automate deployments on Proxmox.
 *   **`/docs/`**: Contains details about plans for improving the lab. For example a better addressation plan
-
+*   **`/projects/`**: Probably the most interesting directory cause it's where all project documentations are.
 
 ## Lab Architecture
 
@@ -76,22 +76,25 @@ Below is a descrition of how generally my lab is built.
 
 The network consists of two main Routers, both of which belong to OSPF Area 0:
 *   **CCR2004-1G-12S+2XS** - This incredibly powerful router handles DHCP Servers, NAT, Routing etc.
-*   **CRS326-24S+2Q+RM** - This one has a gigantic capabilities for port-speed switching. It handles inter-VLAN Routing with L3 Hardware offload, and generally VLANs. It's also a DHCP Relay for VLANs 20 and 40.  
-Both of those routers are connected through a inter-router link. Each of them has a separate, small `/30` network for management.  
+*   **CRS326-24S+2Q+RM** - This one has a gigantic capabilities for port-speed switching. It handles inter-VLAN Routing with L3 Hardware offload, and generally VLANs. 
+It's also a DHCP Relay for VLANs 20, 40 and 50.  
+Both of those routers are connected through a inter-router link where OSPF is running. 
+Each of them has a separate, small `/30` network for management.  
 
 The main Server in my lab is a Dell PowerEdge R710. It's running Proxmox VE and it's equipped with 1x 10GbE SFP+ NIC, and another 2x 10GbE RJ45 NIC. 
 The dual-port card acts like a "dumb" switch, providing access to VLAN 30 for end devices. 
-The SFP+ NIC is the main network connection for this server. It's connected to `sfp-sfpplus2` interface on the CRS326, and it carries both tagged and untagged traffic.
+The SFP+ NIC is the main network connection for this server. It's connected to `sfp-sfpplus2` interface on the CRS326, and it carries tagged traffic for VLANs 20, 30, 40 and 50.
 
 ## VLAN & IP Schema
 
-The network is segmented using VLANs. For now there are three main VLANs.
+The network is separated using VLANs.
 
 | ID  & Name    | Network | Where | Description                                   |
 |:---|:---|:---|:---|
-| 20 - Bare Metal | 10.1.2.0/27         | Routed on Core-CRS326 | Here are bare-metal devices. For example, the PVE Host is here on 10.1.2.30/27.        |
-| 30 - Users | 10.1.3.0/24         | Routed on Core-CCR2004 | This is the VLAN for users.     |
-| 40 - VMs/LXCs | 10.1.4.0/24       | Routed on Core-CRS326  | Here are placed Virtual Machines accessible through `vmbr0` |
+| 20 - Bare Metal | 10.1.2.0/27         | SVI on Core-CRS326 | Here are bare-metal devices. For example, the PVE Host is here on 10.1.2.30/27.        |
+| 30 - Users | 10.1.3.0/24         | SVI on Core-CCR2004 | This is the VLAN for users.     |
+| 40 - VMs/LXCs | 10.1.4.0/24       | SVI on Core-CRS326  | Here are placed Virtual Machines accessible through `vmbr0` |
+| 50 - Kubernetes | 10.1.5.0/27       | SVI on Core-CRS326  | Dedicated separate network for Kubernetes cluster. |
 
 There are also dedicated VLANs for management and traffic tranzit.
 
@@ -99,7 +102,7 @@ There are also dedicated VLANs for management and traffic tranzit.
     CCR2004 - `172.16.255.1/30`
     CRS326  - `172.16.255.2/30`
 *   **VLAN 111** - This is where the management SVI for the CCR2004 is. The CCR2004 has a `10.1.1.1/30` IP here.
-*   **VLAN 115** - Here is the management SVI for the CRS326 on the `10.1.1.5/30` IP Address.
+*   **VLAN 115** - Here is the management SVI for the CRS326 with `10.1.1.5/30` IP Address.
 
 ## Hardware
 
