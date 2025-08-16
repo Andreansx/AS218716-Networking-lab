@@ -1,0 +1,33 @@
+- name: setting up all nodes
+  hosts: kubernetes_nodes
+  become: yes
+  tasks:
+    - name: turning off swap
+      command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+
+    - name: deleting swap from fstab
+      mount:
+        name: swap
+        fstype: swap
+        state: absent
+
+    - name: ensuring that neccessary modules are loaded
+      modprobe:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - br_netfilter
+        - overlay
+
+    - name: configuring sysctl for containers network
+      sysctl:
+        name: "{{ item }}"
+        state: present
+        reload: yes
+        value: '1'
+        sysctl_set: yes
+      loop:
+        - net.bridge.bridge-nf-call-iptables
+        - net.ipv4.ip_forward
+        - net.bridge.bridge-nf-call-ip6tables
