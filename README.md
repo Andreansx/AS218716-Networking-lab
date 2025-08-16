@@ -83,7 +83,7 @@ Each of them has a separate, small `/30` network for management.
 
 The main Server in my lab is a Dell PowerEdge R710. It's running Proxmox VE and it's equipped with 1x 10GbE SFP+ NIC, and another 2x 10GbE RJ45 NIC. 
 The dual-port card acts like a "dumb" switch, providing access to VLAN 30 for end devices. 
-The SFP+ NIC is the main network connection for this server. It's connected to `sfp-sfpplus2` interface on the CRS326, and it carries tagged traffic for VLANs 20, 30, 40 and 50.
+The SFP+ NIC is the main network connection for this server. It's connected to `sfp-sfpplus2` interface on the CRS326, and it carries tagged traffic for VLAN 20 for PVE management and also Tagged traffic for VLANs 30, 40 and 50.
 
 ## VLAN & IP Schema
 
@@ -94,7 +94,13 @@ The network is separated using VLANs.
 | 20 - Bare Metal | 10.1.2.0/27         | SVI on Core-CRS326 | Here are bare-metal devices. For example, the PVE Host is here on 10.1.2.30/27.        |
 | 30 - Users | 10.1.3.0/24         | SVI on Core-CCR2004 | This is the VLAN for users.     |
 | 40 - VMs/LXCs | 10.1.4.0/24       | SVI on Core-CRS326  | Here are placed Virtual Machines accessible through `vmbr0` |
-| 50 - Kubernetes | 10.1.5.0/27       | SVI on Core-CRS326  | Dedicated separate network for Kubernetes cluster. |
+| 50 - Kubernetes | 10.1.5.0/27       | SVI on Core-CRS326  | Dedicated separate network for "public" IPs for the nodes in kubernetes cluster. |
+
+There are also two networks dedicated for Kubernetes cluster internal IPs   
+
+*   **Services CIDR** - `10.5.0.0/16`
+*   **Cluster CIDR** - `10.6.0.0/16`
+
 
 There are also dedicated VLANs for management and traffic tranzit.
 
