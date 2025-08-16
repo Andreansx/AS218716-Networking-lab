@@ -31,3 +31,28 @@
         - net.bridge.bridge-nf-call-iptables
         - net.ipv4.ip_forward
         - net.bridge.bridge-nf-call-ip6tables
+
+- name: setting up the master node
+  hosts: kubernetes_master
+  become: yes
+  tasks:
+    - name: fetching k3s installation script
+      get_url: 
+        url: https://get.k3s.io
+        dest: /tmp/install_k3s.sh
+        mode: '0755'
+    
+    - name: Running the installation scirpt
+      command: /tmp/install_k3s.sh
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: getting the token for joining nodes
+      command: cat /var/lib/rancher/k3s/server/node-token
+      register: k3s_token_output
+      changed_when: false
+
+    - name: outputting the token in the terminal
+      debug:
+        msg: "-----------Token for copying: {{ k3s_token_output }} --------------"
+
