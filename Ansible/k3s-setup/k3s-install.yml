@@ -43,7 +43,7 @@
         mode: '0755'
     
     - name: Running the installation scirpt
-      command: /tmp/install_k3s.sh
+      command: /tmp/install_k3s.sh server --service-cidr=10.6.0.0/16 --cluster-cidr=10.5.0.0/16
       args:
         creates: /usr/local/bin/k3s
 
@@ -53,6 +53,24 @@
       changed_when: false
 
     - name: outputting the token in the terminal
-      debug:
-        msg: "-----------Token for copying: {{ k3s_token_output }} --------------"
+      set_fact:
+        k3s_join_token: "{{ k3s_token_output.stdout }}"
+      delegate_to: localhost
 
+- name: Joining the workers
+  hosts: kubernetes_workers
+  become: yes
+  tasks:
+    - name: get url for installation
+      get_url:
+        url: https://get.k3s.io
+        dest: /tmp/k3s_install.sh
+        mode: '0755'
+
+    - name: joining the workers using the token
+      command: /tmp/k3s_install.sh agent
+      environment:
+        K3S_URL: "https://{{ hostvars[groups['kubernetes_master'][0]]['ansible_host'] }}:6443"
+        K3S_TOKEN: "{{ hostvars[groups['kubernetes_master'][0]]['k3s_join_token']}}"
+      args:
+        creates: /usr/local/bin/k3s-agent
