@@ -7,7 +7,7 @@ This repository serves as a documentation of infrastructure, configurations, pro
 
 ![MikroTik](https://img.shields.io/badge/mikrotik-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white)
-![Debian](https://img.shields.io/badge/ansible-7D3742?style=for-the-badge&logo=ansible&logoColor=white)
+![kubernetes](https://img.shields.io/badge/kubernetes-7D3742?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![FreeBSD](https://img.shields.io/badge/freebsd-A54E3E?style=for-the-badge&logo=freebsd&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-CE653B?style=for-the-badge&logo=terraform&logoColor=white)
 
