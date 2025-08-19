@@ -1,0 +1,12 @@
+- name: installing basic packages
+  become: yes
+  hosts: kubernetes_nodes
+  tasks:
+    - name: updating apt
+      apt:
+        update_cache: yes
+    - name: installing packages
+      apt:
+        name: iperf3, vim, curl, cloud-guest-utils, speedtest-cli, iptables
+        state: present
+

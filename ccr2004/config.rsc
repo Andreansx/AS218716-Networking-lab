@@ -1,4 +1,4 @@
-# 2025-08-18 21:42:52 by RouterOS 7.19.4
+# 2025-08-19 17:40:47 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -56,8 +56,8 @@ add address=172.16.255.1/30 interface=inter-router-link0 network=172.16.255.0
 add address=172.16.0.1 interface=loopback0 network=172.16.0.1
 /ip dhcp-server lease
 add address=10.1.5.30 mac-address=BC:24:11:80:55:00
-add address=10.1.5.29 mac-address=BC:24:11:A0:55:01
-add address=10.1.5.28 mac-address=BC:24:11:00:55:02
+add address=10.1.5.29 mac-address=BC:24:11:80:55:01
+add address=10.1.5.28 mac-address=BC:24:11:80:55:02
 /ip dhcp-server network
 add address=10.1.2.0/27 dns-server=1.1.1.1 gateway=10.1.2.1
 add address=10.1.3.0/24 dns-server=1.1.1.1 gateway=10.1.3.1
