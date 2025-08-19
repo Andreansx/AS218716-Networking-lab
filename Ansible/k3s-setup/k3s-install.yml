@@ -43,7 +43,7 @@
         mode: '0755'
     
     - name: Running the installation scirpt
-      command: /tmp/install_k3s.sh server --service-cidr=10.6.0.0/16 --cluster-cidr=10.5.0.0/16
+      command: /tmp/install_k3s.sh server --service-cidr=10.6.0.0/16 --cluster-cidr=10.5.0.0/16 --flannel-backend=none
       args:
         creates: /usr/local/bin/k3s
 
