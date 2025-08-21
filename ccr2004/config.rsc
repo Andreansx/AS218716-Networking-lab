@@ -1,4 +1,4 @@
-# 2025-08-19 17:40:47 by RouterOS 7.19.4
+# 2025-08-22 00:40:21 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -36,7 +36,7 @@ add address-pool=pool-kubernetes interface=inter-router-link0 lease-time=1w3d \
 /port
 set 0 name=serial0
 /routing ospf instance
-add disabled=no name=backbonev2 router-id=172.16.0.1
+add disabled=yes name=backbonev2 router-id=172.16.0.1
 /routing ospf area
 add disabled=no instance=backbonev2 name=backbone0v2
 /interface bridge port
@@ -64,7 +64,7 @@ add address=10.1.3.0/24 dns-server=1.1.1.1 gateway=10.1.3.1
 add address=10.1.4.0/24 dns-server=1.1.1.1 gateway=10.1.4.1
 add address=10.1.5.0/27 dns-server=1.1.1.1,8.8.8.8 gateway=10.1.5.1
 /ip dns
-set servers=10.1.4.20,1.1.1.1
+set servers=1.1.1.1,8.8.8.8
 /ip firewall address-list
 add address=10.1.1.4/30 list=CRS326-MGMT
 add address=10.1.2.0/24 list=SERVERs-NET
@@ -95,7 +95,7 @@ add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
 add action=accept chain=forward comment=\
     "Accept traffic between CCR2004 Management and CRS326 Management" \
     dst-address-list=CRS326-MGMT in-interface-list=ZONE-CCR2004-MGMT \
-    out-interface-list=LINK-TO-CRS326 port=22,8291 protocol=tcp
+    out-interface-list=LINK-TO-CRS326 port=22,8291,80 protocol=tcp
 add action=drop chain=forward comment=\
     "Block traffic from users to networks behind CRS326" in-interface-list=\
     ZONE-USERS out-interface-list=LINK-TO-CRS326
@@ -115,8 +115,9 @@ add dst-address=10.1.1.4/30 gateway=172.16.255.2
 /ip service
 set ftp disabled=yes
 set telnet disabled=yes
-set www disabled=yes
-set api disabled=yes
+/routing bgp connection
+add as=6500 local.role=ebgp name=eBGP-0 output.redistribute=bgp \
+    remote.address=172.16.255.2
 /routing ospf interface-template
 add area=backbone0v2 disabled=no networks=172.16.0.1/32 passive
 add area=backbone0v2 disabled=no networks=172.16.255.0/30

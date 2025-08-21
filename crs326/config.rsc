@@ -1,4 +1,4 @@
-# 2025-08-19 17:40:53 by RouterOS 7.19.4
+# 2025-08-22 00:40:27 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -22,7 +22,7 @@ set [ find default=yes ] supplicant-identity=MikroTik
 /port
 set 0 name=serial0
 /routing ospf instance
-add disabled=no name=backbonev2 router-id=172.16.0.2
+add disabled=yes name=backbonev2 router-id=172.16.0.2
 /routing ospf area
 add disabled=no instance=backbonev2 name=backbone0v2
 /interface bridge port
@@ -88,8 +88,14 @@ add dhcp-server=172.16.255.1 disabled=no interface=vlan30-users name=\
 set servers=1.1.1.1
 /ip firewall address-list
 add address=10.1.1.4/30 list=CRS326-MGMT
-add address=10.1.4.0/24 list=VMs/LXCs
-add address=10.1.2.0/27 list=SERVERs
+add address=10.1.4.0/24 list=VMS_NET
+add address=10.1.2.0/27 list=SERVERS_NET
+add address=10.1.3.0/24 list=USERS_NET
+add address=10.1.5.0/27 list=KUBERNETES_NET
+add address=10.1.2.0/27 list=BGP_ADV_NET
+add address=10.1.3.0/24 list=BGP_ADV_NET
+add address=10.1.4.0/24 list=BGP_ADV_NET
+add address=10.1.5.0/27 list=BGP_ADV_NET
 /ip firewall filter
 add action=drop chain=input dst-address-list=CRS326-MGMT src-address-list=\
     SERVERs,VMs/LXCs
@@ -99,6 +105,9 @@ add gateway=172.16.255.1
 set ftp disabled=yes
 set www disabled=yes
 set api disabled=yes
+/routing bgp connection
+add as=65001 local.role=ebgp name=eBGP-0 output.network=BGP_ADV_NET \
+    remote.address=172.16.255.1
 /routing ospf interface-template
 add area=backbone0v2 disabled=no networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=no networks=172.16.255.0/30
