@@ -17,6 +17,7 @@ What this document covers are the steps I took in effort to swap OSPFv2 Area 0 f
         *   `sfp-sfpplus11` - link to `sfp-sfpplus24` on CRS326
         *   `ether1` - management
         *   `sfp-sfpplus12` - link to ISP Router
+        *   `lo` - 172.16.0.1/32
     *   Config:
 
 <details>
@@ -157,6 +158,7 @@ set ether1 disabled=no
         *   `sfp-sfpplus24` - link to `sfp-sfpplus11` on CCR2004
         *   `ether1` - management
         *   `sfp-sfpplus2` - link to PVE Host - Tagged VLANs 20,30,40,50
+        *   `lo` - 172.16.0.2/32
     *   Config:
 
 <details>
@@ -303,6 +305,34 @@ I don't really know if that's the RouterOS specifics or just it's the general co
 
 All of that, plus the fact that BGP is very useful and a crucial part of work in a datacenter, brought me to think about eBGP.  
 
-With BGP I could stop using LACP and just create two idependent links which would create a ECMP connection.
+With BGP I could stop using LACP and just create two idependent links which would create a ECMP connection.  
 
+ECMP is the best option for correct L3 Load Balancing instead of LACP L2 link aggregation.
 
+# eBGP creation
+
+> [!NOTE]
+> Here is a very important thing related to the RouterOS version that I am using.  
+> On RouterOS Wiki there is a `/instance` menu in bgp routing section.  
+> However it's very important to note that the instance menu doesn't exist in versions pre-7.20beta. 
+> I spend some time figuring why can't I find that menu, but then I found that on 7.19.4 there is no instance menu as it's created automatically when creating a connection.
+
+So the first thing to do was to create a BGP connection.   
+
+> [!NOTE]
+> At first I created only one connection since the `bond0` interface was still present. 
+> Another eBGP connection will be added later.
+
+Networks behind CCR2004 along with itself would be AS 65000 and networks behind CRS326 would be AS 65001.  
+
+First I needed IPs for RIDs on loopback addresses so they would be always `UP`.  
+On the CCR2004:
+```rsc
+/ip address
+add address=172.16.0.1/32 interface=lo
+```
+On the CRS326:
+```rsc
+/ip address
+add address=172.16.0.2/32 interface=lo
+```
