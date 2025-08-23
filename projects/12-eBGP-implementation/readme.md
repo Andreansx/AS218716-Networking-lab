@@ -10,6 +10,14 @@ What this document covers are the steps I took in effort to swap OSPFv2 Area 0 f
 
 # Environment
 
+> [!CAUTION]
+> There is one thing which is super important so I marked this here as caution because its as I said crucial.
+> All of these things in the [eBGP Creation](#ebgp-creation) section were done with firewall completely disabled on the CCR2004.
+> I am aware that leaving the firewall disabled is not a good practise. 
+> However, there already were problems regarding RouterOS Conntrack which would make it very very difficult to first implement eBGP.
+> So I implemented BGP and then I got into the firewall since it had it's own problems.
+
+
 *   **CCR2004-1G-12S+2XS**
     *   RouterOS version: v7.19.4
     *   Connections:
@@ -507,5 +515,47 @@ set [find vlan-id=100] interface=sfp-sfpplus1
 set [find vlan-ids=100] tagged=main-bridge,sfp-sfpplus1
 ```
 
+As you can see above, on the CCR2004 i had to make one change but on the CRS326 I had to make three different changes.  
+That is because of the vlan filtering on the bridge.  
+
+The `/interface/bridge/port` is to simply allow the physical interface to have any connection to the bridge.  
+The `/interface/vlan` is to tell the SVI on which physical interface it should listen   
+And the `/interface/bridge/vlan` is to tell the bridge itself how it should handle tagging, eg. on which port this vlan should be tagged or untagged.  
+
+
+The natural next step was to test the connectivity before going any further.  
+
+From my laptop (`10.1.1.2`) i tried to ping my PVE host (`10.1.2.30`)
+
+```zsh
+❯ ping 10.1.2.30
+PING 10.1.2.30 (10.1.2.30) 56(84) bytes of data.
+64 bytes from 10.1.2.30: icmp_seq=1 ttl=62 time=0.311 ms
+64 bytes from 10.1.2.30: icmp_seq=2 ttl=62 time=0.235 ms
+^C
+--- 10.1.2.30 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1046ms
+rtt min/avg/max/mdev = 0.235/0.273/0.311/0.038 ms
+```
+ICMP traffic seemed to go through correctly.
+
+I also checked with `traceroute` (or `tracepath` on Arch)
+```zsh
+❯ tracepath 10.1.2.30
+ 1?: [LOCALHOST]                      pmtu 1500
+ 1:  _gateway                                              0.192ms
+ 1:  _gateway                                              0.164ms
+ 2:  172.16.255.2                                          0.475ms
+ 3:  pve.homelab                                           0.311ms reached
+     Resume: pmtu 1500 hops 3 back 3
+```
+The route seems to be correct.  
+The traffic goes to the 10.1.1.1 which is the gateway for CCR2004 OOB Mgmt network (`10.1.1.0/30`). 
+Then it goes to through the inter-router link on interface `eBGP-Link-0` and arrives on `eBGP-Link-0` interface on the CRS326 with an IP of `172.16.255.2`. 
+And then since the CRS326 has a direct connection to the 10.1.2.0/27 network, it sends the traffic through 10.1.2.1 which is it's SVI in that VLAN and then it goes to the `pve.homelab` (`10.1.2.30` in `/etc/hosts`).   
+
+Since everything was working correctly, I could get to the next step.
+
+# Second link for eBGP and L3 retundancy
 
 
