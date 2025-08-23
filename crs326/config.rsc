@@ -1,4 +1,4 @@
-# 2025-08-22 22:36:45 by RouterOS 7.19.4
+# 2025-08-23 15:33:50 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -7,8 +7,8 @@
 add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge \
     vlan-filtering=yes
 /interface vlan
-add interface=main-bridge name=inter-router-link0 vlan-id=100
-add interface=main-bridge name=inter-router-link1 vlan-id=104
+add interface=main-bridge name=eBGP-Link-0 vlan-id=100
+add interface=main-bridge name=eBGP-Link-1 vlan-id=104
 add interface=main-bridge name=vlan20-bare-metal vlan-id=20
 add interface=main-bridge name=vlan30-users vlan-id=30
 add interface=main-bridge name=vlan40-vms-cts vlan-id=40
@@ -70,11 +70,11 @@ set 0 l3-hw-offloading=yes
 add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
 add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
 add address=10.1.1.5/30 interface=vlan115-crs326-mgmt network=10.1.1.4
-add address=172.16.255.2/30 interface=inter-router-link0 network=172.16.255.0
+add address=172.16.255.2/30 interface=eBGP-Link-0 network=172.16.255.0
 add address=172.16.0.2 interface=lo network=172.16.0.2
 add address=10.1.5.1/27 interface=vlan50-kubernetes network=10.1.5.0
 add address=10.1.3.1/24 interface=vlan30-users network=10.1.3.0
-add address=172.16.255.6/30 interface=inter-router-link1 network=172.16.255.4
+add address=172.16.255.6/30 interface=eBGP-Link-1 network=172.16.255.4
 /ip dhcp-relay
 add dhcp-server=172.16.0.1 disabled=no interface=vlan20-bare-metal \
     local-address-as-src-ip=yes name=vlan20-dhcp-relay
@@ -96,20 +96,22 @@ add address=10.1.2.0/27 list=BGP_ADV_NET
 add address=10.1.3.0/24 list=BGP_ADV_NET
 add address=10.1.4.0/24 list=BGP_ADV_NET
 add address=10.1.5.0/27 list=BGP_ADV_NET
+add address=172.16.0.2 list=BGP_ADV_NET
 /ip firewall filter
 add action=drop chain=input disabled=yes dst-address-list=CRS326-MGMT \
     src-address-list=SERVERs,VMs/LXCs
 /ip route
 add gateway=172.16.255.1
+add dst-address=10.1.1.0/30 gateway=172.16.255.1
 /ip service
 set ftp disabled=yes
 set www disabled=yes
 set api disabled=yes
 /routing bgp connection
 add as=65001 local.role=ebgp name=eBGP-0 output.network=BGP_ADV_NET \
-    remote.address=172.16.255.1
+    remote.address=172.16.255.1 router-id=172.16.0.2
 add as=65001 local.role=ebgp name=eBGP-1 output.network=BGP_ADV_NET \
-    remote.address=172.16.255.5
+    remote.address=172.16.255.5 router-id=172.16.0.2
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
@@ -127,5 +129,4 @@ set enter-setup-on=delete-key
 set address-acquisition-mode=static identity=SW_CORE_02 static-ip-address=\
     10.10.20.13
 /tool sniffer
-set filter-ip-address=10.1.4.0/24,172.16.0.1/32 filter-ip-protocol=udp \
-    filter-port=bootps
+set filter-ip-protocol=udp filter-port=bootps
