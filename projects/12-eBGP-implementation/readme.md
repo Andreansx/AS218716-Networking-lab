@@ -12,6 +12,10 @@ What this document covers are the steps I took in effort to swap OSPFv2 Area 0 f
 > It was however specifically related to DHCP and its implementation in RouterOS. 
 > You can read about MikroTik's implementation of DHCP Server [here](https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP#DHCP-DHCPServer), and about the long-standing issue with DHCP Server in RouterOS v7.X [here](https://obsluga-it.pl/mikrotik-problem-z-serwerem-dhcp/) (in Polish, translate to English if you need) and you can read [this](https://help.mikrotik.com/docs/spaces/ROS/pages/19136718/Layer2+misconfiguration#Layer2misconfiguration-VLANinabridgewithaphysicalinterface) regarding L2 Misconfiguration with VLANs with a phisical interface on a bridge.
 
+> [!NOTE]
+> If you would like to see the links to the sources, please check down below, I will provide all related links in the [Sources](#sources) section.
+
+
 # Environment
 
 > [!CAUTION]
@@ -656,7 +660,7 @@ I will spare the details about how I tried to enable multihopping, some weird ro
 I was just searching a lot and honestly couldn't find a straight answer if the ECMP is possible to do in that way or not, since everything seemed correct. 
 All routes had the same administrative distance and literally the same parameters etc.  
 
-On MikroTik Forum I found a thread related ECMP + BGP. 
+On MikroTik Forum I found a thread related [ECMP + BGP](https://forum.mikrotik.com/t/bgp-ecmp/153905). 
 One of the replies stated:  
 
 ![forum-screenshoot](./forum-screenshot.png)
@@ -674,4 +678,25 @@ One is active and the second one is simply waiting as a failover for activation 
 
 I then thought that two routes would probably break RouterOS firewall Conntrack.  
 But I forgot that since one route is not active, then traffic routed with BGP routes won't even go through the second point-to-point network (`172.16.255.4/30`)
+
+[here](https://wiki.mikrotik.com/Manual:BGP_Load_Balancing_with_two_interfaces) is another thing.   
+
+As provided by MikroTik Wiki above, ECMP technically was available but in very very old RouterOS versions.
+
+# Sources
+
+*   [https://wiki.mikrotik.com/Manual:BGP_Load_Balancing_with_two_interfaces](https://wiki.mikrotik.com/Manual:BGP_Load_Balancing_with_two_interfaces)
+*   [https://help.mikrotik.com/docs/spaces/ROS/pages/28606515/Routing+Protocol+Overview](https://help.mikrotik.com/docs/spaces/ROS/pages/28606515/Routing+Protocol+Overview)
+*   [https://forum.mikrotik.com/t/bgp-ecmp/153905](https://forum.mikrotik.com/t/bgp-ecmp/153905)
+*   [https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP#DHCP-DHCPServer](https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP#DHCP-DHCPServer)
+
+## ECMP Conclusion
+
+Sadly, for now, I won't be able to use ECMP since it simply isn't supported for BGP in RouterOS v7.19.4.  
+
+However what was achieved here is a retundant BGP instance which will simply activate the second available route through the `eBGP-Link-1` if the `eBGP-Link-0` fails.  
+The only thing up for question here still is the reconvergence time.
+How fast will those routes switch?
+
+
 
