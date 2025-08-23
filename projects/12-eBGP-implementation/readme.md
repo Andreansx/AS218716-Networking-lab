@@ -683,13 +683,6 @@ But I forgot that since one route is not active, then traffic routed with BGP ro
 
 As provided by MikroTik Wiki above, ECMP technically was available but in very very old RouterOS versions.
 
-# Sources
-
-*   [https://wiki.mikrotik.com/Manual:BGP_Load_Balancing_with_two_interfaces](https://wiki.mikrotik.com/Manual:BGP_Load_Balancing_with_two_interfaces)
-*   [https://help.mikrotik.com/docs/spaces/ROS/pages/28606515/Routing+Protocol+Overview](https://help.mikrotik.com/docs/spaces/ROS/pages/28606515/Routing+Protocol+Overview)
-*   [https://forum.mikrotik.com/t/bgp-ecmp/153905](https://forum.mikrotik.com/t/bgp-ecmp/153905)
-*   [https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP#DHCP-DHCPServer](https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP#DHCP-DHCPServer)
-
 ## ECMP Conclusion
 
 Sadly, for now, I won't be able to use ECMP since it simply isn't supported for BGP in RouterOS v7.19.4.  
@@ -698,5 +691,21 @@ However what was achieved here is a retundant BGP instance which will simply act
 The only thing up for question here still is the reconvergence time.
 How fast will those routes switch?
 
+Well, sadly, the time of reconvergence is equal to the `keepalive` timer of the BGP session.
+And since it's currently set to 60 seconds, then the time that it will take for the routes to refresh, is a minute.  
+
+This is of course unbeliveably long and impossible to be a proper failover.  
+
+The solution for this can be to simply make the `keepalive` timer shorter.
+
+
+
+
+# Sources
+
+*   [https://wiki.mikrotik.com/Manual:BGP_Load_Balancing_with_two_interfaces](https://wiki.mikrotik.com/Manual:BGP_Load_Balancing_with_two_interfaces)
+*   [https://help.mikrotik.com/docs/spaces/ROS/pages/28606515/Routing+Protocol+Overview](https://help.mikrotik.com/docs/spaces/ROS/pages/28606515/Routing+Protocol+Overview)
+*   [https://forum.mikrotik.com/t/bgp-ecmp/153905](https://forum.mikrotik.com/t/bgp-ecmp/153905)
+*   [https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP#DHCP-DHCPServer](https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP#DHCP-DHCPServer)
 
 
