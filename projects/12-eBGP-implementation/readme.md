@@ -22,7 +22,8 @@ What this document covers are the steps I took in effort to swap OSPFv2 Area 0 f
 
 <details>
     <summary><h4>CCR2004-config.rsc</h4></summary>
-    
+    <h4>Keep in mind this is the config before the BGP!</h4>
+
 ```rsc
 /interface bridge
 add name=ccr2004-mgmt port-cost-mode=short
@@ -163,6 +164,7 @@ set ether1 disabled=no
 
 <details>
     <summary><h4>CRS326-config.rsc</h4></summary>
+    <h4>Keep in mind this is the config before the BGP!</h4>
 
 ```rsc
 /interface bridge
@@ -472,3 +474,38 @@ Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
   DAb 172.16.0.2/32    172.16.255.2   main                 20
   Dac 172.16.255.0/30  eBGP-Link-0    main                  0
 ```
+
+However the point here is that the eBGP session is still actually on the `bond0` interface, so time to change that.
+
+> [!NOTE]
+> The commands I did here were applied using serial connection, as SSH connection would break during this.
+
+First I had to change the interface on which the SVI for VLAN 100 was configured on both CRS326 and CCR2004 and remove the `bond0`.  
+
+on CCR2004:
+```rsc
+/interface bonding
+remove [find]
+/interface vlan
+set [find vlan-id=100] interface=sfp-sfpplus1
+```
+on the CRS326 I first had to remove `bond0` from the bridge, then add the `sfp-sfpplus1` to the bridge, and then change the interface in `interface/vlan` menu as well as in the `/interface/bridge/vlan` since the CRS326 uses `vlan-filtering` on the `main-bridge` so I had to also change the tagged port for the vlan 100.
+
+> [!NOTE]
+> Here I added also the `sfp-sfpplus24` interface to the bridge.
+> It was part of the bonding interface and will be later used as a tagged port for a new transit link, since there will be two eBGP sessions.
+
+```rsc
+/interface bonding
+remove [find]
+/interface bridge port
+add bridge=main-bridge interface=sfp-sfpplus1
+add bridge=main-bridge interface=sfp-sfpplus24
+/interface vlan
+set [find vlan-id=100] interface=sfp-sfpplus1
+/interface bridge vlan
+set [find vlan-ids=100] tagged=main-bridge,sfp-sfpplus1
+```
+
+
+
