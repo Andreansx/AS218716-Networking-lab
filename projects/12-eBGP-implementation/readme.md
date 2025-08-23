@@ -6,13 +6,18 @@ What this document covers are the steps I took in effort to swap OSPFv2 Area 0 f
 > This is gonna be a really big documentation. There is a lot to write but I will try to group the steps in some way even though in reality this was super messy. Swapping routes for BGP routes was not complex in itself but there is a lot of other things that are important.  
 > I think it's best to first read a couple of documentations:  
 > [OSPF and Loop troubleshooting](../11-ospf-and-l2-loop/readme.md)  
-> [OSPF Backbone](../06-ospf-backbone/readme.md)
+> [OSPF Backbone](../06-ospf-backbone/readme.md)   
+> I think that this is the most complicated project I did. This took me more than two whole days of sitting and troubleshooting. 
+> However, as you will see lower, the really long troubleshooting process wasn't directly related to BGP.
+> It was however specifically related to DHCP and its implementation in RouterOS. 
+> You can read about MikroTik's implementation of DHCP Server [here](https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP#DHCP-DHCPServer), and about the long-standing issue with DHCP Server in RouterOS v7.X [here](https://obsluga-it.pl/mikrotik-problem-z-serwerem-dhcp/) (in Polish, translate to English if you need) and you can read [this](https://help.mikrotik.com/docs/spaces/ROS/pages/19136718/Layer2+misconfiguration#Layer2misconfiguration-VLANinabridgewithaphysicalinterface) regarding L2 Misconfiguration with VLANs with a phisical interface on a bridge.
 
 # Environment
 
 > [!CAUTION]
 > There is one thing which is super important so I marked this here as caution because its as I said crucial.
 > All of these things in the [eBGP Creation](#ebgp-creation) section were done with firewall completely disabled on the CCR2004.
+> This explains why everything regarding BGP worked even though I didn't add any rules for allowing BGP or DHCP in the firewall.  
 > I am aware that leaving the firewall disabled is not a good practise. 
 > However, there already were problems regarding RouterOS Conntrack which would make it very very difficult to first implement eBGP.
 > So I implemented BGP and then I got into the firewall since it had it's own problems.
@@ -557,5 +562,34 @@ And then since the CRS326 has a direct connection to the 10.1.2.0/27 network, it
 Since everything was working correctly, I could get to the next step.
 
 # Second link for eBGP and L3 retundancy
+
+Since now I had one unused link, I wanted to set a second BGP session on inter-router link on it to utilize ECMP as I mentioned in the first part of this document.  
+
+The first thing I needed to do was to create new SVIs, assign new IP addresses on them, and on the CRS326 correctly assign tagged vlan on its side of the link.   
+
+
+Here, a reminder of eBGP-Link-0:
+*   CCR2004 `sfp-sfpplus1`, `172.16.255.1` <--> CRS326 `sfp-sfpplus1`, `172.16.255.2`  
+
+New eBGP-Link-1:
+*   CCR2004 `sfp-sfpplus11`, `172.16.255.5` <--> CRS326 `sfp-sfpplus24`, `172.16.255.6`
+
+I set new SVI on the CCR2004:
+```rsc
+/interface vlan
+add interface=sfp-sfpplus11 name=eBGP-Link-1 vlan-id=104
+/ip address
+add address=172.16.255.5/30 interface=eBGP-Link-1
+```
+then a bit more complicated again on the CRS326:
+```rsc
+/interface vlan
+add interface=main-bridge name=eBGP-Link-1 vlan-id=104
+/interface bridge vlan
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus24 vlan-ids=104
+/ip address
+add address=172.16.255.6/30 interface=eBGP-Link-1
+```
+Then I could check the connectivity between those two new SVIs before going further with second BGP session.  
 
 
