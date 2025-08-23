@@ -592,4 +592,86 @@ add address=172.16.255.6/30 interface=eBGP-Link-1
 ```
 Then I could check the connectivity between those two new SVIs before going further with second BGP session.  
 
+> [!NOTE]
+> Here I also had a disabled firewall. The ping normally would not come through.
+
+```rsc
+[lynx@core-crs326] > ping 172.16.255.5
+  SEQ HOST                                     SIZE TTL TIME       STATUS
+    0 172.16.255.5                               56  64 428us
+    1 172.16.255.5                               56  64 425us
+    sent=2 received=2 packet-loss=0% min-rtt=425us avg-rtt=426us
+   max-rtt=428us
+```
+As you can see the CRS326 can ping the new `eBGP-Link-1` SVI on the CCR2004.   
+
+Now I do one more thing which is to add an address list for the CCR2004 to advertise through BGP. 
+For example, it should advertise it's loopback IP.
+```rsc
+/ip firewall address-list
+add address=172.16.0.1/32 list=BGP_ADV_NET
+```
+Now I could create the new BGP instances.   
+On the CCR2004:
+```rsc
+/routing bgp connection
+add as=65000 disabled=no local.role=ebgp name=eBGP-1 \
+output.network=BGP_ADV_NET remote.address=172.16.255.6 \
+router-id=172.16.0.1
+```
+I think it's pretty self-explainatory. 
+I just changed the `remote.address` to `172.16.255.6` instead of `172.16.255.2` as this new parallel BGP connection is on the new transit network `172.16.255.4/30`.
+RID is the same as it's based on the loopback and the ASN is ofcourse also the same.   
+
+After that, I could check the routes on the CCR2004:
+```rsc
+[aether@core-ccr2004] > ip ro pr
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC, b - BGP
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#     DST-ADDRESS      GATEWAY        ROUTING-TABLE  DISTANCE
+0  As 0.0.0.0/0        10.0.0.1       main                  1
+  DAc 10.0.0.0/24      sfp-sfpplus12  main                  0
+  DAc 10.1.1.0/30      ccr2004-mgmt   main                  0
+1  As 10.1.1.4/30      172.16.255.2   main                  1
+  DAb 10.1.2.0/27      172.16.255.2   main                 20
+  D b 10.1.2.0/27      172.16.255.6   main                 20
+  DAb 10.1.3.0/24      172.16.255.2   main                 20
+  D b 10.1.3.0/24      172.16.255.6   main                 20
+  DAb 10.1.4.0/24      172.16.255.2   main                 20
+  D b 10.1.4.0/24      172.16.255.6   main                 20
+  DAb 10.1.5.0/27      172.16.255.2   main                 20
+  D b 10.1.5.0/27      172.16.255.6   main                 20
+  DAc 172.16.0.1/32    lo             main                  0
+  DAb 172.16.0.2/32    172.16.255.2   main                 20
+  D b 172.16.0.2/32    172.16.255.6   main                 20
+  DAc 172.16.255.0/30  eBGP-Link-0    main                  0
+  DAc 172.16.255.4/30  eBGP-Link-1    main                  0
+```
+As you can see above, now there are two available routes for each advertised network from `BGP_ADV_NET` on CRS326.  
+
+Then I wanted to enable ECMP, and here is where the problems began.   
+
+I will spare the details about how I tried to enable multihopping, some weird routing filters etc. and nothing worked.  
+
+I was just searching a lot and honestly couldn't find a straight answer if the ECMP is possible to do in that way or not, since everything seemed correct. 
+All routes had the same administrative distance and literally the same parameters etc.  
+
+On MikroTik Forum I found a thread related ECMP + BGP. 
+One of the replies stated:  
+
+![forum-screenshoot](./forum-screenshot.png)
+
+So after a lot of trying to enable ECMP for BGP paths, I finally found that ECMP is just simply not supported for BGP in RouterOS v7 for now.  
+
+Next thing I looked [here](https://help.mikrotik.com/docs/spaces/ROS/pages/28606515/Routing+Protocol+Overview)  
+
+![routing-protocol-overview](./routing-protocol-overview.png)
+
+Another thing that sadly confirms that I won't be able to achieve ECMP for my eBGP Routes.  
+
+However the BGP sessions didn't waste anything.
+One is active and the second one is simply waiting as a failover for activation when the currently active fails.  
+
+I then thought that two routes would probably break RouterOS firewall Conntrack.  
+But I forgot that since one route is not active, then traffic routed with BGP routes won't even go through the second point-to-point network (`172.16.255.4/30`)
 
