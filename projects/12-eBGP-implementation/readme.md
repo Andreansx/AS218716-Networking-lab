@@ -311,7 +311,7 @@ ECMP is the best option for correct L3 Load Balancing instead of LACP L2 link ag
 
 # eBGP creation
 
-> [!NOTE]
+> [!IMPORTANT]
 > Here is a very important thing related to the RouterOS version that I am using.  
 > On RouterOS Wiki there is a `/instance` menu in bgp routing section.  
 > However it's very important to note that the instance menu doesn't exist in versions pre-7.20beta. 
@@ -322,6 +322,17 @@ So the first thing to do was to create a BGP connection.
 > [!NOTE]
 > At first I created only one connection since the `bond0` interface was still present. 
 > Another eBGP connection will be added later.
+
+Keep in mind that SVI 100 along with IPs on it (172.16.255.0/30) are already assigned.
+For example on the CCR2004:
+```rsc
+/interface vlan
+add interface=bond0 name=eBGP-Link-0 vlan-id=100
+add interface=sfp-sfpplus1 name=vlan111-ccr2004-mgmt vlan-id=1111
+/ip address
+add address=172.16.255.1/30 interface=eBGP-Link-0 network=172.16.255.0
+```
+
 
 Networks behind CCR2004 along with itself would be AS 65000 and networks behind CRS326 would be AS 65001.  
 
@@ -335,4 +346,129 @@ On the CRS326:
 ```rsc
 /ip address
 add address=172.16.0.2/32 interface=lo
+```
+
+Then the actual BGP connection.  
+on the CCR2004:
+```rsc
+/routing bgp connection
+add name=eBGP-0 local.role=ebgp remote.address=172.16.255.2 as=65000 \
+output.redistribute=connected
+```
+On the CRS326:
+```rsc
+/routing bgp connection
+add name=eBGP-0 local.role=ebgp remote.address=172.16.255.1 as=65001 \
+output.redistribute=connected
+```
+
+This is the bare minimum for the eBGP session to establish.  
+Then on the CCR2004 I could check and it looked like this:
+```rsc
+[aether@core-ccr2004] > /routing/bgp/session/pr
+Flags: E - established 
+ 0 E name="eBGP-0-1" 
+     remote.address=172.16.255.2 .as=65001 .id=172.16.0.2 
+     .capabilities=mp,rr,gr,as4 .afi=ip .messages=246 .bytes=4722 .eor="" 
+     local.address=172.16.255.1 .as=65000 .id=172.16.0.1 
+     .cluster-id=172.16.0.1 .capabilities=mp,rr,gr,as4 .afi=ip 
+     .messages=246 .bytes=4704 .eor="" 
+     output.procid=21 
+     input.procid=21 ebgp 
+     hold-time=3m keepalive-time=1m uptime=4h4m44s 
+     last-started=2025-08-23 02:59:02 prefix-count=5
+```
+However, though the session established, its not a good practise to use `output.redistribute=connected`.  
+First reason is that it advertises everything, along with OOB Management networks for example, which obviously should not be advertised.  
+Second reason is what happens in a real connection if one AS advertises literally every single network that is directly connected to it?  
+
+That's why I needed to use a network list.  
+
+I created a list `BGP_ADV_LIST` on the CRS326 and added the appropriate networks and the loopback address:  
+```rsc
+/ip firewall address-list
+add address=10.1.2.0/27 list=BGP_ADV_NET
+add address=10.1.3.0/24 list=BGP_ADV_NET
+add address=10.1.4.0/24 list=BGP_ADV_NET
+add address=10.1.5.0/27 list=BGP_ADV_NET
+add address=172.16.0.2 list=BGP_ADV_NET
+```
+Then I unset the `output.redistribute` option and set `output.network` filter for the  eBGP session:
+```rsc
+/routing/bgp/connection
+unset eBGP-0 output.redistribute
+set eBGP-0 output.network=BGP_ADV_LIST
+```
+The session then looked like this:
+```rsc
+[lynx@core-crs326] /routing/bgp/connection> ../session/pr
+Flags: E - established
+ 0 E name="eBGP-1-1"
+     remote.address=172.16.255.5 .as=65000 .id=172.16.0.1
+     .capabilities=mp,rr,gr,as4 .afi=ip .messages=254 .bytes=4908 .eor=""
+     local.address=172.16.255.6 .as=65001 .id=172.16.0.2
+     .cluster-id=172.16.0.2 .capabilities=mp,rr,gr,as4 .afi=ip
+     .messages=254 .bytes=4908 .eor=""
+     output.procid=20 .network=BGP_ADV_NET
+     input.procid=20 ebgp
+     hold-time=3m keepalive-time=1m uptime=4h11m5s50ms
+     last-started=2025-08-23 02:58:50 prefix-count=1
+```
+As you can see, now there is a `output.network` set, which limits the advertised networks to only the ones I added to the list.    
+
+Then I checked the available routes on the CCR2004:
+```rsc
+[aether@core-ccr2004] /routing/bgp> /ip ro pr
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC, b - BGP, o - OSPF
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#     DST-ADDRESS      GATEWAY                          ROUT  DISTANCE
+0  As 0.0.0.0/0        10.0.0.1                         main         1
+  DAc 10.0.0.0/24      sfp-sfpplus12                    main         0
+  DAc 10.1.1.0/30      ccr2004-mgmt                     main         0
+1  As 10.1.1.4/30      172.16.255.2                     main         1
+  D b 10.1.1.4/30      172.16.255.2                     main        20
+  D o 10.1.2.0/27      172.16.255.2%inter-router-link0  main       110
+  DAb 10.1.2.0/27      172.16.255.2                     main        20
+  D o 10.1.3.0/24      172.16.255.2%inter-router-link0  main       110
+  DAb 10.1.3.0/24      172.16.255.2                     main        20
+  D o 10.1.4.0/24      172.16.255.2%inter-router-link0  main       110
+  DAb 10.1.4.0/24      172.16.255.2                     main        20
+  D o 10.1.5.0/27      172.16.255.2%inter-router-link0  main       110
+  DAb 10.1.5.0/27      172.16.255.2                     main        20
+  DAc 172.16.0.1/32    loopback0                        main         0
+  D o 172.16.0.2/32    172.16.255.2%inter-router-link0  main       110
+  DAb 172.16.0.2/32    172.16.255.2                     main        20
+  DAc 172.16.255.0/30  inter-router-link0               main         0
+```
+And this is a very cool thing.
+As you can see, since the BGP routes were configured properly, RouterOS started using them as the Active ones and deactivated the OSPF ones.  
+
+That is a very nice situation where the transition of routes happened seamlessly.  
+
+Then I could turn off the OSPF instances and Areas:
+```rsc
+/routing ospf area
+disable [find]
+/routing ospf instance
+disable [find]
+/routing ospf interface-template
+disable [find]
+```
+After that the only routes available were the ones advertised through BGP:
+```rsc
+
+[aether@core-ccr2004] > ip ro pr
+Flags: D - DYNAMIC; A - ACTIVE; c - CONNECT, s - STATIC, b - BGP
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#     DST-ADDRESS      GATEWAY        ROUTING-TABLE  DISTANCE
+0  As 0.0.0.0/0        10.0.0.1       main                  1
+  DAc 10.0.0.0/24      sfp-sfpplus12  main                  0
+  DAc 10.1.1.0/30      ccr2004-mgmt   main                  0
+1  As 10.1.1.4/30      172.16.255.2   main                  1
+  DAb 10.1.2.0/27      172.16.255.2   main                 20
+  DAb 10.1.3.0/24      172.16.255.2   main                 20
+  DAb 10.1.4.0/24      172.16.255.2   main                 20
+  DAb 10.1.5.0/27      172.16.255.2   main                 20
+  DAb 172.16.0.2/32    172.16.255.2   main                 20
+  Dac 172.16.255.0/30  eBGP-Link-0    main                  0
 ```
