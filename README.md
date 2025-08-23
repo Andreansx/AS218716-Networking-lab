@@ -21,7 +21,7 @@ Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) a
 > (It turned out that everything was caused by a L1 Loop)
 
 ## Table of Contents
-1.  [Featured Projects](#featured-projects)
+1.  [Docs to read](#docs-to-read)
 2.  [How This Repository Is Organized](#how-this-repository-is-organized)
 3.  [Lab Architecture](#lab-architecture)
     *   [Network Diagram](#network-diagram)
@@ -31,9 +31,15 @@ Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) a
 6.  [Physical Build Log](#physical-build-log)
 7.  [Contact](#contact)
 
-# Featured projects
+# Docs to read
 
-Here are the things that I think are the most worth checking out.  
+Here I put things that I think are the most interesting and worth reading.
+These are projects, case studies and troubleshootin logs.  
+
+*   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation)**
+
+
+*   **[Super Important OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop-) - This is important as it makes some changes to the entire lab archtecture. 
 
 *   **[IPIP Tunnel, Three CHRs, Third MTCNA Lab](./projects/09-mtcna-lab-3/readme.md)**
 
