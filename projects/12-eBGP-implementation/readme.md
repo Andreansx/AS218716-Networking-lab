@@ -696,7 +696,65 @@ And since it's currently set to 60 seconds, then the time that it will take for 
 
 This is of course unbeliveably long and impossible to be a proper failover.  
 
-The solution for this can be to simply make the `keepalive` timer shorter.
+The solution for this can be to simply make the `keepalive` timer shorter.   
+
+Or to integrate BFD with the BGP sessions. 
+For now I don't have that set up.
+
+# DHCP Nightmare
+
+So here is the troubleshooting part of this project.   
+
+After I checked that BGP sessions are working and connection to VMs is working too, I tried to run my VyOS VM with a dynamic IP address on `eth0` interface which is connected to the `vmbr0` with a PVID 40.  
+
+After it booted I checked with `show interfaces` to see what IP did it got assigned.
+And as you can expect, it didn't got any IP assigned.  
+
+At that time, the DHCP Server was running on `eBGP-Link-0`.
+So naturally I got suprised since it was working all that time and the interface it was on was stille running.  
+
+From what I remember, cause it was a real mess, then I rebooted both routers and after rebooting the VyOS VM got an IP.
+So I thought that this was just a lag that needed a reboot.   
+
+However, after some time the DHCP stopped working again.
+To be honest I do not remember what I even did after that but I just stopped trying to make it work like that and instead thought about how it actually is set up.  
+
+Cause it was running on `eBGP-Link-0`. But what if that interface went down?  
+Then the DHCP server would be completely unreachable.   
+
+At first I thought about creating a copy of each DHCP Server for each BGP Link interface.
+So for example I already had `dhcp-vlan40` and it was listening on interface `eBGP-Link-0`, so I would create `dhcp-vlan40-1` and assign it the same address pool and interface `eBGP-Link-1`.   
+
+However, just by looking at this I can tell it would be problematic.  
+Because what would also need to be doubled are the DHCP Relays on the CRS326.
+That would rock it's CPU completely.   
+
+So after some searching on RouterOS Wiki, I got an idea on how to make this single DHCP server (one for each vlan. not one as in the only one) redundant and available through both interfaces.  
+
+What IP address is always reachable regardless of which BGP route is available? Loopback!  
+
+In my case the `lo` loopback interface had a IP of `172.16.0.1/32` which was used as a RID for OSPF instances and of course the eBGP sessions.   
+
+So I thought why not set the interface for all DHCP servers to `lo`?   
+
+Since it had only one IP address, then I could set the `dhcp-server` on the DHCP Relay to `172.16.0.1`.   
+
+The CRS326 which runs the DHCP Relay would first get a Multicast DHCPREQUEST packet from a VM in one of its VLANs.  
+Then it would check on which interface it came in and would set the correct `giaddr` according to the gateway address related to the interface on which the DHCPREQUEST came in.  
+Then it would send not a Multicast packet anymore but just a **Unicast** packet to `172.16.0.1`.   
+It is not directly connected but is available through two BGP Routes: throught `172.16.255.1` and `172.16.255.5`.  
+So it would simply send the DHCPREQUEST Unicast packet throught one of the available routes to the `lo` interface on the CCR2004, on which the DHCP server would be running.  
+Then the DHCP Server would check the `giaddr` argument and basing on it, it would select from which IP Pool it should assign the IP address, and what the default gateway and DNS servers, should be.  
+The route in the opposite way would be pretty straightforward.  
+DHCPACK would go throught one of the BGP Routes, then it would get routed on the CRS326 according to the gateway address, and the VM would get simply assigned an IP address.   
+
+Sound painless? Well so i thought.   
+It absolutely didn't work.   
+
+I was searching a lot to see if someone had a similar topology so I could compare if I have anything wrong etc.  
+
+The `lo` interface on the CCR2004 with `172.16.0.1/32` IP was 100% ICMP pingable and even traceroute was correct.   
+
 
 
 
