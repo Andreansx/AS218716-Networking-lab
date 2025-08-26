@@ -36,10 +36,10 @@ Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) a
 Here I put things that I think are the most interesting and worth reading.
 These are projects, case studies and troubleshootin logs.  
 
-*   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation)**
+*   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation/readme.md)** - Plus DHCP Nightmare
 
 
-*   **[Super Important OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop-)** - This is important as it makes some changes to the entire lab archtecture. 
+*   **[Super Important OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop/readme.md)** - This is important as it makes some changes to the entire lab archtecture. 
 
 *   **[IPIP Tunnel, Three CHRs, Third MTCNA Lab](./projects/09-mtcna-lab-3/readme.md)**
 

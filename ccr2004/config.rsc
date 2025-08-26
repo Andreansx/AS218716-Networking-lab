@@ -1,4 +1,4 @@
-# 2025-08-24 23:29:42 by RouterOS 7.19.4
+# 2025-08-26 18:00:01 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -88,9 +88,12 @@ add action=accept chain=input in-interface-list=ZONE-TO-CRS326-L2 protocol=\
     icmp
 add action=accept chain=input in-interface-list=ZONE-TO-CRS326-L2 protocol=\
     ospf
-add action=accept chain=input port=67,68 protocol=udp
+add action=accept chain=input in-interface-list=ZONE-LOOPBACK port=67,68 \
+    protocol=udp
 add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
     out-interface-list=ZONE-TO-CRS326-L2 protocol=icmp
+add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
+    out-interface-list=ZONE-TO-CRS326-L2 port=5201 protocol=tcp
 add action=accept chain=forward dst-address=172.16.255.8/30 \
     in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE-TO-CRS326-L2 \
     port=22 protocol=tcp
@@ -125,6 +128,7 @@ add dst-address=10.1.1.4/30 gateway=172.16.255.6
 /ip service
 set ftp disabled=yes
 set telnet disabled=yes
+set www disabled=yes
 /ipv6 nd
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection

@@ -1,4 +1,4 @@
-# 2025-08-24 23:29:48 by RouterOS 7.19.4
+# 2025-08-26 18:00:07 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -11,10 +11,11 @@ add interface=main-bridge name=eBGP-Link-0 vlan-id=100
 add interface=main-bridge name=eBGP-Link-1 vlan-id=104
 add interface=main-bridge name=link-to-VyOS-VL3 vlan-id=108
 add interface=main-bridge name=vlan20-bare-metal vlan-id=20
-add interface=main-bridge name=vlan30-users vlan-id=30
 add interface=main-bridge name=vlan40-vms-cts vlan-id=40
 add interface=main-bridge name=vlan50-kubernetes vlan-id=50
 add interface=main-bridge name=vlan1115-crs326-mgmt vlan-id=1115
+/interface list
+add name=ZONE-TO-CCR2004
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
 /port
@@ -61,7 +62,6 @@ add bridge=main-bridge interface=sfp-sfpplus24
 set mode=rx-only
 /interface bridge vlan
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=20
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=30
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=40
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
 add bridge=main-bridge tagged=main-bridge untagged=ether1 vlan-ids=1115
@@ -70,6 +70,9 @@ add bridge=main-bridge tagged=main-bridge,sfp-sfpplus24 vlan-ids=104
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=108
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
+/interface list member
+add interface=eBGP-Link-0 list=ZONE-TO-CCR2004
+add interface=eBGP-Link-1 list=ZONE-TO-CCR2004
 /ip address
 add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
 add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
@@ -77,7 +80,6 @@ add address=10.1.1.5/30 interface=vlan1115-crs326-mgmt network=10.1.1.4
 add address=172.16.255.2/30 interface=eBGP-Link-0 network=172.16.255.0
 add address=172.16.0.2 interface=lo network=172.16.0.2
 add address=10.1.5.1/27 interface=vlan50-kubernetes network=10.1.5.0
-add address=10.1.3.1/24 interface=vlan30-users network=10.1.3.0
 add address=172.16.255.6/30 interface=eBGP-Link-1 network=172.16.255.4
 add address=172.16.255.9/30 interface=link-to-VyOS-VL3 network=172.16.255.8
 /ip dhcp-relay
@@ -85,8 +87,6 @@ add dhcp-server=172.16.0.1 disabled=no interface=vlan20-bare-metal \
     local-address-as-src-ip=yes name=vlan20-dhcp-relay
 add dhcp-server=172.16.0.1 disabled=no interface=vlan50-kubernetes \
     local-address-as-src-ip=yes name=kubernetes-dhcp-relay
-add dhcp-server=172.16.0.1 disabled=no interface=vlan30-users \
-    local-address-as-src-ip=yes name=vlan30-dhcp-relay
 add dhcp-server=172.16.0.1 disabled=no interface=vlan40-vms-cts \
     local-address-as-src-ip=yes name=vlan40-dhcp-relay
 /ip dns
@@ -98,20 +98,33 @@ add address=10.1.2.0/27 list=SERVERS_NET
 add address=10.1.3.0/24 list=USERS_NET
 add address=10.1.5.0/27 list=KUBERNETES_NET
 add address=10.1.2.0/27 list=BGP_ADV_NET
-add address=10.1.3.0/24 list=BGP_ADV_NET
 add address=10.1.4.0/24 list=BGP_ADV_NET
 add address=10.1.5.0/27 list=BGP_ADV_NET
 add address=172.16.0.2 list=BGP_ADV_NET
 add address=172.16.255.8/30 list=BGP_ADV_NET
+add address=10.1.3.0/24 list=BGP_ADV_NET
+add address=10.1.1.0/30 list=CCR2004-MGMT
 /ip firewall filter
-add action=drop chain=input disabled=yes dst-address-list=CRS326-MGMT \
-    src-address-list=SERVERs,VMs/LXCs
+add action=accept chain=input connection-state=established,related
+add action=accept chain=forward connection-state=established,related
+add action=accept chain=input in-interface-list=ZONE-TO-CCR2004 port=\
+    22,8291,80 protocol=tcp src-address-list=CCR2004-MGMT
+add action=accept chain=forward dst-address-list=CRS326-MGMT \
+    in-interface-list=ZONE-TO-CCR2004 src-address-list=CCR2004-MGMT
+add action=accept chain=forward dst-address-list=USERS_NET in-interface-list=\
+    ZONE-TO-CCR2004 src-address-list=CCR2004-MGMT
+add action=accept chain=forward dst-address-list=KUBERNETES_NET \
+    in-interface-list=ZONE-TO-CCR2004 src-address-list=CCR2004-MGMT
+add action=accept chain=forward dst-address-list=SERVERS_NET \
+    in-interface-list=ZONE-TO-CCR2004 port=5201,22,80 protocol=tcp \
+    src-address-list=CCR2004-MGMT
+add action=drop chain=input comment="dropping all other traffic"
+add action=drop chain=forward comment="dropping all other traffic"
 /ip route
 add gateway=172.16.255.1
 add dst-address=10.1.1.0/30 gateway=172.16.255.1
 add dst-address=10.1.1.0/30 gateway=172.16.255.5
-add dst-address=10.1.3.0/24 gateway=link-to-VyOS-VL3
-add dst-address=172.16.255.8/30 gateway=link-to-VyOS-VL3
+add dst-address=10.1.3.0/24 gateway=172.16.255.10
 /ip service
 set ftp disabled=yes
 set www disabled=yes
