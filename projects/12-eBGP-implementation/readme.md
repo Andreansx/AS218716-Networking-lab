@@ -755,9 +755,101 @@ I was searching a lot to see if someone had a similar topology so I could compar
 
 The `lo` interface on the CCR2004 with `172.16.0.1/32` IP was 100% ICMP pingable and even traceroute was correct.   
 
+After some more looking through mikrotik forum I then re-read the entire DHCP Server section on RouterOS Wiki and I finally found the reason why my idea didn't work.   
 
+![dhcp](./dhcp.png)   
 
+So this is a final answer specifically to my idea.  
 
+My `lo` interface doesn't have any physical interface of course, since its in it's name. 
+Its supposed to not have any physical interface.  
+
+So then I though about going back to adding a duplicate DHCP Server for the second interface. 
+But I got an another idea.   
+
+I then removed the IP address from the `lo` loopback interface and created a new bridge on the CCR2004.
+```rsc
+/interface bridge
+add name=bridge0
+```
+Then I added the IP address corresponding to the RID of the CCR2004:
+```rsc
+/ip address
+add address=172.16.0.1/32 interface=bridge0
+```
+Then I thought that the whole point of this, was to have a single redundant DHCP Server, listening on two interfaces, but without LACP.  
+
+However, this was going in the direction of a dummy bridge which as i said above, wouldn't work in RouterOS.  
+
+The DHCPREQUEST unicast packets from the CRS326 could be in fact pointed to the `172.16.0.1` IP address, but the `bridge0` interface on which this IP address was reachable, couldn't receive raw ethernet packets, which was neccessary for the MikroTik's implementation of DHCP Server in RouterOS.  
+
+So this seemed impossible to me but here is what I did.   
+
+Then I created a interface list. Why?  
+Because I already found out that in RouterOS, interface lists work just like interfaces and can be used the same.  
+
+So I created a list `ZONE-TO-CRS326-L2`
+```rsc
+/interface list
+add name=ZONE-TO-CRS326-L2
+```
+And I added three interfaces to it:
+*   The first eBGP Link
+*   The second eBGP Link
+*   And the bridge0 itself
+```rsc
+/interface list member
+add interface=eBGP-Link-0 list=ZONE-TO-CRS326-L2
+add interface=eBGP-Link-1 list=ZONE-TO-CRS326-L2
+add interface=bridge0 list=ZONE-TO-CRS326-L2
+```
+
+This is a kind of a workaround, since the DHCP Server has to receive raw ethernet frames, then it must have some physical interface connected.
+
+Then I created a second list, but without the `bridge0` interface:
+```rsc
+/interface list
+add name=eBGP-LINK-CRS326
+/interface list member
+add interface=eBGP-Link-0 list=eBGP-LINK-CRS326
+add interface=eBGP-Link-1 list=eBGP-LINK-CRS326
+```
+And then I added not the SVIs themselves, but the list as a interface to the `bridge0`:
+```rsc
+/interface bridge port
+add bridge=bridge0 interface=eBGP-LINK-CRS326
+```
+
+As you can see below, by adding the list to the bridge, RouterOS automatically adds the active interfaces.  
+They are marked as **D**ynamic.   
+
+```rsc
+[aether@core-ccr2004] > interface/bridge/port/pr
+Flags: D - DYNAMIC
+Columns: INTERFACE, BRIDGE, HW, HORIZON, TRUSTED, FAST-LEAVE, PATH-COST, INTERNAL-PATH-COST, BPDU-GUARD, EDGE, POINT-TO-POINT, PVID, FRAME-TYPES
+#   INTERFACE             BRIDGE        HW   HORIZON  TRUSTED  FAST-LEAVE  PATH-COST  INTERNAL-PATH-COST  BPDU-GUARD  EDGE  POINT-TO-POINT  PVID  FRAME-TYPES
+;;; Management access
+0   ether1                ccr2004-mgmt  yes  none     no       no                 10                  10  no          auto  auto               1  admit-all  
+1   vlan111-ccr2004-mgmt  ccr2004-mgmt       none     no       no                                         no          auto  auto               1  admit-all  
+2   eBGP-LINK-CRS326      bridge0       yes  none     no       no                                         no          auto  auto               1  admit-all  
+3 D eBGP-Link-0           bridge0            none     no       no                                         no          auto  auto               1  admit-all  
+4 D eBGP-Link-1           bridge0            none     no       no                                         no          auto  auto               1  admit-all  
+```
+
+This makes it a lot more elastic, since if now I would want to add another link on which the DHCP server should listen, then I don't even have to change anything on the DHCP server itself.
+I just simply have to add another interface to the list and RouterOS will automatically make it available.
+
+Now time for the DHCP Server itself.  
+I set the interface that the DHCP server should listen on, to `bridge0`:
+```rsc
+/ip dhcp-server
+set [find] interface=bridge0
+```
+Then I set the address that the server should listen on, to the RID:
+```rsc
+/ip dhcp-server
+set [find] server-address=172.16.0.1
+```
 
 # Sources
 
