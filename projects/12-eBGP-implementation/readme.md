@@ -759,7 +759,11 @@ After some more looking through mikrotik forum I then re-read the entire DHCP Se
 
 ![dhcp](./dhcp.png)   
 
+*DHCP server requires a real interface to receive raw ethernet packets. If the interface is a Bridge interface, then the Bridge must have a real interface attached as a port to that bridge which will receive the raw ethernet packets. It cannot function correctly on a dummy (empty bridge) interface.*  
+
 So this is a final answer specifically to my idea.  
+
+I don't know how did I miss that.  
 
 My `lo` interface doesn't have any physical interface of course, since its in it's name. 
 Its supposed to not have any physical interface.  
@@ -849,6 +853,65 @@ Then I set the address that the server should listen on, to the RID:
 ```rsc
 /ip dhcp-server
 set [find] server-address=172.16.0.1
+```
+> [!NOTE]
+> At this point, the DHCP Finally worked. 
+> VMs in all VLANs were able to get IPs from DHCP assigned.
+> However, whats important is that this worked only because the firewall was completely disabled.
+> If the firewall was enabled, then since I used "deny-by-default" policy and there was no rule that would specifically allow UDP packets on ports 67,68, then it would not work.
+
+
+Now what's left is the firewall.
+
+First the rule for allowing UDP packets on ports 67 and 68 incoming on the bridge0 interface.   
+
+this is a important part and I messed this up a couple times since I thought that I could allow this just on the SVIs. 
+As it turned out, I had to allow it also on the `bridge0` interface, since after all, thats the interface on which the `172.16.0.1` IP was, which was the IP that the DHCP server would listen on.   
+
+And actually I don't have to allow incoming DHCPREQUEST packets on the Links themselves, since while the packets are arriving through those SVIs, they are coming into the routers CPU on the `bridge0` interface.   
+
+This is still super confusing for me but basically those links `eBGP-Link-X` have two functions at the same time.  
+
+For the `bridge0`, they work as simple L2 bridged physical interfaces.  
+
+However, for the Router itself, those are normal Slave interfaces for L3 SVIs.   
+
+So its a bit like: first the DHCPREQUEST gets routed to the `eBGP-Link-0` from the CRS326, then it arrives onto the `172.16.255.1/30` IP, which is the SVIs IP. It comes in through the `sfp-sfpplus1` physical interface and here is where it gets really confusing.   
+
+It comes through the `172.16.255.1` address on the SVI 100 (172.16.255.0/30) and gets routed to the `172.16.0.1`. 
+
+Now, this wouldn't work normally as I said again above, the DHCP Server in RouterOS, even when running on dummy bridge, needs to specifically have some physical interface.  
+
+But now, the DHCP Server is in fact running, and receives routed DHCPREQUEST packets from the `eBGP-Link-X` interfaces.  
+
+So, the packets are actually arriving at the DHCP Server.
+But it won't work for already obvious reason.  
+
+So by adding the `ZONE-TO-CRS326-L2` list to the bridge which adds dynamic SVIs, which add physical interfaces, it kind of I think tricks the DHCP server to think that it receives the raw ethernet frames.   
+
+I created another interface list `ZONE-LOOPBACK` containing only the `bridge0` interface:
+```rsc
+/interfaces list
+add name=ZONE-LOOPBACK
+/interfaces list member
+add interface=bridge0 list=ZONE-LOOPBACK
+```
+
+final rule is like this:
+
+```rsc
+/ip firewall filter
+add action=accept chain=input port=67,68 protocol=udp in-interface=ZONE-LOOPBACK
+```
+and of course i moved this rule higher in the firewall list.  
+
+This makes the firewall allow the DHCP packets on the `bridge0` interface. 
+And since the `bridge0` has physical interfaces connected, it allows for full DHCP communication.   
+
+I also added rules for allowing OSPF, since there weren't any:
+```rsc
+/ip firewall filter
+add action=accept chain=input in-interface-list=ZONE-TO-CRS326-L2 protocol=ospf
 ```
 
 # Sources
