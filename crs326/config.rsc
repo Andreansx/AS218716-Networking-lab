@@ -1,4 +1,4 @@
-# 2025-08-26 18:00:07 by RouterOS 7.19.4
+# 2025-08-26 23:38:50 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -105,21 +105,18 @@ add address=172.16.255.8/30 list=BGP_ADV_NET
 add address=10.1.3.0/24 list=BGP_ADV_NET
 add address=10.1.1.0/30 list=CCR2004-MGMT
 /ip firewall filter
-add action=accept chain=input connection-state=established,related
-add action=accept chain=forward connection-state=established,related
-add action=accept chain=input in-interface-list=ZONE-TO-CCR2004 port=\
-    22,8291,80 protocol=tcp src-address-list=CCR2004-MGMT
-add action=accept chain=forward dst-address-list=CRS326-MGMT \
-    in-interface-list=ZONE-TO-CCR2004 src-address-list=CCR2004-MGMT
-add action=accept chain=forward dst-address-list=USERS_NET in-interface-list=\
-    ZONE-TO-CCR2004 src-address-list=CCR2004-MGMT
-add action=accept chain=forward dst-address-list=KUBERNETES_NET \
-    in-interface-list=ZONE-TO-CCR2004 src-address-list=CCR2004-MGMT
-add action=accept chain=forward dst-address-list=SERVERS_NET \
-    in-interface-list=ZONE-TO-CCR2004 port=5201,22,80 protocol=tcp \
-    src-address-list=CCR2004-MGMT
-add action=drop chain=input comment="dropping all other traffic"
-add action=drop chain=forward comment="dropping all other traffic"
+add action=drop chain=input port=22,80,8291 protocol=tcp src-address-list=\
+    USERS_NET
+add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
+    protocol=tcp src-address-list=USERS_NET
+add action=reject chain=input port=22,80,8291 protocol=tcp src-address-list=\
+    VMS_NET
+add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
+    protocol=tcp src-address-list=VMS_NET
+add action=drop chain=input port=22,80,8291 protocol=tcp src-address-list=\
+    KUBERNETES_NET
+add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
+    protocol=tcp src-address-list=KUBERNETES_NET
 /ip route
 add gateway=172.16.255.1
 add dst-address=10.1.1.0/30 gateway=172.16.255.1

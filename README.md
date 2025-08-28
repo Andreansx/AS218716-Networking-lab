@@ -80,7 +80,7 @@ This diagram shows the physical and logical topology of the lab.
 
 Below is a descrition of how generally my lab is built.  
 
-The network consists of two main Routers, both of which belong to OSPF Area 0:
+The network consists of two main Routers, both connected with two eBGP sessions.   
 *   **CCR2004-1G-12S+2XS** - This incredibly powerful router handles DHCP Servers, NAT, Routing etc.
 *   **CRS326-24S+2Q+RM** - This one has a gigantic capabilities for port-speed switching. It handles inter-VLAN Routing with L3 Hardware offload, and generally VLANs. 
 It's also a DHCP Relay for VLANs 20, 40 and 50.  
@@ -98,9 +98,11 @@ The network is separated using VLANs.
 | ID  & Name    | Network | Where | Description                                   |
 |:---|:---|:---|:---|
 | 20 - Bare Metal | 10.1.2.0/27         | SVI on Core-CRS326 | Here are bare-metal devices. For example, the PVE Host is here on 10.1.2.30/27.        |
-| 30 - Users | 10.1.3.0/24         | SVI on Core-CCR2004 | This is the VLAN for users.     |
+| 30 - Users | 10.1.3.0/24         | SVI on VyOS-VL3 | This is the VLAN in which all devices in another room will be connected to    |
 | 40 - VMs/LXCs | 10.1.4.0/24       | SVI on Core-CRS326  | Here are placed Virtual Machines accessible through `vmbr0` |
 | 50 - Kubernetes | 10.1.5.0/27       | SVI on Core-CRS326  | Dedicated separate network for "public" IPs for the nodes in kubernetes cluster. |
+| 60 - OOB     | 10.1.6.0/24      | ....     | As now the network is evolving, I will be going in the direction of OOB-Only Management cause that is how management is actually handled in Data Centers |
+
 
 There are also two networks dedicated for Kubernetes cluster internal IPs   
 
@@ -110,9 +112,15 @@ There are also two networks dedicated for Kubernetes cluster internal IPs
 
 There are also dedicated VLANs for management and traffic tranzit.
 
-*   **VLAN 100** - This is the VLAN used for the `inter-router-link0` interface. Both the CCR2004 and CRS326 have interfaces in this VLAN. 
+*   **VLAN 100** - This is the VLAN used for the `eBGP-Link-0` interfaces on the main routers. 
     CCR2004 - `172.16.255.1/30`
     CRS326  - `172.16.255.2/30`
+*   **VLAN 104** - Another link for eBGP session. Here are the `eBGP-Link-1` interfaces of the main routers.
+    CCR2004 - `172.16.255.5/30`
+    CRS326  - `172.16.255.6/30`
+*   **VLAN 108** - Inter-Router link between the CRS326 and the VyOS-VL3 which makes the VLAN 30 reachable through the VyOS virtual Router.
+    VyOS-VL3 - `172.16.255.10/30`
+    CRS326  - `172.16.255.9/30`
 *   **VLAN 111** - This is where the management SVI for the CCR2004 is. The CCR2004 has a `10.1.1.1/30` IP here.
 *   **VLAN 115** - Here is the management SVI for the CRS326 with `10.1.1.5/30` IP Address.
 
