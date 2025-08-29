@@ -135,7 +135,8 @@ A list of the key components in my lab. Click a device name to see its configura
 | **Server**       | [Dell PowerEdge R610](./r610/)          | Currently unused, planned for a giveaway.         |
 | **Core Router**  | [MikroTik CCR2004](./ccr2004/)           | Core router. Handles routing, firewall and NAT.       |
 | **Core Switch**  | [MikroTik CRS326](./crs326/)           | Main switch, inter-VLAN routing handling, L2/L3 switching. |
-| **Switch**| [Brocade FastIron LS648](./ls648/)      | A device for testing and L3 firmware experimentation.      |
+| **ToR**          | [Dell S4048-ON](.)                     | The most powerful L3 Device in my lab with its Trident 2 ASIC |
+| **Switch**| [Brocade FastIron LS648](./ls648/)      | Switch for OOB Management. Handles single L2 domain.     |
 | **PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
 ## Projects
