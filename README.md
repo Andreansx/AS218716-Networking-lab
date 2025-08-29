@@ -81,15 +81,31 @@ This diagram shows the physical and logical topology of the lab.
 Below is a descrition of how generally my lab is built.  
 
 The network consists of two main Routers, both connected with two eBGP sessions.   
-*   **CCR2004-1G-12S+2XS** - This incredibly powerful router handles DHCP Servers, NAT, Routing etc.
-*   **CRS326-24S+2Q+RM** - This one has a gigantic capabilities for port-speed switching. It handles inter-VLAN Routing with L3 Hardware offload, and generally VLANs. 
+*   **CCR2004-1G-12S+2XS** - This incredibly powerful router handles DHCP Server on loopback bridge, NAT, Stateful firewall etc.
+*   **CRS326-24S+2Q+RM** - Super powerful switch with L3 Hardware offload onto the ASIC. Handles most of inter-VLAN Routing.  
+
 It's also a DHCP Relay for VLANs 20, 40 and 50.  
-Both of those routers are connected through a inter-router link where OSPF is running. 
+Both of those routers are connected through a pair of p2p links where eBGP is running.
 Each of them has a separate, small `/30` network for management.  
 
-The main Server in my lab is a Dell PowerEdge R710. It's running Proxmox VE and it's equipped with 1x 10GbE SFP+ NIC, and another 2x 10GbE RJ45 NIC. 
-The dual-port card acts like a "dumb" switch, providing access to VLAN 30 for end devices. 
-The SFP+ NIC is the main network connection for this server. It's connected to `sfp-sfpplus2` interface on the CRS326, and it carries tagged traffic for VLAN 20 for PVE management and also Tagged traffic for VLANs 30, 40 and 50.
+> [!IMPORTANT]
+> For now, the Inter-VLAN Routing between VLANs 30,40,50 etc. is handled by the CRS326. However, that will change. 
+> I will remove the VLANs 30,40,50 SVIs from the CRS326 and instead add them on three separate vSRX3 virtual Routers. The CRS326 will still handle routing between those VLANs but this is a step in the direction of a distributed routing.
+> VMs traffic could actually not even leave the Proxmox Host. For example, routing between network 40 (VMs/LXCs) and network 50 (kubernetes) could be handled fully by vSRX3 router.    
+> However, that would actually be slower than inter-VLAN routing on my physical router CRS326 since it's ASIC is more powerful than software routing on the Dell R710.
+> The VLANs 30,40,50 would be available only through inter-router links between the CRS326 and the vSRX3 routers on the PVE host.
+
+The main Server in my lab is a Dell PowerEdge R710. It's running Proxmox VE and it's equipped with 1x 10GbE SFP+ NIC, and another 2x 10GbE RJ45 NIC.  
+
+The SFP+ 10GbE NIC provides the main uplink from the server to the CRS326. This physical interface is added to the `vmbr0` bridge and carries tagged traffic for VLANs 20,40,50 and 108.   
+
+The RJ45 10GbE dual-port NIC physical ports are added to the `vmbr1` bridge. The `VyOS-VL3` has an interface `net1` on this bridge with an IP address of 10.1.3.1/24.   
+
+This provides access to the network through Cat6A cable runs from the NIC, through the wall, into another room.   
+
+VLAN 30 is reachable through the CRS326, through a inter-router link (VLAN 108) to the VyOS-VL3 VM.
+
+
 
 ## VLAN & IP Schema
 
