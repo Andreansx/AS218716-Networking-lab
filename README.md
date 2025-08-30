@@ -33,27 +33,22 @@ Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) a
 
 # Docs to read
 
-Here I put things that I think are the most interesting and worth reading.
-These are projects, case studies and troubleshootin logs.  
+Here I put things that I think are the most interesting and worth reading.   
+
+These are projects, case studies and troubleshooting logs.    
 
 *   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation/readme.md)** - Plus DHCP Nightmare
 
 
 *   **[Super Important OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop/readme.md)** - This is important as it makes some changes to the entire lab archtecture. 
 
-*   **[IPIP Tunnel, Three CHRs, Third MTCNA Lab](./projects/09-mtcna-lab-3/readme.md)**
-
 *   **[Finally OSPF Implementation !](./projects/06-ospf-backbone)** - Area 0 between CCR2004 and CRS326   
-
-*   **[PPPoE, three CHRs, mini-ISP scenario with clients](./projects/08-mtcna-lab-2)** - Second MTCNA-oriented Lab
-
-*   **[First MTCNA Lab](./projects/07-mtcna-lab-1/readme.md)**
 
 *   **[Addressation modernization, better management](./projects/04-management-network-split)**
 
 *   **[L3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)** - Super fast port-speed connection for wide bandwith between Virtual Machines !
 
-* **[IPv6](./IPv6/)** - This is what I am most focused on. You can check out this directory to see what I'm doing on my way to get a IPv6 routed /64 block (or maybe even /48 )  
+* **[IPv6](./IPv6/)** - For now there is not much here since it's hard to get an IPv4 from my ISP.  
 
 * [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)  
 
