@@ -92,9 +92,11 @@ This repository is structured to be a clear and useful reference. Here’s a map
 
 ### Network Diagram
 
-This diagram shows the physical and logical topology of the lab.
+Here are the diagrams that show the physical and logical topology of my lab.   
 
-![topology](./media/topology.png)
+#### Physical connections diagram
+
+![physical diagram](./media/physical_diagram.png)
 
 ## Key Features
 
