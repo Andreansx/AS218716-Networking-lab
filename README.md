@@ -52,7 +52,32 @@ These are projects, case studies and troubleshooting logs.
 
 * [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)  
 
-<!-- [LXC with RouterOS Wiki Local mirror](./IaC/terraform_routeros_wiki_lxc/)-->
+# Actual plans
+
+For now there are a couple of things that I really want to do.   
+
+First thing is to implement distributed routing between VMs Nets with virtual **vSRX3** routers.   
+Now, the VMs nets are routed with inter-VLAN routing between CRS326's SVIs in those VLANs which are directly connected to the CRS326 through a tagged link for VLANs 20,40,50 and 108 (108 is point-to-point link to VyOS vRouter. this is a first step into the distributed routing).   
+However, I want to make it that so the CRS326 does not have a direct connection to the VLANs.  
+It will only have direct connection to a couple of vSRX3 vRouters and the VLANs for VMs etc. would be reachable only through an appropriate vSRX3 router in the PVE.   
+And here I can get into the second thing.   
+
+In order to make this really elegant and elastic, I will be changing my network to be a L3-Only architecture. 
+This means that the CRS326 will be one AS, CCR2004 will be another AS, Dell S4048-ON will be another and each of the vSRX3 routers will also be a separate AS.   
+
+This brings me to another thing, which is VXLAN implementation.  
+
+This L3-Only network is exactly what is needed for VXLAN with EVPN for BGP implementation.  
+
+The vSRX3 vRouters will be (if needed) some of the VTEPS, and for example the CRS326 will be another VTEP.  
+This way, there is a great underlay L3 network for BGP EVPN which would allow me to connect a physical device to the CRS326, add it to a VLAN and bind a VNI to the VID. 
+And then I could allow this device to communicate with, for example VMs in the VMs Net like they were in the same L2 domain. 
+But in reality they would be connected by a overlay L2 network which works over an L3 underlay network where BGP EVPN works to provide better routes between the VTEPs, instead of "flood-and-learn".    
+
+
+For now, I want to just attach this Dell EMC S4048-ON switch into the network.  
+I need to plan a little bit more on how to change the architecture of my network, since I want to use the Dell EMC switch as a **ToR** switch.  
+
 
 ## How This Repository Is Organized
 
