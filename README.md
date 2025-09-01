@@ -98,6 +98,10 @@ Here are the diagrams that show the physical and logical topology of my lab.
 
 ![physical diagram](./media/physical_diagram.png)
 
+#### Logical topology
+
+![logical diagram](./media/logical_diagram.png)
+
 ## Key Features
 
 Below is a descrition of how generally my lab is built.  
