@@ -52,41 +52,14 @@ These are projects, case studies and troubleshooting logs.
 
 * [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)  
 
-# Actual plans
-
-For now there are a couple of things that I really want to do.   
-
-First thing is to implement distributed routing between VMs Nets with virtual **vSRX3** routers.   
-Now, the VMs nets are routed with inter-VLAN routing between CRS326's SVIs in those VLANs which are directly connected to the CRS326 through a tagged link for VLANs 20,40,50 and 108 (108 is point-to-point link to VyOS vRouter. this is a first step into the distributed routing).   
-However, I want to make it that so the CRS326 does not have a direct connection to the VLANs.  
-It will only have direct connection to a couple of vSRX3 vRouters and the VLANs for VMs etc. would be reachable only through an appropriate vSRX3 router in the PVE.   
-And here I can get into the second thing.   
-
-In order to make this really elegant and elastic, I will be changing my network to be a L3-Only architecture. 
-This means that the CRS326 will be one AS, CCR2004 will be another AS, Dell S4048-ON will be another and each of the vSRX3 routers will also be a separate AS.   
-
-This brings me to another thing, which is VXLAN implementation.  
-
-This L3-Only network is exactly what is needed for VXLAN with EVPN for BGP implementation.  
-
-The vSRX3 vRouters will be (if needed) some of the VTEPS, and for example the CRS326 will be another VTEP.  
-This way, there is a great underlay L3 network for BGP EVPN which would allow me to connect a physical device to the CRS326, add it to a VLAN and bind a VNI to the VID. 
-And then I could allow this device to communicate with, for example VMs in the VMs Net like they were in the same L2 domain. 
-But in reality they would be connected by a overlay L2 network which works over an L3 underlay network where BGP EVPN works to provide better routes between the VTEPs, instead of "flood-and-learn".    
-
-
-For now, I want to just attach this Dell EMC S4048-ON switch into the network.  
-I need to plan a little bit more on how to change the architecture of my network, since I want to use the Dell EMC switch as a **ToR** switch.  
-
-
 ## How This Repository Is Organized
 
 This repository is structured to be a clear and useful reference. Here’s a map of the key directories:
 
+*   **`/projects/`**: Probably the most interesting directory cause it's where all project documentations are.
 *   **/[device-name]/** (e.g., [`./ccr2004/`](./ccr2004/), [`./r710/`](./r710/)): Contains the latest configuration files and documentation for each piece of hardware. This is the source of truth for device settings.
 *   **`/IaC/`**: Holds all Infrastructure as Code projects, primarily using Terraform to automate deployments on Proxmox.
 *   **`/docs/`**: Contains details about plans for improving the lab. For example a better addressation plan
-*   **`/projects/`**: Probably the most interesting directory cause it's where all project documentations are.
 
 ## Lab Architecture
 
@@ -102,69 +75,46 @@ Here are the diagrams that show the physical and logical topology of my lab.
 
 ![logical diagram](./media/logical_diagram.png)
 
-## Key Features
+## Main overview + Plans
 
-Below is a descrition of how generally my lab is built.  
+My network is oriented towards a datacenter-styled approach because that is the field that I would love to work in.    
 
-The network consists of two main Routers, both connected with two eBGP sessions.   
-*   **CCR2004-1G-12S+2XS** - This incredibly powerful router handles DHCP Server on loopback bridge, NAT, Stateful firewall etc.
-*   **CRS326-24S+2Q+RM** - Super powerful switch with L3 Hardware offload onto the ASIC. Handles most of inter-VLAN Routing.  
+I am actively improving things to make this lab as much as possible like a real data center Spine-Leaf Design.   
 
-It's also a DHCP Relay for VLANs 20, 40 and 50.  
-Both of those routers are connected through a pair of p2p links where eBGP is running.
-Each of them has a separate, small `/30` network for management.  
+For now the Spine of my network consists of three routers, a MikroTik CCR2004-1G-12S+2XS, a CRS326-24S+2Q+RM and a VyOS vRouter.
+Together, those two physical routers are connected with two eBGP sessions through two 10GbE Fiber links.
+I wanted to enable ECMP between them, however, in RouterOS 7.19.4, ECMP for BGP is not supported.   
 
-> [!IMPORTANT]
-> For now, the Inter-VLAN Routing between VLANs 30,40,50 etc. is handled by the CRS326. However, that will change. 
-> I will remove the VLANs 30,40,50 SVIs from the CRS326 and instead add them on three separate vSRX3 virtual Routers. The CRS326 will still handle routing between those VLANs but this is a step in the direction of a distributed routing.
-> VMs traffic could actually not even leave the Proxmox Host. For example, routing between network 40 (VMs/LXCs) and network 50 (kubernetes) could be handled fully by vSRX3 router.    
-> However, that would actually be slower than inter-VLAN routing on my physical router CRS326 since it's ASIC is more powerful than software routing on the Dell R710.
-> The VLANs 30,40,50 would be available only through inter-router links between the CRS326 and the vSRX3 routers on the PVE host.
+The CCR2004 has an ASN of 65000, the CRS326 has 65001 and the VyOS vRouter has a 65002 ASN.  
 
-The main Server in my lab is a Dell PowerEdge R710. It's running Proxmox VE and it's equipped with 1x 10GbE SFP+ NIC, and another 2x 10GbE RJ45 NIC.  
+The CCR2004 advertises the default route (`0.0.0.0/0`) to the CRS326 which advertises Networks from it's `BGP_ADV_NET` address list.   
 
-The SFP+ 10GbE NIC provides the main uplink from the server to the CRS326. This physical interface is added to the `vmbr0` bridge and carries tagged traffic for VLANs 20,40,50 and 108.   
+There is also a DHCP Server running on a loopback-like interface on the CCR2004. 
+This ensures that it is reachable even when one of the links go down and removes the need for two identical DHCP Servers for two different interfaces, since it's listening on a single bridge.   
 
-The RJ45 10GbE dual-port NIC physical ports are added to the `vmbr1` bridge. The `VyOS-VL3` has an interface `net1` on this bridge with an IP address of 10.1.3.1/24.   
+From the outside, this network might look pretty small.
+However, a lot happens in Proxmox Virtual Environment which runs on my Dell PowerEdge R710.   
 
-This provides access to the network through Cat6A cable runs from the NIC, through the wall, into another room.   
+In the PVE I run a lot of networking appliances like VyOS and vSRX3 vRouters.   
 
-VLAN 30 is reachable through the CRS326, through a inter-router link (VLAN 108) to the VyOS-VL3 VM.
+The PVE is connected through a single DAC 10GbE cable to the CRS326.
+This single cable carries a lot of tagged traffic which then gets switched by the main `vmbr0` bridge.  
 
+This way, the inter-VLAN routing between VMs and for example Kubernetes Cluster gets handled by the CRS326 which has enabled L3 Hardware offloading.   
 
+Even though the L3HW offload on CRS326 is fairly simple, as anything above simple routing gets handed to the CPU, it allows for line-speed (10GbE) routing between different VLANs which live on the PVE server.   
 
-## VLAN & IP Schema
+That is of course a bit of hairpinning since the traffic goes twice through the same physical cable.   
 
-The network is separated using VLANs.
+VLAN segmentation on that link between CRS326 and PVE, allows me to create different logical links without worrying about buying another SFP+ NICs.  
 
-| ID  & Name    | Network | Where | Description                                   |
-|:---|:---|:---|:---|
-| 20 - Bare Metal | 10.1.2.0/27         | SVI on Core-CRS326 | Here are bare-metal devices. For example, the PVE Host is here on 10.1.2.30/27.        |
-| 30 - Users | 10.1.3.0/24         | SVI on VyOS-VL3 | This is the VLAN in which all devices in another room will be connected to    |
-| 40 - VMs/LXCs | 10.1.4.0/24       | SVI on Core-CRS326  | Here are placed Virtual Machines accessible through `vmbr0` |
-| 50 - Kubernetes | 10.1.5.0/27       | SVI on Core-CRS326  | Dedicated separate network for "public" IPs for the nodes in kubernetes cluster. |
-| 60 - OOB     | 10.1.6.0/24      | ....     | As now the network is evolving, I will be going in the direction of OOB-Only Management cause that is how management is actually handled in Data Centers |
+USERS_NET is currently reachable through the point-to-point link between the CRS326 and a VyOS vRouter which also travels through that same DAC Cable but is of course separated with VLAN tagging.   
 
+There is also eBGP session running on the point-to-point link between the CRS326 and the VyOS router.  
 
-There are also two networks dedicated for Kubernetes cluster internal IPs   
+USERS_NET Access is available for PCs in another room next to mine via a dual-port RJ45 10GbE NIC which has both its ports bridged onto `vmbr-users`, where also the mentioned VyOS Router has one of it's interfaces.   
 
-*   **Services CIDR** - `10.5.0.0/16`
-*   **Cluster CIDR** - `10.6.0.0/16`
-
-
-There are also dedicated VLANs for management and traffic tranzit.
-
-*   **VLAN 100** - This is the VLAN used for the `eBGP-Link-0` interfaces on the main routers. 
-    CCR2004 - `172.16.255.1/30`
-    CRS326  - `172.16.255.2/30`
-*   **VLAN 104** - Another link for eBGP session. Here are the `eBGP-Link-1` interfaces of the main routers.
-    CCR2004 - `172.16.255.5/30`
-    CRS326  - `172.16.255.6/30`
-*   **VLAN 108** - Inter-Router link between the CRS326 and the VyOS-VL3 which makes the VLAN 30 reachable through the VyOS virtual Router.
-    VyOS-VL3 - `172.16.255.10/30`
-    CRS326  - `172.16.255.9/30`
-*   **VLAN 111** - This is where the management SVI for the CCR2004 is. The CCR2004 has a `10.1.1.1/30` IP here.
-*   **VLAN 115** - Here is the management SVI for the CRS326 with `10.1.1.5/30` IP Address.
+This VyOS vRouter is also a DHCP Relay for all devices in USERS_NET.
 
 ## Hardware
 
