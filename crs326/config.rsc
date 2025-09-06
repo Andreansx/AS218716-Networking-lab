@@ -1,4 +1,4 @@
-# 2025-08-26 23:38:50 by RouterOS 7.19.4
+# 2025-09-06 23:16:21 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -13,7 +13,6 @@ add interface=main-bridge name=link-to-VyOS-VL3 vlan-id=108
 add interface=main-bridge name=vlan20-bare-metal vlan-id=20
 add interface=main-bridge name=vlan40-vms-cts vlan-id=40
 add interface=main-bridge name=vlan50-kubernetes vlan-id=50
-add interface=main-bridge name=vlan1115-crs326-mgmt vlan-id=1115
 /interface list
 add name=ZONE-TO-CCR2004
 /interface wireless security-profiles
@@ -25,7 +24,7 @@ add disabled=yes name=backbonev2 router-id=172.16.0.2
 /routing ospf area
 add disabled=yes instance=backbonev2 name=backbone0v2
 /interface bridge port
-add bridge=main-bridge interface=ether1 pvid=1115 trusted=yes
+add bridge=main-bridge interface=ether1 trusted=yes
 add bridge=main-bridge interface=qsfpplus1-1
 add bridge=main-bridge interface=qsfpplus1-2
 add bridge=main-bridge interface=qsfpplus1-3
@@ -35,7 +34,7 @@ add bridge=main-bridge interface=qsfpplus2-2
 add bridge=main-bridge interface=qsfpplus2-3
 add bridge=main-bridge interface=qsfpplus2-4
 add bridge=main-bridge interface=sfp-sfpplus5
-add bridge=main-bridge interface=sfp-sfpplus6 pvid=30
+add bridge=main-bridge interface=sfp-sfpplus6
 add bridge=main-bridge interface=sfp-sfpplus7
 add bridge=main-bridge interface=sfp-sfpplus8
 add bridge=main-bridge interface=sfp-sfpplus9
@@ -64,9 +63,8 @@ set mode=rx-only
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=20
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=40
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
-add bridge=main-bridge tagged=main-bridge untagged=ether1 vlan-ids=1115
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=50
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus24 vlan-ids=104
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus3 vlan-ids=104
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=108
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
@@ -76,7 +74,7 @@ add interface=eBGP-Link-1 list=ZONE-TO-CCR2004
 /ip address
 add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
 add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
-add address=10.1.1.5/30 interface=vlan1115-crs326-mgmt network=10.1.1.4
+add address=10.1.1.5/30 interface=ether1 network=10.1.1.4
 add address=172.16.255.2/30 interface=eBGP-Link-0 network=172.16.255.0
 add address=172.16.0.2 interface=lo network=172.16.0.2
 add address=10.1.5.1/27 interface=vlan50-kubernetes network=10.1.5.0
@@ -102,7 +100,6 @@ add address=10.1.4.0/24 list=BGP_ADV_NET
 add address=10.1.5.0/27 list=BGP_ADV_NET
 add address=172.16.0.2 list=BGP_ADV_NET
 add address=172.16.255.8/30 list=BGP_ADV_NET
-add address=10.1.3.0/24 list=BGP_ADV_NET
 add address=10.1.1.0/30 list=CCR2004-MGMT
 /ip firewall filter
 add action=drop chain=input port=22,80,8291 protocol=tcp src-address-list=\
@@ -120,8 +117,6 @@ add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
 /ip route
 add gateway=172.16.255.1
 add dst-address=10.1.1.0/30 gateway=172.16.255.1
-add dst-address=10.1.1.0/30 gateway=172.16.255.5
-add dst-address=10.1.3.0/24 gateway=172.16.255.10
 /ip service
 set ftp disabled=yes
 set www disabled=yes
@@ -133,6 +128,8 @@ add as=65001 local.role=ebgp name=eBGP-0 output.network=BGP_ADV_NET \
     remote.address=172.16.255.1 router-id=172.16.0.2
 add as=65001 local.role=ebgp name=eBGP-1 output.network=BGP_ADV_NET \
     remote.address=172.16.255.5 router-id=172.16.0.2
+add as=65001 local.role=ebgp name=eBGP-2 output.network=BGP_ADV_NET \
+    remote.address=172.16.255.10 router-id=172.16.0.2
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
@@ -140,6 +137,7 @@ add area=backbone0v2 disabled=yes networks=10.1.2.0/27 passive
 add area=backbone0v2 disabled=yes networks=10.1.4.0/24 passive
 add area=backbone0v2 disabled=yes networks=10.1.5.0/27 passive
 add area=backbone0v2 disabled=yes networks=10.1.3.0/24 passive
+add area=backbone0v2 disabled=yes networks=172.16.255.4/30
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity

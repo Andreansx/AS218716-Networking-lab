@@ -1,15 +1,13 @@
-# 2025-08-26 23:38:44 by RouterOS 7.19.4
+# 2025-09-06 23:16:15 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
 # serial number = D4F00DCEEFD0
 /interface bridge
 add name=bridge0
-add name=ccr2004-mgmt port-cost-mode=short
 /interface vlan
 add interface=sfp-sfpplus1 name=eBGP-Link-0 vlan-id=100
-add interface=sfp-sfpplus11 name=eBGP-Link-1 vlan-id=104
-add interface=sfp-sfpplus1 name=vlan111-ccr2004-mgmt vlan-id=1111
+add interface=sfp-sfpplus2 name=eBGP-Link-1 vlan-id=104
 /interface list
 add name=ZONE-CCR2004-MGMT
 add name=ZONE-WAN
@@ -39,25 +37,22 @@ add disabled=yes name=backbonev2 router-id=172.16.0.1
 /routing ospf area
 add disabled=yes instance=backbonev2 name=backbone0v2
 /interface bridge port
-add bridge=ccr2004-mgmt comment="Management access" ingress-filtering=no \
-    interface=ether1 internal-path-cost=10 path-cost=10
-add bridge=ccr2004-mgmt interface=vlan111-ccr2004-mgmt
 add bridge=bridge0 interface=eBGP-LINK-CRS326
 /ip neighbor discovery-settings
 set discover-interface-list=!ZONE-TO-CRS326-L2 mode=rx-only
 /interface list member
 add interface=sfp-sfpplus12 list=ZONE-WAN
-add interface=ccr2004-mgmt list=ZONE-CCR2004-MGMT
 add interface=bridge0 list=ZONE-LOOPBACK
 add interface=eBGP-Link-0 list=eBGP-LINK-CRS326
 add interface=eBGP-Link-1 list=eBGP-LINK-CRS326
 add interface=eBGP-Link-0 list=ZONE-TO-CRS326-L2
 add interface=eBGP-Link-1 list=ZONE-TO-CRS326-L2
 add interface=bridge0 list=ZONE-TO-CRS326-L2
+add interface=ether1 list=ZONE-CCR2004-MGMT
 /ip address
 add address=10.0.0.150/24 comment=WAN interface=sfp-sfpplus12 network=\
     10.0.0.0
-add address=10.1.1.1/30 interface=ccr2004-mgmt network=10.1.1.0
+add address=10.1.1.1/30 interface=ether1 network=10.1.1.0
 add address=172.16.255.1/30 interface=eBGP-Link-0 network=172.16.255.0
 add address=172.16.0.1 interface=bridge0 network=172.16.0.1
 add address=172.16.255.5/30 interface=eBGP-Link-1 network=172.16.255.4
@@ -78,6 +73,7 @@ add address=10.1.2.0/24 list=SERVERs-NET
 add address=10.1.4.0/24 list=VMs/LXCs-NET
 add address=10.1.5.0/27 list=Kubernetes-NET
 add address=172.16.0.1 list=BGP_ADV_NET
+add address=0.0.0.0/0 list=BGP_ADV_NET
 /ip firewall filter
 add action=accept chain=input connection-state=established,related
 add action=accept chain=forward comment=\
@@ -128,7 +124,6 @@ add dst-address=10.1.1.4/30 gateway=172.16.255.6
 /ip service
 set ftp disabled=yes
 set telnet disabled=yes
-set www disabled=yes
 /ipv6 nd
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
@@ -139,9 +134,10 @@ add as=65000 disabled=no local.role=ebgp name=eBGP-1 output.network=\
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.1/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
+add area=backbone0v2 disabled=yes networks=172.16.255.4/30
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity
-set name=core-ccr2004
+set name=edge-ccr2004
 /system resource irq rps
 set ether1 disabled=no
