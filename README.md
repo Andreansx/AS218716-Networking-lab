@@ -85,7 +85,7 @@ For now the Spine of my network consists of three routers, a MikroTik CCR2004-1G
 Together, those two physical routers are connected with two eBGP sessions through two 10GbE Fiber links.
 I wanted to enable ECMP between them, however, in RouterOS 7.19.4, ECMP for BGP is not supported.   
 
-The CCR2004 has an ASN of 65000, the CRS326 has 65001 and the VyOS vRouter has a 65002 ASN.  
+The CCR2004 has an ASN of 65000, the CRS326 has 65001 and the VyOS vRouter has a 65101 ASN.  
 
 The CCR2004 advertises the default route (`0.0.0.0/0`) to the CRS326 which advertises Networks from it's `BGP_ADV_NET` address list.   
 
@@ -155,6 +155,58 @@ The first networking device (`net0`) added to the vSRX3 vRouter is always assign
 This way, the management interfaces for the vSRX3 appliances will be always reachable through the OOB network even when the main PVE link goes down.  
 
 This also improves security a lot.
+
+
+*   Second thing is implementing the Dell EMC S4048-ON switch into the lab
+
+
+I want to use this switch as the Top-of-the-Rack switch in my lab.  
+
+It's absolutely insane and it's a gigantic upgrade for me.  
+After all, it's my first real datacenter-grade networking L3 switch.   
+
+It will be a great L3 fabric for my network which will allow me to create super-fast links to my vSRX3 vRouters and handle VXLAN Tunnels.
+
+*   Third thing is L3-Only network
+
+I want to make my network more to be like a real datacenter network.   
+Now, hyperscalers use a L3-Only Spine-Leaf architecture in their datacenters.   
+
+A L3-Only network means that there is no stretching of L2 domains, no issues caused by LACP, no locked ports cause of STP and no fake load-balancing with bond interfaces.  
+
+By making my network L3-Only, I will be able to do everything a lot more elastically, and also utilize real load-balancing using ECMP for BGP.   
+
+Creating a stable L3-Only network fabric also makes up a great environment for a very advanced datacenter technologies like VXLAN which is currently used routinely.  
+
+I could create a VXLAN tunnel between VMs_NET in PVE reachable through a vSRX3 vRouter, and my laptop connected to the CRS326.  
+Then to make it even better and more advanced I could replace "flood-and-learn" with EVPN for BGP which is a really great technology currently used in datacenters.   
+
+
+As of now, the VMs_NET and KUBERNETES_NET are directly connected to the CRS326.   
+This keeps those two L2 domains that stretch beyond the PVE Server.    
+
+I would move the link connecting the CRS326 to the PVE, to the Dell instead of the CRS326.  
+
+The CRS326 will become a access switch with less to handle now.   
+
+On the link between the PVE and the Dell, there will be tagged point-to-point links to the vSRX3 routers, all connected together by BGP.  
+
+The VMs and other networks now won't be connected to the Dell.
+Those networks will be reachable only throught vSRX3 vRouters inside the PVE Server.   
+
+The Dell will keep eBGP Sessions with the vSRX3 routers and route traffic not between those networks directly but it will route traffic between the vSRXs.   
+
+This is my miniature version of distributed routing which is used in Azure, AWS etc.  
+
+The eBGP sessions will be between appropriate SVIs on the Dell and the vSRXs.   
+
+This is a lot more elastic approach and it also allows me to use the vSRXs as VTEPs for VXLAN tunnels.
+
+I will be able to enable EVPN for eBGP sessions and create VXLAN Tunnels with great efficency for example between VMS_NET or USERS_NET and my physical laptop connected to the Dell ToR.  
+
+The insanely powerful Trident 2 ASIC allows this Dell switch to perform VXLAN encapsulation, BGP EVPN etc. with incredible line-speed bandwidth.
+
+This is what I want to achieve for now.
 
 
 ## Hardware
