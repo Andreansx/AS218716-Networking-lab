@@ -1,6 +1,7 @@
-# Lab for learning
+# Datacenter networking lab
 
-This repository serves as a documentation of infrastructure, configurations, projects etc. that take place in my lab as a way of developing skills that are neccesary in my dream field of work. I would love to work in a datacenter environment, especially in things like backbone engineering and server administration.  
+Here I document everything about my networking lab which serves as a practical ground for learing modern datacenter technologies.  
+My main focus is building scalable L3-only network fabrics
 
 
 <div align=“center”>
@@ -38,7 +39,6 @@ Here I put things that I think are the most interesting and worth reading.
 These are projects, case studies and troubleshooting logs.    
 
 *   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation/readme.md)** - Plus DHCP Nightmare
-
 
 *   **[Super Important OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop/readme.md)** - This is important as it makes some changes to the entire lab archtecture. 
 
@@ -116,6 +116,47 @@ USERS_NET Access is available for PCs in another room next to mine via a dual-po
 
 This VyOS vRouter is also a DHCP Relay for all devices in USERS_NET.
 
+### Plans
+
+*   First thing I want to do is implement OOB-Only Management.   
+
+
+For now, for management and access to the entire network I used a kind of a master-network which was available through the `ether1` interface on the CCR2004 router.  
+
+This is of course a bad practise and I will be deprecating it.  
+
+The reason why I got into thinking about this OOB-Only network is because I started learning more about real datacenter networking devices.   
+My MikroTik routers, even though powerful for their price, are not a real datacenter grade networking appliances.   
+
+However, my new Dell EMC S4048-ON is a real datacenter-grade device.  
+
+The `mgmt` interface on it is not just an another ethernet port with a `mgmt` text next to it.  
+Since this is a real datacenter switch, it features a physical separation of data and control plane, which means that this management port is physically connected differently than every other interface.  
+It's connected directly to the CPU, while every single other port is connected to the Trident 2 ASIC.    
+
+The same thing applies to the vSRX3 vRouters.  
+They also feature a control and data plane separation.  
+
+New approach will be to make networking devices management available only from a Out-of-band network.  
+Each device will get assigned an IP from the `10.9.0.0/24` network on a physical management interface. **NOT** on an SVI.  
+
+Accessing OOB network from anywhere other than a physical connection to the OOB switch will be impossible and vice-versa.
+
+Proxmox Management will still be available from in-band network.  
+
+However, one problem with this occured when I thought about the vSRX3 vRouters in the PVE. How to make their `fxp0.0` management interfaces available from the OOB Network?  
+
+The solution to this is to first create a new bridge in the PVE, for example `vmbr-oob`.
+Then to make it physically separated, it's neccessary to add a physical interface to the `vmbr-oob`, for example `eno1`.  
+Then what's left is to connect the `eno1` interface to the OOB switch and add all `net0` vNICs for the vSRX3 vRouters to the `vmbr-oob`.  
+
+The first networking device (`net0`) added to the vSRX3 vRouter is always assigned as `fxp0.0` port, which is specifically a management interface.
+
+This way, the management interfaces for the vSRX3 appliances will be always reachable through the OOB network even when the main PVE link goes down.  
+
+This also improves security a lot.
+
+
 ## Hardware
 
 A list of the key components in my lab. Click a device name to see its configuration files.
@@ -123,50 +164,12 @@ A list of the key components in my lab. Click a device name to see its configura
 | Device Type      | Model                                   | Role in the Lab                                   |
 |:---|:---|:---|
 | **Server Rack**  | [HPE 10636 G2](./hpe-10636-g2/)         | Central mounting point for all equipment.         |
-| **Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
-| **Server**       | [Dell PowerEdge R610](./r610/)          | Currently unused, planned for a giveaway.         |
-| **Core Router**  | [MikroTik CCR2004](./ccr2004/)           | Core router. Handles routing, firewall and NAT.       |
-| **Core Switch**  | [MikroTik CRS326](./crs326/)           | Main switch, inter-VLAN routing handling, L2/L3 switching. |
-| **ToR**          | [Dell S4048-ON](.)                     | The most powerful L3 Device in my lab with its Trident 2 ASIC |
-| **Switch**| [Brocade FastIron LS648](./ls648/)      | Switch for OOB Management. Handles single L2 domain.     |
-| **PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
-
-## Projects
-
-This is where the real learning happens. Here are some of the things I’ve built or am currently working on.
-
-### Networking
-
-*   **[OSPF Implementation](./projects/06-ospf-backbone)** - Area 0 between CCR2004 and CRS326   
-*   **[Second MTCNA Lab](./projects/08-mtcna-lab-2)** - PPPoE, three CHRs, mini-ISP scenario with clients
-*   **[First MTCNA Lab](./projects/07-mtcna-lab-1/readme.md)**
-*   **[Addressation modernization, better management](./projects/04-management-network-split)**
-*   **[l3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)**  
-*   **[Repurposing a spare NIC for creating 10GbE VLAN access ports without SFP+ transreceivers](./projects/02-vlan30-access-without-sfp-transreceivers)**
-
-### Active Directory
-
-*   **[First Active Directory scenario](./projects/01-ActiveDirectory-first-scenario)**
-
-
-### Infrastructure as Code (IaC)
-
-*   **[Terraform RouterOS Wiki LXC](./IaC/terraform_routeros_wiki_lxc/)**: Deploys a local copy of the MikroTik Wiki in an LXC using Terraform.
-*   **[Terraform First Deployment](./IaC/terraform_first_deployment/)**: My initial project for deploying a simple CentOS LXC on Proxmox.
-
-### Guides & External Repositories
-
-*   **[Simple VLANs on RouterOS (repo)](https://github.com/andreansx/routeros-simple-vlans)**: A guide to basic VLAN configuration on MikroTik devices.
-
-
-## Physical Build Log
-
-See how the lab was physically assembled and cabled.
-
-*   **[Server Rack Installation](./installs/installation-rack/)**
-*   **[Cabling and Keystone Jack Installation](./installs/installation-keystones/)**
-
-—
+| **PVE Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
+| **Edge Router**  | [MikroTik CCR2004](./ccr2004/)           | Edge Router, provides access to the internet, NAT, DHCP Server on loopback       |
+| **Core Router**  | [MikroTik CRS326](./crs326/)           | Leaf router, handles eBGP, main routing with L3HW Offload | 
+| **ToR Switch**          | [Dell S4048-ON](./s4048-on/)  | For now, unused. However it will be the ToR switch with it's astronomic Broadcom Trident 2 ASIC |
+| **OOB Switch**| [Brocade FastIron LS648](./ls648/)      | Switch for OOB Management. Handles single L2 domain.     |
+| **0U PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
 ## Contact
 
