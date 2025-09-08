@@ -6,10 +6,10 @@ My main focus is building scalable L3-only network fabrics
 
 <div align=“center”>
 
-![MikroTik](https://img.shields.io/badge/mikrotik-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white)
+![MikroTik](https://img.shields.io/badge/routeros-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white)
 ![kubernetes](https://img.shields.io/badge/kubernetes-7D3742?style=for-the-badge&logo=kubernetes&logoColor=white)
-![FreeBSD](https://img.shields.io/badge/freebsd-A54E3E?style=for-the-badge&logo=freebsd&logoColor=white)
+![dell](https://img.shields.io/badge/OS9-A54E3E?style=for-the-badge&logo=dell&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-CE653B?style=for-the-badge&logo=terraform&logoColor=white)
 
 </div>
@@ -76,6 +76,20 @@ Here are the diagrams that show the physical and logical topology of my lab.
 ![logical diagram](./media/logical_diagram.png)
 
 ## Main overview + Plans
+
+Below is a really in-depth and specific explaination of my lab. 
+However, if you do not want to read everything (though I encourage you to, since I think it's pretty interesting), I can short it for you.  
+
+Basically, there are:
+*   two routers connected with eBGP with failover, 
+*   proxmox server
+*   VyOS, vSRX3 vRouters on Proxmox VE
+*   10GbE fiber links
+*   Plans for BGP EVPN implementation 
+
+However, as I said, I think you might actually enjoy reading this a lot longer description:   
+
+
 
 My network is oriented towards a datacenter-styled approach because that is the field that I would love to work in.    
 
