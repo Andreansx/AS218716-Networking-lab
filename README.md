@@ -231,10 +231,10 @@ A list of the key components in my lab. Click a device name to see its configura
 |:---|:---|:---|
 | **Server Rack**  | [HPE 10636 G2](./hpe-10636-g2/)         | Central mounting point for all equipment.         |
 | **PVE Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
-| **Edge Router**  | [MikroTik CCR2004](./ccr2004/)           | Edge Router, provides access to the internet, NAT, DHCP Server on loopback       |
-| **Core Router**  | [MikroTik CRS326](./crs326/)           | Leaf router, handles eBGP, main routing with L3HW Offload | 
-| **ToR Switch**          | [Dell S4048-ON](./s4048-on/)  | For now, unused. However it will be the ToR switch with it's astronomic Broadcom Trident 2 ASIC |
-| **OOB Switch**| [Brocade FastIron LS648](./ls648/)      | Switch for OOB Management. Handles single L2 domain.     |
+| **Edge Leaf Router**  | [MikroTik CCR2004](./edge-leaf-ccr2004/)           | Edge Router, provides access to the internet, NAT, DHCP Server on loopback       |
+| **Core Leaf Router**  | [MikroTik CRS326](./leaf-crs326/)           | Leaf router, handles eBGP, main routing with L3HW Offload | 
+| **ToR/Spine Switch**          | [Dell S4048-ON](./spine-s4048-on/)  | For now, unused. However it will be the ToR switch with it's astronomic Broadcom Trident 2 ASIC |
+| **OOB Switch**| [Brocade FastIron LS648](./oob-fls648/)      | Switch for OOB Management. Handles single L2 domain.     |
 | **0U PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
 ## Contact
