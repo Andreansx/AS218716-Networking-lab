@@ -75,6 +75,12 @@ Here are the diagrams that show the physical and logical topology of my lab.
 
 ![logical diagram](./media/logical_diagram.png)
 
+### Photos
+
+![devices](./media/devices.jpeg)   
+
+![cables](./media/cables.jpeg)
+
 ## Main overview + Plans
 
 Below is a really in-depth and specific explaination of my lab. 
