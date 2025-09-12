@@ -440,7 +440,8 @@ Then I added a Linux VLAN `vmbr0.20` and assigned it a IP `10.1.2.30/27`.
 Next I created a new linux bridge `vmbr1` and assigned the `enp7s0f0` and `enp7s0f1` interfaces to it. 
 I also added VLAN id 30 to it, since those were supposed to be access ports for VLAN 30.   
 
-> [!IMPORTANT]However, an important thing here.
+> [!IMPORTANT]
+> However, an important thing here.   
 > I wasn't able to do any modifications through the web panel, beacause it was completly unreachable.
 > I had to log through the console and remove the `enp7s0fX` interfaces from the bridge.
 > After that, I replugged the fiber connection from the server, and I was able to log to the web panel.  

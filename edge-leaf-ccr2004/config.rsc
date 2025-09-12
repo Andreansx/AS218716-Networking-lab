@@ -1,4 +1,4 @@
-# 2025-09-06 23:16:15 by RouterOS 7.19.4
+# 2025-09-12 17:47:20 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -120,17 +120,19 @@ add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
 add disabled=no dst-address=10.1.1.4/30 gateway=172.16.255.2
-add dst-address=10.1.1.4/30 gateway=172.16.255.6
 /ip service
 set ftp disabled=yes
 set telnet disabled=yes
+set www disabled=yes
 /ipv6 nd
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
-add as=65000 disabled=no local.role=ebgp name=eBGP-0 output.network=\
-    BGP_ADV_NET remote.address=172.16.255.2 router-id=172.16.0.1
-add as=65000 disabled=no local.role=ebgp name=eBGP-1 output.network=\
-    BGP_ADV_NET remote.address=172.16.255.6 router-id=172.16.0.1
+add afi=ip as=65000 disabled=no keepalive-time=20s local.role=ebgp name=\
+    eBGP-0 output.network=BGP_ADV_NET remote.address=172.16.255.2 router-id=\
+    172.16.0.1 routing-table=main
+add as=65000 disabled=no keepalive-time=20s local.role=ebgp name=eBGP-1 \
+    output.network=BGP_ADV_NET remote.address=172.16.255.6 router-id=\
+    172.16.0.1
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.1/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
@@ -138,6 +140,6 @@ add area=backbone0v2 disabled=yes networks=172.16.255.4/30
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity
-set name=edge-ccr2004
+set name=edge-leaf-ccr2004
 /system resource irq rps
 set ether1 disabled=no

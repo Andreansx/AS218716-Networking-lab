@@ -75,6 +75,12 @@ Here are the diagrams that show the physical and logical topology of my lab.
 
 ![logical diagram](./media/logical_diagram.png)
 
+#### Modernization and currently ongoing
+
+Here is the simplified diagram which shows what Im making my network to look like.   
+
+![modernization](./media/modernization.png)
+
 ### Photos
 
 ![devices](./media/devices.jpeg)   
