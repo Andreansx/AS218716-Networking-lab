@@ -25,12 +25,8 @@ Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) a
 1.  [Docs to read](#docs-to-read)
 2.  [How This Repository Is Organized](#how-this-repository-is-organized)
 3.  [Lab Architecture](#lab-architecture)
-    *   [Network Diagram](#network-diagram)
-    *   [VLAN & IP Schema](#vlan—ip-schema)
 4.  [Hardware](#hardware)
-5.  [Projects](#projects)
-6.  [Physical Build Log](#physical-build-log)
-7.  [Contact](#contact)
+5.  [Contact](#contact)
 
 # Docs to read
 
@@ -63,9 +59,12 @@ This repository is structured to be a clear and useful reference. Here’s a map
 
 ## Lab Architecture
 
-### Network Diagram
+#### Modernization and currently ongoing
 
-Here are the diagrams that show the physical and logical topology of my lab.   
+Here is the simplified diagram which shows what Im making my network to look like.   
+
+![modernization](./media/modernization.png)
+
 
 #### Physical connections diagram
 
@@ -75,11 +74,6 @@ Here are the diagrams that show the physical and logical topology of my lab.
 
 ![logical diagram](./media/logical_diagram.png)
 
-#### Modernization and currently ongoing
-
-Here is the simplified diagram which shows what Im making my network to look like.   
-
-![modernization](./media/modernization.png)
 
 ### Photos
 
