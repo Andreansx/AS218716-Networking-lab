@@ -1,4 +1,4 @@
-# 2025-09-12 17:47:20 by RouterOS 7.19.4
+# 2025-09-15 18:42:29 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -6,12 +6,13 @@
 /interface bridge
 add name=bridge0
 /interface vlan
-add interface=sfp-sfpplus1 name=eBGP-Link-0 vlan-id=100
-add interface=sfp-sfpplus2 name=eBGP-Link-1 vlan-id=104
+add interface=sfp-sfpplus1 name=eBGP_LINK_AS65001_0 vlan-id=100
+add interface=sfp-sfpplus2 name=eBGP_LINK_AS65001_1 vlan-id=104
+add interface=sfp-sfpplus3 name=eBGP_LINK_AS65001_2 vlan-id=112
 /interface list
 add name=ZONE-CCR2004-MGMT
 add name=ZONE-WAN
-add name=eBGP-LINK-CRS326
+add name=ZONE_BGP_AS65001
 add name=ZONE-LOOPBACK
 add name=ZONE-TO-CRS326-L2
 /interface lte apn
@@ -37,25 +38,31 @@ add disabled=yes name=backbonev2 router-id=172.16.0.1
 /routing ospf area
 add disabled=yes instance=backbonev2 name=backbone0v2
 /interface bridge port
-add bridge=bridge0 interface=eBGP-LINK-CRS326
+add bridge=bridge0 interface=ZONE_BGP_AS65001
 /ip neighbor discovery-settings
 set discover-interface-list=!ZONE-TO-CRS326-L2 mode=rx-only
 /interface list member
 add interface=sfp-sfpplus12 list=ZONE-WAN
 add interface=bridge0 list=ZONE-LOOPBACK
-add interface=eBGP-Link-0 list=eBGP-LINK-CRS326
-add interface=eBGP-Link-1 list=eBGP-LINK-CRS326
-add interface=eBGP-Link-0 list=ZONE-TO-CRS326-L2
-add interface=eBGP-Link-1 list=ZONE-TO-CRS326-L2
+add interface=eBGP_LINK_AS65001_0 list=ZONE_BGP_AS65001
+add interface=eBGP_LINK_AS65001_1 list=ZONE_BGP_AS65001
+add interface=eBGP_LINK_AS65001_0 list=ZONE-TO-CRS326-L2
+add interface=eBGP_LINK_AS65001_1 list=ZONE-TO-CRS326-L2
 add interface=bridge0 list=ZONE-TO-CRS326-L2
 add interface=ether1 list=ZONE-CCR2004-MGMT
+add interface=eBGP_LINK_AS65001_2 list=ZONE_BGP_AS65001
+add interface=eBGP_LINK_AS65001_2 list=ZONE-TO-CRS326-L2
 /ip address
 add address=10.0.0.150/24 comment=WAN interface=sfp-sfpplus12 network=\
     10.0.0.0
 add address=10.1.1.1/30 interface=ether1 network=10.1.1.0
-add address=172.16.255.1/30 interface=eBGP-Link-0 network=172.16.255.0
+add address=172.16.255.1/30 interface=eBGP_LINK_AS65001_0 network=\
+    172.16.255.0
 add address=172.16.0.1 interface=bridge0 network=172.16.0.1
-add address=172.16.255.5/30 interface=eBGP-Link-1 network=172.16.255.4
+add address=172.16.255.5/30 interface=eBGP_LINK_AS65001_1 network=\
+    172.16.255.4
+add address=172.16.255.13/30 interface=eBGP_LINK_AS65001_2 network=\
+    172.16.255.12
 /ip dhcp-server lease
 add address=10.1.5.30 mac-address=BC:24:11:80:55:00
 add address=10.1.5.29 mac-address=BC:24:11:80:55:01
@@ -104,7 +111,7 @@ add action=accept chain=forward dst-address-list=Kubernetes-NET \
     in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE-TO-CRS326-L2 \
     protocol=icmp
 add action=accept chain=forward dst-address-list=Kubernetes-NET \
-    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=eBGP-LINK-CRS326
+    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE_BGP_AS65001
 add action=accept chain=forward comment=\
     "Accept traffic between CCR2004 Management and CRS326 Management" \
     dst-address-list=CRS326-MGMT in-interface-list=ZONE-CCR2004-MGMT \
@@ -128,11 +135,15 @@ set www disabled=yes
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
 add afi=ip as=65000 disabled=no keepalive-time=20s local.role=ebgp name=\
-    eBGP-0 output.network=BGP_ADV_NET remote.address=172.16.255.2 router-id=\
-    172.16.0.1 routing-table=main
-add as=65000 disabled=no keepalive-time=20s local.role=ebgp name=eBGP-1 \
-    output.network=BGP_ADV_NET remote.address=172.16.255.6 router-id=\
-    172.16.0.1
+    eBGP_CON_AS65001_0 output.default-originate=if-installed .network=\
+    BGP_ADV_NET remote.address=172.16.255.2 router-id=172.16.0.1 \
+    routing-table=main
+add as=65000 disabled=no keepalive-time=20s local.role=ebgp name=\
+    eBGP_CON_AS65001_1 output.default-originate=if-installed .network=\
+    BGP_ADV_NET remote.address=172.16.255.6 router-id=172.16.0.1
+add as=65000 local.role=ebgp name=eBGP_CON_AS65001_2 \
+    output.default-originate=if-installed .network=BGP_ADV_NET \
+    remote.address=172.16.255.14 router-id=172.16.0.1
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.1/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
@@ -140,6 +151,6 @@ add area=backbone0v2 disabled=yes networks=172.16.255.4/30
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity
-set name=edge-leaf-ccr2004
+set name=border-leaf-ccr2004
 /system resource irq rps
 set ether1 disabled=no

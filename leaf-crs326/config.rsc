@@ -1,4 +1,4 @@
-# 2025-09-12 17:47:26 by RouterOS 7.19.4
+# 2025-09-15 18:42:35 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -7,14 +7,16 @@
 add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge \
     vlan-filtering=yes
 /interface vlan
-add interface=main-bridge name=eBGP-Link-0 vlan-id=100
-add interface=main-bridge name=eBGP-Link-1 vlan-id=104
-add interface=main-bridge name=link-to-leaf-vyos vlan-id=108
+add interface=main-bridge name=eBGP_LINK_AS65000_0 vlan-id=100
+add interface=main-bridge name=eBGP_LINK_AS65000_1 vlan-id=104
+add interface=main-bridge name=eBGP_LINK_AS65000_2 vlan-id=112
+add interface=main-bridge name=eBGP_LINK_AS65002_0 vlan-id=108
 add interface=main-bridge name=vlan20-bare-metal vlan-id=20
 add interface=main-bridge name=vlan40-vms-cts vlan-id=40
 add interface=main-bridge name=vlan50-kubernetes vlan-id=50
 /interface list
 add name=ZONE-TO-CCR2004
+add name=LINK_USERS_NET
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
 /port
@@ -60,26 +62,33 @@ add bridge=main-bridge interface=sfp-sfpplus24
 /ip neighbor discovery-settings
 set mode=rx-only
 /interface bridge vlan
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=20
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=40
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=20
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=40
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=50
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=50
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus3 vlan-ids=104
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=108
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=108
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=112
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
 /interface list member
-add interface=eBGP-Link-0 list=ZONE-TO-CCR2004
-add interface=eBGP-Link-1 list=ZONE-TO-CCR2004
+add interface=eBGP_LINK_AS65000_0 list=ZONE-TO-CCR2004
+add interface=eBGP_LINK_AS65000_1 list=ZONE-TO-CCR2004
+add interface=sfp-sfpplus5 list=LINK_USERS_NET
 /ip address
 add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
 add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
 add address=10.1.1.5/30 interface=ether1 network=10.1.1.4
-add address=172.16.255.2/30 interface=eBGP-Link-0 network=172.16.255.0
+add address=172.16.255.2/30 interface=eBGP_LINK_AS65000_0 network=\
+    172.16.255.0
 add address=172.16.0.2 interface=lo network=172.16.0.2
 add address=10.1.5.1/27 interface=vlan50-kubernetes network=10.1.5.0
-add address=172.16.255.6/30 interface=eBGP-Link-1 network=172.16.255.4
-add address=172.16.255.9/30 interface=link-to-leaf-vyos network=172.16.255.8
+add address=172.16.255.6/30 interface=eBGP_LINK_AS65000_1 network=\
+    172.16.255.4
+add address=172.16.255.9/30 interface=eBGP_LINK_AS65002_0 network=\
+    172.16.255.8
+add address=172.16.255.14/30 interface=eBGP_LINK_AS65000_2 network=\
+    172.16.255.12
 /ip dhcp-relay
 add dhcp-server=172.16.0.1 disabled=no interface=vlan20-bare-metal \
     local-address-as-src-ip=yes name=vlan20-dhcp-relay
@@ -116,8 +125,6 @@ add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
     protocol=tcp src-address-list=KUBERNETES_NET
 /ip route
 add dst-address=10.1.1.0/30 gateway=172.16.255.1
-add gateway=172.16.255.1
-add gateway=172.16.255.5
 /ip service
 set ftp disabled=yes
 set www disabled=yes
@@ -125,12 +132,17 @@ set api disabled=yes
 /ipv6 nd
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
-add as=65001 keepalive-time=20s local.role=ebgp name=eBGP-0 output.network=\
-    BGP_ADV_NET remote.address=172.16.255.1 router-id=172.16.0.2
-add as=65001 keepalive-time=20s local.role=ebgp name=eBGP-1 output.network=\
-    BGP_ADV_NET remote.address=172.16.255.5 router-id=172.16.0.2
-add as=65001 keepalive-time=20s local.role=ebgp name=eBGP-2 output.network=\
-    BGP_ADV_NET remote.address=172.16.255.10 router-id=172.16.0.2
+add afi=ip as=65001 keepalive-time=20s local.role=ebgp name=\
+    eBGP_CON_AS65000_0 output.network=BGP_ADV_NET remote.address=172.16.255.1 \
+    router-id=172.16.0.2
+add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_1 \
+    output.network=BGP_ADV_NET remote.address=172.16.255.5 router-id=\
+    172.16.0.2
+add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65002_0 \
+    output.network=BGP_ADV_NET remote.address=172.16.255.10 router-id=\
+    172.16.0.2
+add as=65001 local.role=ebgp name=eBGP_CON_AS65000_2 output.network=\
+    BGP_ADV_NET remote.address=172.16.255.13 router-id=172.16.0.2
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
