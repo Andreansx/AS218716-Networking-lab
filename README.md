@@ -89,9 +89,9 @@ However, if you do not want to read everything (though I encourage you to, since
 Basically, there are:
 *   two routers connected with eBGP with failover, 
 *   proxmox server
-*   VyOS, vSRX3 vRouters on Proxmox VE
+*   VyOS, vSRX3 NGFWs/routers on Proxmox VE
 *   10GbE fiber links
-*   Plans for BGP EVPN implementation 
+*   Plans for BGP EVPN implementation (I will get into this after passing CCNA)
 
 However, as I said, I think you might actually enjoy reading this a lot longer description:   
 
@@ -115,7 +115,7 @@ This ensures that it is reachable even when one of the links go down and removes
 From the outside, this network might look pretty small.
 However, a lot happens in Proxmox Virtual Environment which runs on my Dell PowerEdge R710.   
 
-In the PVE I run a lot of networking appliances like VyOS and vSRX3 vRouters.   
+In the PVE I run a lot of networking appliances like VyOS and vSRX3 NGFWs/Routers.   
 
 The PVE is connected through a single DAC 10GbE cable to the CRS326.
 This single cable carries a lot of tagged traffic which then gets switched by the main `vmbr0` bridge.  
@@ -138,7 +138,7 @@ This VyOS vRouter is also a DHCP Relay for all devices in USERS_NET.
 
 ### Plans
 
-*   First thing I want to do is implement OOB-Only Management.   
+<h2>First thing I want to do is implement OOB-Only Management.</h2>   
 
 
 For now, for management and access to the entire network I used a kind of a master-network which was available through the `ether1` interface on the CCR2004 router.  
@@ -177,17 +177,17 @@ This way, the management interfaces for the vSRX3 appliances will be always reac
 This also improves security a lot.
 
 
-*   Second thing is implementing the Dell EMC S4048-ON switch into the lab
+<h2>Second thing is implementing the Dell EMC S4048-ON switch into the lab</h2>
 
 
-I want to use this switch as the Top-of-the-Rack switch in my lab.  
+I want to use this switch as the Spine switch in my lab.  
 
 It's absolutely insane and it's a gigantic upgrade for me.  
-After all, it's my first real datacenter-grade networking L3 switch.   
+After all, it's my first real datacenter-grade L3 fabric switch.   
 
-It will be a great L3 fabric for my network which will allow me to create super-fast links to my vSRX3 vRouters and handle VXLAN Tunnels.
+It will be a great L3 fabric for my network which will allow me to create super-fast links to my vSRX3 NGFWs/vMX Routers and handle VXLAN Tunnels.
 
-*   Third thing is L3-Only network
+<h2>Third thing is L3-Only network </h2>
 
 I want to make my network more to be like a real datacenter network.   
 Now, hyperscalers use a L3-Only Spine-Leaf architecture in their datacenters.   
@@ -196,37 +196,45 @@ A L3-Only network means that there is no stretching of L2 domains, no issues cau
 
 By making my network L3-Only, I will be able to do everything a lot more elastically, and also utilize real load-balancing using ECMP for BGP.   
 
-Creating a stable L3-Only network fabric also makes up a great environment for a very advanced datacenter technologies like VXLAN which is currently used routinely.  
+Creating a stable L3-Only network fabric also makes up a great environment for a very advanced datacenter technologies like VXLAN which is currently used routinely in datacenters.  
 
-I could create a VXLAN tunnel between VMs_NET in PVE reachable through a vSRX3 vRouter, and my laptop connected to the CRS326.  
-Then to make it even better and more advanced I could replace "flood-and-learn" with EVPN for BGP which is a really great technology currently used in datacenters.   
+I would create a VXLAN tunnel between VMs_NET, which would be behind a vMX router, and USERS_NET, which would be reachable through a vSRX3 NGFW.   
 
+The vMX and vSRX would be the VTEPs for this tunnel and would maintain EVPN session and advertise `l2vpn` afi to the rest of the network.    
 
-As of now, the VMs_NET and KUBERNETES_NET are directly connected to the CRS326.   
-This keeps those two L2 domains that stretch beyond the PVE Server.    
+Basically, there will be absolutely no L2 domain stretching, no STP, no LAG etc.  
 
-I would move the link connecting the CRS326 to the PVE, to the Dell instead of the CRS326.  
+Typically there are VLANs connected to a switch and traffic is carried from a VLAN, to the L3 switch (or router, wherever the SVI/IRB is) and sent back to another VLAN.   
 
-The CRS326 will become a access switch with less to handle now.   
+I will be leaving that behind and everything will be routable.   
+For example:   
 
-On the link between the PVE and the Dell, there will be tagged point-to-point links to the vSRX3 routers, all connected together by BGP.  
+USERS_NET - reachable through AS65103, vSRX3 NGFW, `leaf-vsrx3-0`.   
+VMS_NET - reachable through AS65102, vMX router, `leaf-vmx-0`.   
+etc..   
 
-The VMs and other networks now won't be connected to the Dell.
-Those networks will be reachable only throught vSRX3 vRouters inside the PVE Server.   
+This is just so much more elegant than messing with LACP and STP.  
+That is just what is done in datacenters.   
 
-The Dell will keep eBGP Sessions with the vSRX3 routers and route traffic not between those networks directly but it will route traffic between the vSRXs.   
+I could then create a new network `VMS_NET_1` and connect it to a new vMX router.  
+the new vMX router, `leaf-vmx-1` for example, would get assigned a ASN of 65104 and would be connected to the Dell EMC S4048-ON Spine switch.   
 
-This is my miniature version of distributed routing which is used in Azure, AWS etc.  
+As you can see, this topology matches (in a miniature scale) the policy of a L3 Clos fabric in datacenters:   
+No leaf is connected to another leaf.   
 
-The eBGP sessions will be between appropriate SVIs on the Dell and the vSRXs.   
+Then I could create an Anycast Gateway on the `leaf-vmx-0` and `leaf-vmx-1` on the side of their networks (`VMS_NET` & `VMS_NET_1`) on an IRB.   
+After this I would create BGP EVPN sessions by making the vMX leafs advertise a new afi, which is `l2vpn`.   
 
-This is a lot more elastic approach and it also allows me to use the vSRXs as VTEPs for VXLAN tunnels.
-
-I will be able to enable EVPN for eBGP sessions and create VXLAN Tunnels with great efficency for example between VMS_NET or USERS_NET and my physical laptop connected to the Dell ToR.  
+This way, the VMs in `VMS_NET` and `VMS_NET_1` could talk to each other like they were in the same L2 domain, but of course they are not.
 
 The insanely powerful Trident 2 ASIC allows this Dell switch to perform VXLAN encapsulation, BGP EVPN etc. with incredible line-speed bandwidth.
 
-This is what I want to achieve for now.
+However, in the scenario depicted above, EVPN would not be enabled on the Dell S4048-ON.   
+So I would simply add a new SVI which would be the Anycast gateway for a new network `USERS_NET_1` and I would simply enable EVPN on this Dell and also on the `leaf-vsrx3-0`.   
+
+That is how I could access the USERS_NET, through a SFP RJ45 transceiver plugged into the Dell, like I would be in the same L2 domain.
+
+This is what I want to achieve for now but first just need to finish CCNA.
 
 
 ## Hardware
