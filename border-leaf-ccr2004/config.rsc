@@ -1,156 +1,165 @@
-# 2025-09-15 18:42:29 by RouterOS 7.19.4
-# software id = 91XQ-9UAD
+# 2025-09-18 18:04:08 by RouterOS 7.19.4
+# software id = N85J-2N9M
 #
-# model = CCR2004-1G-12S+2XS
-# serial number = D4F00DCEEFD0
+# model = CRS326-24S+2Q+
+# serial number = HGB09MRF1PQ
 /interface bridge
-add name=bridge0
+add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf name=main-bridge \
+    vlan-filtering=yes
 /interface vlan
-add interface=sfp-sfpplus1 name=eBGP_LINK_AS65001_0 vlan-id=100
-add interface=sfp-sfpplus2 name=eBGP_LINK_AS65001_1 vlan-id=104
-add interface=sfp-sfpplus3 name=eBGP_LINK_AS65001_2 vlan-id=112
+add interface=main-bridge name=eBGP_LINK_AS65000_0 vlan-id=100
+add interface=main-bridge name=eBGP_LINK_AS65000_1 vlan-id=102
+add interface=main-bridge name=eBGP_LINK_AS65000_2 vlan-id=104
+add interface=main-bridge name=eBGP_LINK_AS65002_0 vlan-id=106
+add interface=main-bridge name=vlan20-bare-metal vlan-id=20
+add interface=main-bridge name=vlan40-vms-cts vlan-id=40
+add interface=main-bridge name=vlan50-kubernetes vlan-id=50
 /interface list
-add name=ZONE-CCR2004-MGMT
-add name=ZONE-WAN
-add name=ZONE_BGP_AS65001
-add name=ZONE-LOOPBACK
-add name=ZONE-TO-CRS326-L2
-/interface lte apn
-set [ find default=yes ] ip-type=ipv4 use-network-apn=no
-/ip pool
-add name=pool-bare-metal ranges=10.1.2.2-10.1.2.29
-add name=pool-users ranges=10.1.3.50-10.1.3.200
-add name=pool-vms-cts ranges=10.1.4.50-10.1.4.200
-add name=pool-kubernetes ranges=10.1.5.2-10.1.5.30
-/ip dhcp-server
-add address-pool=pool-users interface=bridge0 lease-time=5d name=dhcp-users \
-    relay=10.1.3.1 server-address=172.16.0.1
-add address-pool=pool-vms-cts interface=bridge0 lease-time=5d name=\
-    dhcp-vlan40 relay=10.1.4.1 server-address=172.16.0.1
-add address-pool=pool-bare-metal interface=bridge0 lease-time=5d name=\
-    dhcp-vlan20 relay=10.1.2.1 server-address=172.16.0.1
-add address-pool=pool-kubernetes interface=bridge0 lease-time=1w3d name=\
-    dhcp-kubernetes relay=10.1.5.1 server-address=172.16.0.1
+add name=ZONE_TO_AS65000
+add name=LINK_USERS_NET
+/interface wireless security-profiles
+set [ find default=yes ] supplicant-identity=MikroTik
 /port
 set 0 name=serial0
 /routing ospf instance
-add disabled=yes name=backbonev2 router-id=172.16.0.1
+add disabled=yes name=backbonev2 router-id=172.16.0.2
 /routing ospf area
 add disabled=yes instance=backbonev2 name=backbone0v2
 /interface bridge port
-add bridge=bridge0 interface=ZONE_BGP_AS65001
+add bridge=main-bridge interface=ether1 trusted=yes
+add bridge=main-bridge interface=qsfpplus1-1
+add bridge=main-bridge interface=qsfpplus1-2
+add bridge=main-bridge interface=qsfpplus1-3
+add bridge=main-bridge interface=qsfpplus1-4
+add bridge=main-bridge interface=qsfpplus2-1
+add bridge=main-bridge interface=qsfpplus2-2
+add bridge=main-bridge interface=qsfpplus2-3
+add bridge=main-bridge interface=qsfpplus2-4
+add bridge=main-bridge interface=sfp-sfpplus5
+add bridge=main-bridge interface=sfp-sfpplus6
+add bridge=main-bridge interface=sfp-sfpplus7
+add bridge=main-bridge interface=sfp-sfpplus8
+add bridge=main-bridge interface=sfp-sfpplus9
+add bridge=main-bridge interface=sfp-sfpplus10
+add bridge=main-bridge interface=sfp-sfpplus11
+add bridge=main-bridge interface=sfp-sfpplus12
+add bridge=main-bridge interface=sfp-sfpplus13
+add bridge=main-bridge interface=sfp-sfpplus14
+add bridge=main-bridge interface=sfp-sfpplus15
+add bridge=main-bridge interface=sfp-sfpplus16
+add bridge=main-bridge interface=sfp-sfpplus17
+add bridge=main-bridge interface=sfp-sfpplus18
+add bridge=main-bridge interface=sfp-sfpplus19
+add bridge=main-bridge interface=sfp-sfpplus20
+add bridge=main-bridge interface=sfp-sfpplus21
+add bridge=main-bridge interface=sfp-sfpplus22
+add bridge=main-bridge interface=sfp-sfpplus23
+add bridge=main-bridge edge=yes interface=sfp-sfpplus2
+add bridge=main-bridge interface=sfp-sfpplus4
+add bridge=main-bridge interface=sfp-sfpplus3
+add bridge=main-bridge interface=sfp-sfpplus1
+add bridge=main-bridge interface=sfp-sfpplus24
 /ip neighbor discovery-settings
-set discover-interface-list=!ZONE-TO-CRS326-L2 mode=rx-only
+set mode=rx-only
+/interface bridge vlan
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=20
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=40
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=50
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus3 vlan-ids=102
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=108
+add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=104
+/interface ethernet switch
+set 0 l3-hw-offloading=yes
 /interface list member
-add interface=sfp-sfpplus12 list=ZONE-WAN
-add interface=bridge0 list=ZONE-LOOPBACK
-add interface=eBGP_LINK_AS65001_0 list=ZONE_BGP_AS65001
-add interface=eBGP_LINK_AS65001_1 list=ZONE_BGP_AS65001
-add interface=eBGP_LINK_AS65001_0 list=ZONE-TO-CRS326-L2
-add interface=eBGP_LINK_AS65001_1 list=ZONE-TO-CRS326-L2
-add interface=bridge0 list=ZONE-TO-CRS326-L2
-add interface=ether1 list=ZONE-CCR2004-MGMT
-add interface=eBGP_LINK_AS65001_2 list=ZONE_BGP_AS65001
-add interface=eBGP_LINK_AS65001_2 list=ZONE-TO-CRS326-L2
+add interface=eBGP_LINK_AS65000_0 list=ZONE_TO_AS65000
+add interface=eBGP_LINK_AS65000_1 list=ZONE_TO_AS65000
+add interface=sfp-sfpplus5 list=LINK_USERS_NET
+add interface=eBGP_LINK_AS65000_2 list=ZONE_TO_AS65000
 /ip address
-add address=10.0.0.150/24 comment=WAN interface=sfp-sfpplus12 network=\
-    10.0.0.0
-add address=10.1.1.1/30 interface=ether1 network=10.1.1.0
-add address=172.16.255.1/30 interface=eBGP_LINK_AS65001_0 network=\
+add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
+add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
+add address=10.1.1.5/30 interface=ether1 network=10.1.1.4
+add address=172.16.255.1/31 interface=eBGP_LINK_AS65000_0 network=\
     172.16.255.0
-add address=172.16.0.1 interface=bridge0 network=172.16.0.1
-add address=172.16.255.5/30 interface=eBGP_LINK_AS65001_1 network=\
+add address=172.16.0.2 interface=lo network=172.16.0.2
+add address=10.1.5.1/27 interface=vlan50-kubernetes network=10.1.5.0
+add address=172.16.255.3/31 interface=eBGP_LINK_AS65000_1 network=\
+    172.16.255.2
+add address=172.16.255.6/31 interface=eBGP_LINK_AS65002_0 network=\
+    172.16.255.6
+add address=172.16.255.5/31 interface=eBGP_LINK_AS65000_2 network=\
     172.16.255.4
-add address=172.16.255.13/30 interface=eBGP_LINK_AS65001_2 network=\
-    172.16.255.12
-/ip dhcp-server lease
-add address=10.1.5.30 mac-address=BC:24:11:80:55:00
-add address=10.1.5.29 mac-address=BC:24:11:80:55:01
-add address=10.1.5.28 mac-address=BC:24:11:80:55:02
-/ip dhcp-server network
-add address=10.1.2.0/27 dns-server=1.1.1.1 gateway=10.1.2.1
-add address=10.1.3.0/24 dns-server=1.1.1.1 gateway=10.1.3.1
-add address=10.1.4.0/24 dns-server=1.1.1.1 gateway=10.1.4.1
-add address=10.1.5.0/27 dns-server=1.1.1.1,8.8.8.8 gateway=10.1.5.1
+/ip dhcp-relay
+add dhcp-server=172.16.0.1 disabled=no interface=vlan20-bare-metal \
+    local-address-as-src-ip=yes name=vlan20-dhcp-relay
+add dhcp-server=172.16.0.1 disabled=no interface=vlan50-kubernetes \
+    local-address-as-src-ip=yes name=kubernetes-dhcp-relay
+add dhcp-server=172.16.0.1 disabled=no interface=vlan40-vms-cts \
+    local-address-as-src-ip=yes name=vlan40-dhcp-relay
 /ip dns
-set servers=1.1.1.1,8.8.8.8
+set servers=1.1.1.1
 /ip firewall address-list
 add address=10.1.1.4/30 list=CRS326-MGMT
-add address=10.1.2.0/24 list=SERVERs-NET
-add address=10.1.4.0/24 list=VMs/LXCs-NET
-add address=10.1.5.0/27 list=Kubernetes-NET
-add address=172.16.0.1 list=BGP_ADV_NET
-add address=0.0.0.0/0 list=BGP_ADV_NET
+add address=10.1.4.0/24 list=VMS_NET
+add address=10.1.2.0/27 list=SERVERS_NET
+add address=10.1.3.0/24 list=USERS_NET
+add address=10.1.5.0/27 list=KUBERNETES_NET
+add address=10.1.2.0/27 list=BGP_ADV_NET
+add address=10.1.4.0/24 list=BGP_ADV_NET
+add address=10.1.5.0/27 list=BGP_ADV_NET
+add address=172.16.0.2 list=BGP_ADV_NET
+add address=172.16.255.6/31 list=BGP_ADV_NET
+add address=10.1.1.0/30 list=CCR2004-MGMT
 /ip firewall filter
-add action=accept chain=input connection-state=established,related
-add action=accept chain=forward comment=\
-    "Allowing already established connections" connection-state=\
-    established,related
-add action=accept chain=input in-interface-list=ZONE-CCR2004-MGMT
-add action=accept chain=input in-interface-list=ZONE-TO-CRS326-L2 protocol=\
-    icmp
-add action=accept chain=input in-interface-list=ZONE-TO-CRS326-L2 protocol=\
-    ospf
-add action=accept chain=input in-interface-list=ZONE-LOOPBACK port=67,68 \
-    protocol=udp
-add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
-    out-interface-list=ZONE-TO-CRS326-L2 protocol=icmp
-add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
-    out-interface-list=ZONE-TO-CRS326-L2 port=5201 protocol=tcp
-add action=accept chain=forward dst-address=172.16.255.8/30 \
-    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE-TO-CRS326-L2 \
-    port=22 protocol=tcp
-add action=accept chain=forward dst-address-list=SERVERs-NET \
-    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE-TO-CRS326-L2
-add action=accept chain=forward dst-address-list=VMs/LXCs-NET \
-    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE-TO-CRS326-L2
-add action=accept chain=forward dst-address-list=Kubernetes-NET \
-    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE-TO-CRS326-L2 \
-    port=22 protocol=tcp
-add action=accept chain=forward dst-address-list=Kubernetes-NET \
-    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE-TO-CRS326-L2 \
-    protocol=icmp
-add action=accept chain=forward dst-address-list=Kubernetes-NET \
-    in-interface-list=ZONE-CCR2004-MGMT out-interface-list=ZONE_BGP_AS65001
-add action=accept chain=forward comment=\
-    "Accept traffic between CCR2004 Management and CRS326 Management" \
-    dst-address-list=CRS326-MGMT in-interface-list=ZONE-CCR2004-MGMT \
-    out-interface-list=ZONE-TO-CRS326-L2 port=22,8291,80 protocol=tcp
-add action=accept chain=forward in-interface-list=ZONE-TO-CRS326-L2 \
-    out-interface-list=ZONE-WAN
-add action=accept chain=forward in-interface-list=ZONE-CCR2004-MGMT \
-    out-interface-list=ZONE-WAN
-add action=drop chain=input
-add action=drop chain=forward comment="Dropping all other forward traffic"
-/ip firewall nat
-add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
+add action=drop chain=input port=22,80,8291 protocol=tcp src-address-list=\
+    USERS_NET
+add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
+    protocol=tcp src-address-list=USERS_NET
+add action=reject chain=input port=22,80,8291 protocol=tcp src-address-list=\
+    VMS_NET
+add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
+    protocol=tcp src-address-list=VMS_NET
+add action=drop chain=input port=22,80,8291 protocol=tcp src-address-list=\
+    KUBERNETES_NET
+add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
+    protocol=tcp src-address-list=KUBERNETES_NET
 /ip route
-add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
-add disabled=no dst-address=10.1.1.4/30 gateway=172.16.255.2
+add dst-address=10.1.1.0/30 gateway=172.16.255.0
 /ip service
 set ftp disabled=yes
-set telnet disabled=yes
 set www disabled=yes
+set api disabled=yes
 /ipv6 nd
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
-add afi=ip as=65000 disabled=no keepalive-time=20s local.role=ebgp name=\
-    eBGP_CON_AS65001_0 output.default-originate=if-installed .network=\
-    BGP_ADV_NET remote.address=172.16.255.2 router-id=172.16.0.1 \
-    routing-table=main
-add as=65000 disabled=no keepalive-time=20s local.role=ebgp name=\
-    eBGP_CON_AS65001_1 output.default-originate=if-installed .network=\
-    BGP_ADV_NET remote.address=172.16.255.6 router-id=172.16.0.1
-add as=65000 local.role=ebgp name=eBGP_CON_AS65001_2 \
-    output.default-originate=if-installed .network=BGP_ADV_NET \
-    remote.address=172.16.255.14 router-id=172.16.0.1
+add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_0 \
+    output.network=BGP_ADV_NET remote.address=172.16.255.0 router-id=\
+    172.16.0.2
+add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_1 \
+    output.network=BGP_ADV_NET remote.address=172.16.255.2 router-id=\
+    172.16.0.2
+add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65002_0 \
+    output.network=BGP_ADV_NET remote.address=172.16.255.4 router-id=\
+    172.16.0.2
+add as=65001 local.role=ebgp name=eBGP_CON_AS65000_2 output.network=\
+    BGP_ADV_NET remote.address=172.16.255.7 router-id=172.16.0.2
 /routing ospf interface-template
-add area=backbone0v2 disabled=yes networks=172.16.0.1/32 passive
+add area=backbone0v2 disabled=yes networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
+add area=backbone0v2 disabled=yes networks=10.1.2.0/27 passive
+add area=backbone0v2 disabled=yes networks=10.1.4.0/24 passive
+add area=backbone0v2 disabled=yes networks=10.1.5.0/27 passive
+add area=backbone0v2 disabled=yes networks=10.1.3.0/24 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.4/30
 /system clock
 set time-zone-name=Europe/Warsaw
 /system identity
-set name=border-leaf-ccr2004
-/system resource irq rps
-set ether1 disabled=no
+set name=leaf-crs326
+/system routerboard settings
+set enter-setup-on=delete-key
+/system swos
+set address-acquisition-mode=static identity=SW_CORE_02 static-ip-address=\
+    10.10.20.13
+/tool sniffer
+set filter-ip-protocol=udp filter-port=bootps
