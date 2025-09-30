@@ -1,4 +1,4 @@
-# 2025-09-18 18:04:08 by RouterOS 7.19.4
+# 2025-09-30 22:40:42 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -67,7 +67,7 @@ add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=40
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
 add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=50
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus3 vlan-ids=102
-add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=108
+add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=106
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=104
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
@@ -139,11 +139,12 @@ add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_0 \
 add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_1 \
     output.network=BGP_ADV_NET remote.address=172.16.255.2 router-id=\
     172.16.0.2
-add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65002_0 \
-    output.network=BGP_ADV_NET remote.address=172.16.255.4 router-id=\
-    172.16.0.2
-add as=65001 local.role=ebgp name=eBGP_CON_AS65000_2 output.network=\
-    BGP_ADV_NET remote.address=172.16.255.7 router-id=172.16.0.2
+add as=65001 disabled=no keepalive-time=20s local.role=ebgp name=\
+    eBGP_CON_AS65000_2 output.network=BGP_ADV_NET remote.address=172.16.255.4 \
+    router-id=172.16.0.2
+add as=65001 disabled=no keepalive-time=20s local.role=ebgp name=\
+    eBGP_CON_AS65002_0 output.network=BGP_ADV_NET remote.address=172.16.255.7 \
+    .as=65002 router-id=172.16.0.2
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
