@@ -41,9 +41,30 @@ The topology there is actually kind of complicated.
 Complicated as in a lot of cables and devices from completely different brands, and not as in a lot of dynamic routing etc.   
 
 One thing that really grossed me out some time ago was that the PCs in the school were in a `/23` subnet.    
-That is probably the reason for constant broadcast storm
+That is probably the reason for constant broadcast storm.    
 
 
+So back to the wifi problem, I went up on a ladder to get near the rack and I just looked at how everything is connected etc.  
+
+Keep in mind I do not have any kind of a diagram or even an IP Addressation table provided so it takes some time to figure out everything.   
+
+He showed me which switch was fried and into which the APs were plugged into.   
+
+It looks to be a Cisco Catalyst 3850 24 PoE+.  
+
+I wanted to see where the WLC was, but there was none.   
+This confused me since from what I found, the APs (`AIR-CAP2602I-E-K9`) were a lightweight model which makes them usable only with a Wireless LAN Controller.   
+
+However, at home I looked more into the Catalyst 3850.  
+At first it seemed like a typical L3 switch with PoE.
+It was sold in versions including 24 or even 48 PoE+ RJ45 ports and it had a non-blocking capacity of 146Gbps.   
+
+I remember that the IT teacher said something like that the controller was on a switch.  
+
+So I checked the available firmwares for the Catalyst 3850 and surely to my suprise there really is a WLC firmware for it.   
+I never saw a switch like that ever.   
+
+So this finally explained why the APs were lightweight and there was seemingly no WLC.
 
 
 
