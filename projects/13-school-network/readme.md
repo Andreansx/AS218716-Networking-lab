@@ -71,7 +71,7 @@ However, at home I looked more into the Catalyst 3850.
 At first it seemed like a typical L3 switch with PoE.
 It was sold in versions including 24 or even 48 PoE+ RJ45 ports and it had a non-blocking capacity of 146Gbps.   
 
-I remember that the IT teacher said something like that the controller was on a switch.  
+I then remembered that the IT teacher said something about managing the APs from the switch.
 
 So I checked the available firmwares for the Catalyst 3850 and surely to my suprise there really is a WLC firmware for it.   
 I never saw a switch like that ever.   
@@ -128,10 +128,35 @@ I hope that it is not, but those two things just make me really confused about w
 
 ![ap](./ap.JPEG)    
 
+
+Next day I returned the AP and told the teacher that I wasn't able to do anything with it because of two reasons.   
+The first one being the lightweight mode of the AP, and the second being the assumption that the AP has been damaged along with the switch.   
+
+We went to the server room and he told me a bit more about the network.  
+I basically told him that he was right about managing the APs from the switch. 
+It was just a rare model which functionality I haven't heard about much.
+
+I told him that I think that it's best if we use a separate device as a controller instead of using the controller on the switch.  
+He said that he will take that fried switch and give it to someone to try and fix it and if it will be fixed, then end of story and the network will work again.   
+
+However I just doubt that someone will bring that switch back to life since, after all, it was fried by a literal lightning strike and the APs were probably fried along with it.   
+
+Great thing is that he told me to look up some devices that we should buy to fix the network.   
+
+I wanted to get an used CT2504 or a CT3504. 
+Those models are small, power-efficent, quiet and have enough capacity to handle a lot of users on 11 APs.  
+
+However, the number of APs is the issue here.  
+Cisco does not allow to configure more than 5 APs on an WLC without an additional license.
+
 ## Presumed cons of a new network plan
 
 
+I actually have some worries regarding the IT teachers plans for "modernizing" the network.   
 
+First thing is that currently (even though wireless network does not work) the network is segmented to some extent with VLANs. 
+In todays networking, VLANs are not even a good practice anymore. 
+VLANs are an absolute must-have in any bigger-than-home network.  
 
 
 
