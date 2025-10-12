@@ -34,6 +34,8 @@ Here I put things that I think are the most interesting and worth reading.
 
 These are projects, case studies and troubleshooting logs.    
 
+*   **[School Network fried by lightning, WiFi fixing, Cisco WLC](./projects/13-school-network/readme.md)** - Very hot topic right now, since my school does not have WiFi available for now. They basically asked me to fix their wifi. I will write here about what things I uncover since it is actually far more complicated than just WiFi.
+
 *   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation/readme.md)** - Plus DHCP Nightmare
 
 *   **[Super Important OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop/readme.md)** - This is important as it makes some changes to the entire lab archtecture. 
