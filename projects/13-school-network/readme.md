@@ -124,7 +124,7 @@ I read the Cisco Documenation and from what I learned, the red blinking light in
 I do not have any kind of confirmation that the AP worked after the lightning strike.  
 
 And I do not want to make such assumtions but it's just that the AP seems pretty fried to me. 
-I hope that it is not, but those two things just make me really confused about whereas is it working or not.   
+I hope that it is not, but those two things just make me really confused about wheter is it working or not.   
 
 ![ap](./ap.JPEG)    
 
@@ -147,7 +147,15 @@ I wanted to get an used CT2504 or a CT3504.
 Those models are small, power-efficent, quiet and have enough capacity to handle a lot of users on 11 APs.  
 
 However, the number of APs is the issue here.  
-Cisco does not allow to configure more than 5 APs on an WLC without an additional license.
+~~Cisco does not allow to configure more than 5 APs on an WLC without an additional license.~~
+
+The CT2504 cheapest version supported only 5 APs. 
+It was also sold in versions supporting 15,25,50 and 75 APs, so I would need to find an offer for a used one supporting at least 15 APs.    
+
+The CT3504 base version supports 25 APs, and that number is expandable with licenses even to 150 APs.   
+
+So the issue is that it's very hard to find an offer for a used one, with a power supply and with a neccessary capabilities regarding maximum number of APs.
+
 
 ## Presumed cons of a new network plan
 
@@ -158,6 +166,48 @@ First thing is that currently (even though wireless network does not work) the n
 In todays networking, VLANs are not even a good practice anymore. 
 VLANs are an absolute must-have in any bigger-than-home network.  
 
+However, he told me that he wanted to get rid of VLANs. He said that the configuration right now is too complicated.  
+
+I told him that if someone did this as their PhD project, he probably did it correctly and that VLANs are a neccessary thing for ensuring security of the network and also to prevent big broadcast domains.  
+
+I then did something on the school PC. I just opened PowerShell and ran `ipconfig /all` which showed me the gateway IP address.
+I then typed the IP into the web browser and of course it showed the RouterOS WebFig login screen.    
+
+> [!NOTE]   
+> By the way, the ROS version on the router is v5.14, which is full of security vulnerabilities. One of them is called "Chimay Red" and applies to MikroTik devices with ROS versions up to 6.34.x.
+> This should be updated a very long time ago. The 5.14 version is not even available for download.
+> I just want to point out how serious this is. 
+> The fact that it has not been updated since version 5.14, makes it more than **13 years** without an update.
+> I am not saying this to shame anyone, but to show that a well-working network does not rely on a one-time setup.
+> Please take this as an example of how (not) to maintain a networking device.   
+> If you want to learn more about this vulnerability, try a google search for **"CVE-2017-20149"**.
+
+
+So back to the worries regarding new plans.   
+I told him that the fact that I was able to reach the login panel so easily, is not directly related to VLANs but that I wanted to show him that security is seriously important.   
+
+He kind of shrugged it off and just asked me what someone will do if he does not have the password.   
+I told him that on a supported version of RouterOS, nothing. But that the version which is currently on that router, is really unsecure and if someone took advantage of that vulnerability, he could even bypass the login screen.   
+
+For now, we did not reach any agreement on that. I mean, we are not mad at each other or something but he just wanted to leave that for now.
+
+
+So I got back to the VLANs. 
+I told him, that nowadays, VLANs are so common that their usage has reached the lowest levels of Networking Operating Systems.  
+I spend a lot reading about JunOS architecture, Routing Engine and Packet Forwaring Engine separation and generally about how exactly today's NOSs built, so I said that basically, today, most things in networking are made in a way so VLANs are not an addition but they are intended to be used from the beggining.   
+
+I know that this is probably too deep for a simple school network like this, but I just wanted to explain to him how much I want the VLANs to stay.  
+
+The teacher also told me that he wants there to be a "single Wifi" rather than multiple ones.   
+
+It took me some time to wrap my head around it because having a single wireless network for such a big number of devices, which consist of teachers' laptops and student's smartphones, means that the network would probably have to be a `/23` or even a `/22` subnet.   
+
+I asked him if he is sure about what he said since that meant that there would be more than a thousand devices in one single L2 domain.  
+He said that yes because "the PCs must have a way to find each other".   
+
+And I just got confused, because I cannot think of one single reason why would the PCs need to find each other.   
+
+We do not do any work together on network shared storage etc. So I think this is just an old thing ranging to NetBIOS in windows95.
 
 
 
