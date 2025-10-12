@@ -209,8 +209,33 @@ And I just got confused, because I cannot think of one single reason why would t
 
 We do not do any work together on network shared storage etc. So I think this is just an old thing ranging to NetBIOS in windows95.
 
+But I won't argue anymore with that. 
+It's just that I know that if we do this like that, all students will have an absolutely terrible Wireless connection to the internet.   
 
+There will be a constant storm of ARP Request, replies and generally a lot of garbage traffic on top of which there will be no way to implement proper QoS. 
+This also means that this setup will be prone to Broadcast storms caused by potential loops. Having 1000 devices on one subnet, requires stretching the L2 domain through a couple of network devices. 
+Also, if we wanted to enlarge the bandwidth between two segments of the L2 domain, we would have to use Link Aggregation instead of proper ECMP, but that is not a first-priority issue.    
 
+After going back and forth, and explaining the issues, which the `/22` subnet setup is prone to, we kind of agreed on a mix of my recommendations and the big L2 domain configuration.    
+
+Basically, he said that he would like to allow teachers to present something on the slide projectors without being connected to the wired LAN. They are supposedto be able to simply use wireless connection.   
+
+I saw that the teachers do not input any IP addresses while connecting to the projectors. 
+Instead, they input a PIN code and that's it. 
+So I think that the projectors have to be in the same L2 domain as the laptops to be able to find each other without knowing IP addresses at first.   
+
+This makes it not possible to separate the laptops and projectors into two separate networks in a simple way.   
+
+If connecting to the projectors, required just an IP address, then I could easily place projectors into `10.1.5.0/24` and laptops into `10.1.6.0/24` and the teachers would simply connect to the projectors using an IP address. 
+For example, in classroom 26, the projector would have a static IP address of `10.1.5.26`. The teacher's laptop would get an IP assigned from the DHCP server for example `10.1.6.54` and the teacher would know that the last octet of the IP address of the projector, is relevant to the classroom number.   
+
+However, of course I can see how more complicated that is instead of just inputting a PIN code displayed by the projector before connecting.   
+
+And also as I said above, he wanted the teachers to be able to use not just the wired network but also a wireless connection.   
+
+So I think the situation is clear here.   
+
+There will be a big network which will be available through wire sockets in classrooms and wireless connection, but it will also be connected to the projectors.
 
 ## Contact
 
