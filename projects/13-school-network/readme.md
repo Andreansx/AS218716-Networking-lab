@@ -156,6 +156,8 @@ The CT3504 base version supports 25 APs, and that number is expandable with lice
 
 So the issue is that it's very hard to find an offer for a used one, with a power supply and with a neccessary capabilities regarding maximum number of APs.
 
+> [!NOTE]   
+> Later I will write more about what devices should be bought in my opinion.
 
 ## Presumed cons of a new network plan
 
@@ -236,6 +238,34 @@ And also as I said above, he wanted the teachers to be able to use not just the 
 So I think the situation is clear here.   
 
 There will be a big network which will be available through wire sockets in classrooms and wireless connection, but it will also be connected to the projectors.
+
+However there is one big issue here. 
+Without VLANs, the management network, will have to be in the same network that is stretched through a device.   
+
+This means that if I create that big /22 network on a couple of devices, because of the need for a lot of ports, the management interfaces will be in that same network.  
+
+So anyone connected to the wireless network, will be able to just go through a bunch of IPs and finally he will find the management interfaces for all netoworking devices used by that network.   
+
+This would be preventable with usage of VLANs.   
+Some ports on a switch would be access ports for VLAN 10 (Projectors, WiFi, wired LAN) and one port would be VLAN 99 access which could be used for management. 
+This way no one would be able to even try to log into a switch.    
+
+Another issue is that if students will be provided with the password to the wireless network, they all will be in the same network that the projectors.   
+
+For example, there is a class right now.
+The teacher turns on the projector and after a while, the projector shows the PIN code for connecting to it, and all students in the classroom can see the PIN.   
+
+Now what exactly is stopping the students from hijacking the projector?   
+Nothing. There is not any form of authentication while connecting to the projector.  
+Whoever inputs the PIN into the presentation program first, gets to be the one presenting.   
+
+
+
+
+
+## Equipment
+
+
 
 ## Contact
 
