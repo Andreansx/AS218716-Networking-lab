@@ -191,12 +191,11 @@ I told him that the fact that I was able to reach the login panel so easily, is 
 He kind of shrugged it off and just asked me what someone will do if he does not have the password.   
 I told him that on a supported version of RouterOS, nothing. But that the version which is currently on that router, is really unsecure and if someone took advantage of that vulnerability, he could even bypass the login screen.   
 
-For now, we did not reach any agreement on that. I mean, we are not mad at each other or something but he just wanted to leave that for now.
-
+For now, there won't be anything done about that.  
 
 So I got back to the VLANs. 
 I told him, that nowadays, VLANs are so common that their usage has reached the lowest levels of Networking Operating Systems.  
-I spend a lot reading about JunOS architecture, Routing Engine and Packet Forwaring Engine separation and generally about how exactly today's NOSs built, so I said that basically, today, most things in networking are made in a way so VLANs are not an addition but they are intended to be used from the beggining.   
+I spend a lot reading about JunOS architecture, Routing Engine and Packet Forwaring Engine separation and generally about how exactly today's NOSs are built, so I said that basically, today, most things in networking are made in a way so VLANs are not an addition but they are intended to be used from the beggining.   
 
 I know that this is probably too deep for a simple school network like this, but I just wanted to explain to him how much I want the VLANs to stay.  
 
@@ -259,11 +258,56 @@ Now what exactly is stopping the students from hijacking the projector?
 Nothing. There is not any form of authentication while connecting to the projector.  
 Whoever inputs the PIN into the presentation program first, gets to be the one presenting.   
 
+Do I need to say more?    
+
+You can easily see here how much the lack of VLANs affect the network.   
+
+The situation where someone logs into the projector and hijacks the presented content, is insanely easily preventable with a simple use of VLANs.   
+I mean more like it's preventable with network segmentation but it can also be done without VLANs, for example by using 5 APs for students WiFi and another 5 for teachers WiFi.    
+
+
+
 
 
 
 
 ## Equipment
+
+Recently, the IT teacher asked me if I could look up some used devices that I think he should buy in order to let me fix that network.   
+
+I told him that of course, and that I very highly recommend using a separate device as the WLC instead of cramming everything onto one switch.
+He told me to just look up what devices I think are appropriate for that situation and send him the links to the offers.    
+
+My first thought was to get a typical CT2054 or a CT3504.   
+Those seemed like an appropriate choice cause those models are power-efficent, quiet etc. and have enough hardware capabilities for our needs.   
+
+> [!NOTE]   
+> Here I would like to add that the number of APs has become bigger. 
+> There are now 19 APs.    
+
+However, as I mentioned above, there are some issues with the licensing.   
+
+As I wrote above:   
+
+> "The CT2504 cheapest version supported only 5 APs. 
+> It was also sold in versions supporting 15,25,50 and 75 APs, so I would need to find an offer for a used one supporting at least 15 APs.    
+> 
+> The CT3504 base version supports 25 APs, and that number is expandable with licenses even to 150 APs.   
+> 
+> So the issue is that it's very hard to find an offer for a used one, with a power supply and with a neccessary capabilities regarding maximum number of APs."   
+
+So basically for now, there is no way that a CT2504 will be enough, since I could not find any offers with a higher than the base version model.   
+
+As for the CT3504, the base version is capable of handling 25 APs, which is enough, but I cannot seem to find any offer which would include a power supply.    
+
+There of course are refurbrished offers which include a power supply, but those are actually too expensive.   
+
+However, I found a pretty nice offer for a CT5508 with a license allowing for configuring up to 25 APs. 
+And it includes a power supply.
+It's also dirt cheap.    
+
+The only thing is that it would be neccessary to order also SFP RJ45 transceivers because the CT5508 features 8x SFP interfaces and 2x RJ45 interfaces.   
+
 
 
 
