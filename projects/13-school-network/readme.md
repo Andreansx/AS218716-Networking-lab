@@ -266,11 +266,6 @@ The situation where someone logs into the projector and hijacks the presented co
 I mean more like it's preventable with network segmentation but it can also be done without VLANs, for example by using 5 APs for students WiFi and another 5 for teachers WiFi.    
 
 
-
-
-
-
-
 ## Equipment
 
 Recently, the IT teacher asked me if I could look up some used devices that I think he should buy in order to let me fix that network.   
@@ -308,7 +303,74 @@ It's also dirt cheap.
 
 The only thing is that it would be neccessary to order also SFP RJ45 transceivers because the CT5508 features 8x SFP interfaces and 2x RJ45 interfaces.   
 
+My another idea was to go back to the WLC integrated into the switch, so I looked for a Catalyst 3850 PoE used offers.   
 
+I found one for around 100 Euros including a power supply, so I thought that this might actually be a great deal.    
+
+However, of course there has to be an issue.   
+
+I found that even though the 3850 is capable of running WLC firmware inside of it, it requires a very expensive IOS-XE license to even enable running that firmware.
+And also an another additional license to expand the number of APs from 5 to 20.    
+
+So this idea is a big no.
+
+Even if the school had the funds to buy that license, they stil couldn't pull that off, since that license is not even sold by Cisco anymore.   
+
+That's simply because the Catalyst 3850 is an **End-of-Life** model.   
+
+After considering all options above, my final choice would be to get the CT5508.   
+I mean, of course it is old, but for starters, I had to choice between used devices with a limited budget and, after all, the cost of a couple of additional SFP RJ45 transceivers is minor compared to the price of a refurbrished CT3504.    
+
+As for the switch, I think we should get the 3850 24 PoE+ model.   
+Why? Because it's still far more than neccessary bandwidth for our school and there won't be a need for rewriting the configuration (Assuming someone has a backup of the config from the fried 3850).   
+
+146Gbps of a non-blocking switching backplane is a lot and there is no way, our school would produce that much West-East traffic and it has a big reserve of PoE power for the APs.   
+
+So in summary, a CT5508 as a WLC, and a Catalyst 3850 as a PoE switch.   
+
+The VLAN segmentation is, for now, still a big question mark.   
+
+## More bout WiFi
+
+The lack of VLANs might actually make the "modernization" harder.
+"No VLANs" seems simpler and more straightforward but actually I think that it would be harder to pull off than with just a couple of VLANs.    
+
+The reason for that is the **CAPWAP tunneling**.  
+
+Basically when using APs with a WLC, the APs are not connected in a typical way with just tagged links to the switch.   
+
+I put a simple ASCII diagram here:   
+
+```
+[WLC] ━ tagged vlans 10,20 ━ [Catalyst 3850] ━ tagged vlan 10 ━ [AP] ━vlan 20 wireless access→
+  ┗━━━━━━━━━━━━━━━━━━CAPWAP Tunneling vlan 20━━━━━━━━━━━━━━━━━━━━━┛
+```
+
+This diagram illustrates the way that the CAPWAP tunneling works in a network with lightweight APs.   
+The VLAN 20 is a example of a network for users (or students in our situation) while the VLAN 10 is the Management network or just a smaller network dedicated to the CAPWAP tunneling.   
+
+If we wanted one more network, the differences are minor and it's super simple to add a new network:    
+
+```
+[WLC] ━ tagged vlans 10,20,30 ━ [Catalyst 3850] ━ tagged vlan 10 ━ [AP] ━vlan 20,30 wireless access→
+  ┗━━━━━━━━━━━━━━━━━━━CAPWAP Tunneling vlan 20,30━━━━━━━━━━━━━━━━━━━━┛
+```
+
+As you can see, nothing changed, besides the new allowed vlan tags on a couple of the links.   
+
+I want to make one thing clear.    
+The CAPWAP tunnel **does NOT change** the VID tag.   
+
+Let's picture how the data flows from the wireless network to the internet.    
+
+The AP receives a raw ethernet 802.11 frame **without a VID tag**. 
+Then it turns it into a 802.3 frame with a VID of 20, and then it encapsulates it into an IP packet. 
+Then it sends it to the WLC, and that is why even though the AP allows access only to vlans 20,30, it needs to have a vlan 10 connection all the way to the WLC.   
+When the IP Packet arrives on the WLC, it decapsulates it and now it has a raw ethernet frame, with the original VID of 20.   
+Now look at the link between the WLC and the switch.
+It allows tagged VLANs 10,20 and 30.
+The WLC needs to have access to all those VLANs since it now sends the original ethernet frame to the switch, and then the frame behaves as it normally would.   
+It goes to the default gateway, and what happens after that is out of the scope for now.
 
 
 ## Contact
