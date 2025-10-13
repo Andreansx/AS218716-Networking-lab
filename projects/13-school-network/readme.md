@@ -28,7 +28,7 @@ This all will be more of a flow of thoughts rather than a full documentation but
 ## How this started
 
 Around the start of October, my friend texted me that the IT teacher wants to know if I will be able to configure 11 Cisco Access Points. 
-I was kinda suprised since my networking skills actually never really found a usage in my school. 
+I was kinda suprised since my networking enthusiasm actually never really found a usage in my school, since the only thing we learned about networking in school, was how subnet classes work and how to calculate available hosts number. 
 I went to school the next day and I talked with the IT teacher about that. 
 The first and most important thing at that point which I asked about, was the type of the Access Points, since if he bought a lightweight APs and didn't buy a WLC, then those APs would be useless without that WLC.   
 
@@ -176,8 +176,8 @@ I then did something on the school PC. I just opened PowerShell and ran `ipconfi
 I then typed the IP into the web browser and of course it showed the RouterOS WebFig login screen.    
 
 > [!NOTE]   
-> By the way, the ROS version on the router is v5.14, which is full of security vulnerabilities. One of them is called "Chimay Red" and applies to MikroTik devices with ROS versions up to 6.34.x.
-> This should be updated a very long time ago. The 5.14 version is not even available for download.
+> By the way, the ROS version on the router is v5.14, which is full of security vulnerabilities. One of them is called "Chimay Red" and applies to MikroTik devices with ROS versions below 6.34.x.
+> This router should be updated a very long time ago. The 5.14 version is not even available for download.
 > I just want to point out how serious this is. 
 > The fact that it has not been updated since version 5.14, makes it more than **13 years** without an update.
 > I am not saying this to shame anyone, but to show that a well-working network does not rely on a one-time setup.
@@ -363,15 +363,38 @@ The CAPWAP tunnel **does NOT change** the VID tag.
 
 Let's picture how the data flows from the wireless network to the internet.    
 
-The AP receives a raw ethernet 802.11 frame **without a VID tag**. 
-Then it turns it into a 802.3 frame with a VID of 20, and then it encapsulates it into an IP packet. 
-Then it sends it to the WLC, and that is why even though the AP allows access only to vlans 20,30, it needs to have a vlan 10 connection all the way to the WLC.   
-When the IP Packet arrives on the WLC, it decapsulates it and now it has a raw ethernet frame, with the original VID of 20.   
-Now look at the link between the WLC and the switch.
-It allows tagged VLANs 10,20 and 30.
-The WLC needs to have access to all those VLANs since it now sends the original ethernet frame to the switch, and then the frame behaves as it normally would.   
-It goes to the default gateway, and what happens after that is out of the scope for now.
+The AP receives a raw ethernet 802.11 frame **without a VID tag**.    
+Then it turns it into a 802.3 frame with a VID of 20, and then it encapsulates it into an IP packet.   
+Then it sends it to the WLC, and that is why even though the AP allows access only to vlans 20,30, it needs to have a vlan 10 connection all the way to the WLC.     
+When the IP Packet arrives on the WLC, it decapsulates it and now it has a raw ethernet frame, with the original VID of 20.     
+Now look at the link between the WLC and the switch.    
+It allows tagged VLANs 10,20 and 30.     
+The WLC needs to have access to all those VLANs since it now sends the original 802.3 ethernet frame to the switch, and then the frame behaves as it normally would.     
+It goes to the default gateway, and what happens after that is out of the scope for now.     
 
+Now, see how crucial the VLANs are here?   
+
+It's not like this is not possible without VLANs. It is, but only with a single network and in a really non-elegant way which would basically be garbage.   
+
+I mean theoretically, it's possible to just have two switches, one for one network and the second one for another network and divide the APs between those two switches.    
+
+**But why would we cut the WiFi signal range and strenght, by lowering the number of APs which allow accessing those networks, just to avoid VLANs?**    
+
+
+That is why I'm sticking to my opinion, which is to absolutely not delete VLANs.   
+
+Deleting VLAN segmentation would simply be like taking the network back in time about 20 years.   
+
+Even SOHO networks have VLAN segmentation.
+Even the most simple self-hosted homelab probably has VLANs to some extent.   
+
+One thing is still under a big question mark.   
+Will actually students be allowed to use the school WiFi?   
+
+Cause I do not actually know if the students will be given WiFi access.   
+Maybe the WiFi will be only for the teachers.    
+
+Doesn't matter, the WiFi will be garbage if we use a /22 subnet for it with all projectors, laptops and smartphones in it.   
 
 ## Contact
 
