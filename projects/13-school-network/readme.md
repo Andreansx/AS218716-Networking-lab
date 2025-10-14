@@ -372,6 +372,11 @@ It allows tagged VLANs 10,20 and 30.
 The WLC needs to have access to all those VLANs since it now sends the original 802.3 ethernet frame to the switch, and then the frame behaves as it normally would.     
 It goes to the default gateway, and what happens after that is out of the scope for now.     
 
+> [!NOTE]    
+> I want to add here something I forgot to mention earlier.    
+> It actually is not neccessary to connect the AP to the switch with a tagged link.
+> The port on the swithc, which the AP is plugged into, can be an access port.    
+
 Now, see how crucial the VLANs are here?   
 
 It's not like this is not possible without VLANs. It is, but only with a single network and in a really non-elegant way which would basically be garbage.   
@@ -379,6 +384,8 @@ It's not like this is not possible without VLANs. It is, but only with a single 
 I mean theoretically, it's possible to just have two switches, one for one network and the second one for another network and divide the APs between those two switches.    
 
 **But why would we cut the WiFi signal range and strenght, by lowering the number of APs which allow accessing those networks, just to avoid VLANs?**    
+
+To what lenghts would we go to, just to avoid the seemingly complicated VLANs?    
 
 
 That is why I'm sticking to my opinion, which is to absolutely not delete VLANs.   
@@ -395,6 +402,34 @@ Cause I do not actually know if the students will be given WiFi access.
 Maybe the WiFi will be only for the teachers.    
 
 Doesn't matter, the WiFi will be garbage if we use a /22 subnet for it with all projectors, laptops and smartphones in it.   
+
+## Oversubscription   
+
+One more thing I noticed is a probable oversubscription issue which could explain the slow internet connection on PCs in IT classrooms.   
+
+In one classroom, there are 18 PCs, all of which are connected with a 1GbE links to a Tp-link switch.    
+
+I don't remember the exact model but I think it had around 40Gbps of non-blocking switching capacility so the switch itself is not the cause of the problem.   
+
+But the link between it and the core of the network is.   
+
+That switch is connected to a HP ProCurve switch in the server rack.    
+
+But it's only a 1GbE connection.
+There is no LACP etc. used there.
+So it seems like a 18:1 oversubscription ratio scenario.    
+
+Of course oversubscription is completly normal and every network has it to some extent.   
+
+But trying to cram a possible 18Gbps of traffic through a 1GbE link is just not optimal.   
+
+I'm also not sure if the HP switch is even 1GbE-capable.
+I mean I think it may be 100Mbps only since that is a very old model.   
+
+For example, we don't have to worry about oversubscription in the connections for projectors, since the content displayed during classes, is mostly made of static images, so the required bandwidth is actually very low, even when all teachers used the projectors at the same time.    
+Also, the projectors, do not need a fast connection to the internet, because of course they do not use the internet at all.    
+
+
 
 ## Contact
 
