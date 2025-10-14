@@ -375,7 +375,7 @@ It goes to the default gateway, and what happens after that is out of the scope 
 > [!NOTE]    
 > I want to add here something I forgot to mention earlier.    
 > It actually is not neccessary to connect the AP to the switch with a tagged link.
-> The port on the swithc, which the AP is plugged into, can be an access port.    
+> The port on the switch, which the AP is plugged into, can be an access port.    
 
 Now, see how crucial the VLANs are here?   
 
@@ -409,7 +409,7 @@ One more thing I noticed is a probable oversubscription issue which could explai
 
 In one classroom, there are 18 PCs, all of which are connected with a 1GbE links to a Tp-link switch.    
 
-I don't remember the exact model but I think it had around 40Gbps of non-blocking switching capacility so the switch itself is not the cause of the problem.   
+I don't remember the exact model but I think it had around 40Gbps of non-blocking switching capability so the switch itself is not the cause of the problem.   
 
 But the link between it and the core of the network is.   
 
@@ -419,7 +419,7 @@ But it's only a 1GbE connection.
 There is no LACP etc. used there.
 So it seems like a 18:1 oversubscription ratio scenario.    
 
-Of course oversubscription is completly normal and every network has it to some extent.   
+Of course oversubscription is completely normal and every network has it to some extent.   
 
 But trying to cram a possible 18Gbps of traffic through a 1GbE link is just not optimal.   
 
@@ -427,9 +427,16 @@ I'm also not sure if the HP switch is even 1GbE-capable.
 I mean I think it may be 100Mbps only since that is a very old model.   
 
 For example, we don't have to worry about oversubscription in the connections for projectors, since the content displayed during classes, is mostly made of static images, so the required bandwidth is actually very low, even when all teachers used the projectors at the same time.    
-Also, the projectors, do not need a fast connection to the internet, because of course they do not use the internet at all.    
+Also, the projectors do not need a fast connection to the internet, because of course they do not use the internet at all.    
 
+One thing that I would also write here, is that one of the routers in the school's network, is a Cisco 2921 and from what I read in the datasheet for this model, is that it's maximum throughput is around 245Mbps.    
 
+I know that we have a symmetrical 2Gbps fiber upstream connection to the ISP.   
+
+And as you probably can see now, there is no way we will fully utilize that bandwidth, as long as most of the devices are behind that Cisco 2921. 
+
+As for now (14th of October 2025), I don't really have anything more to write here.   
+I'm waiting for the decision regarding if we are getting the CT5508 or not etc.   
 
 ## Contact
 
