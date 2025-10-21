@@ -34,6 +34,8 @@ Here I put things that I think are the most interesting and worth reading.
 
 These are projects, case studies and troubleshooting logs.    
 
+*   **[Comparative analysis of the purchase of a Dell EMC S4048-ON for the lab instead of other devies](./projects/14-dell-s4048-on-comparative-analysis)**    
+
 *   **[School Network fried by lightning, WiFi fixing, Cisco WLC](./projects/13-school-network/readme.md)** - Very hot topic right now, since my school does not have WiFi available for now. They basically asked me to fix their wifi. I will write here about what things I uncover since it is actually far more complicated than just WiFi.
 
 *   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation/readme.md)** - Plus DHCP Nightmare
