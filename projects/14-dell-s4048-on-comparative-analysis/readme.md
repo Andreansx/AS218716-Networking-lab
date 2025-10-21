@@ -1,6 +1,6 @@
 # Analysis and justification for selecting the Dell EMC S4048-ON switch for my lab
 
-*   Table of contents    
+**Table of contents**        
 1. [Abstract](#abstract)
 2. [Goals and requirements](#goals-and-requiremets)
 3. [Analyze of platforms](#platform-analysis)
@@ -84,8 +84,8 @@ Absolutely no, and that is because there is no VXLAN encapsulation/decapsulation
 
 That is why I wanted something with a stronger switch chip (astronomically more powerful actually as you will see below).
 
-So I think this concludes a couple of first requirements for the device:
-    *   Full carrier-grade modular Network Operating System
-    *   Powerful switch chip with full L3 functionality.
+So I think this concludes a couple of first requirements for the device:     
+*   Full carrier-grade modular Network Operating System     
+*   Powerful switch chip with L3, VXLAN in-sillicon support.     
 
 
