@@ -206,9 +206,93 @@ The out-of-band management interfaces are also important for automatization like
 Sometimes things will break and you just would not want to have your only way of accessing the switch cut off.   
 If you want to be safe from that, just run Ansible through the management interface, and never let Ansible touch it.  
 
+So only thing to add to that is proper CoPP which is nicely supported in Dell EMC OS9.
+
 ## Second thing is implementing the Dell EMC S4048-ON switch into the lab.     
-writing here
-## Third thing is L3-Only network.     
+
+This is a enormous topic and there is a lot to talk about here.   
+
+Currently the lab is in a somewhat typical collapsed-core architecture.   
+I mean to be honest it's neither much this, nor spine-leaf so I don't think it complies with any particular network architecture.   
+Just look at the CRS326.
+It maintains eBGP sessions with CCR2004 and with VyOS virtual Routers, while also being an access switch to some occasional devices connected through SFP RJ45 transceivers.
+
+So it's role is unspecified i guess.   
+
+But because of my goal which is, among other things, to learn carrier-grade networking, I am turning the network into a Spine-Leaf fully routed architecture with the Dell EMC S4048-ON as the ultrafast switching fabric.     
+
+I think you may enjoy reading the reasoning behind choosing specifically the Dell EMC S4048-ON for my lab, which is available [here](./projects/14-dell-s4048-on-comparative-analysis/readme.md).    
+
+So the Dell EMC S4048-ON will be implemented into the network as the Spine switch. 
+I know that it's intended to be a ToR switch, but for my network that is no issue.   
+
+The devices will be connected with eBGP, with the CCR2004 being the border leaf router and advertising the 0.0.0.0/0 (or ::/0) route.   
+
+You may be wondering why eBGP and not iBGP even though it's in a kind of a single AS?    
+
+And there is a great document for that, which is the RFC7938, and it is available here on [datatracker.ietf.org](https://datatracker.ietf.org/doc/html/rfc7938)    
+
+But basically, eBGP allows for very nice manipulation of the choosen routes thanks to it's attributes like AS_PATH etc.   
+I mean BGP is still I think mostly taken as a WAN routing solution but it finds it's usage in the biggest datacenters.   
+
+There is still the fact that there is only one spine switch here.
+Some time in the future I would like to change that, by buying a QFX5100, but for now, I have the Dell EMC S4048-ON and the number of things that I can learn on it is just unimaginable.    
+
+The PVE host will be transparent in this architecture.
+It will not touch the network at all, it will only maintain the Open vSwitch so the VMs can communicate in some way with the spine.   
+
+What about traffic to VMs?  
+That is also a very cool thing I think so you can check the [Distributed firewall](##distributed-firewall) section.
+
+But getting back to the spine switch, it will simply be the main point of the underlay network.   
+
+I don't want to get too much in depth about it here, since there will be a separate document dedicated to the StrataXGS chips, based on the Dell EMC S4048-ON, but I just want to say that it probably will not be a VTEP.   
+
+That brings up the topic of VXLANs, which are an absolute neccesity in datacenters.  
+
+However, there are two main ways of deploying VXLANs and they differ by the mappings and the VTEP location.   
+
+For example, the Dell EMC S4048-ON could be a very good VTEP. Why?     
+Well, because it has a StrataXGS BCM56850 switching chip which is manufactured by Broadcom.   
+And Broadcom after all is one of the co-authors of the RFC7348, and they took an active part in standarization of the VXLAN technology.   
+
+The BCM56850 is actually not a just another switch chip, but it is one of the first which had such a good VXLAN implementation.   
+Though it cannot do single-pass InterVXLAN routing, it would still be very good in the role of a VTEP.    
+
+Those two things may sound kinda stupid together cause you normally would not use a VTEP as a point of InterVXLAN Routing.   
+
+Note that I said it cannot, though theoretically it could but with hairpinning.   
+
+As I said I don't want to full depth explaining that here but basically the order, in which the switching engine blocks are physically placed in the BCM56850, makes it impossible to quickly go from VXLAN decapsulation to L3 longest prefix match.     
+
+There is not a lot of information on it from Broadcom itself, but there are very good White Papers from Juniper and Arista, since their QFX5100 and 7050X use the same exact chip.   
+
+One document is titled [A day in the life of a packet](https://rchrist.io/blog/more-recirculation-bandwidth-arista-7050x/Arista_7050X_Switch_Architecture-X2.pdf).    
+
+But let's get back to the VXLANs.    
+
+The type of deployment that I depicted here uses physical switches as VTEPs, but nowadays, especially in hyperscale environments, the VTEPs are mostly on the hypervisors.   
+
+Again, I don't want this to be so long so I won't write about how VTEPs on ESXi work etc. but just a quick deployment description.   
+
+The Dell EMC S4048-ON won't be a VTEP since the VTEPs are gonna be on the virtual routers inside PVE.   
+
+This is actually more like the first type of the deployment rather than the hypervisor deployment.   
+
+The thing is that I have only one server, and it would be hard to pull off the deployment of a hyperscaler-like cloud architecture with VNI to VID mappings on the hypervisor.  
+
+In summary, cause I want to write the next thing, the Dell S4048-ON will be just an insanely fast underlay network, without any firewalls etc.  
+Just pure BGP and ECMP (When there will be a second spine switch).   
+Again, if you want to read more about why I chose this particular switch, [read this document](./projects/14-dell-s4048-on-comparative-analysis/readme.md)
+
+There is more explaination there, about the Network Operating System on that switch and it's architecture.   
+
+So I think this summarizes how I am going to implement the Dell EMC S4048-ON in the lab.  
+
+## Distributed firewall
+
+
+
 ## Hardware
 
 A list of the key components in my lab. Click a device name to see its configuration files.
@@ -219,7 +303,7 @@ A list of the key components in my lab. Click a device name to see its configura
 | **PVE Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
 | **Border Leaf Router**  | [MikroTik CCR2004](./border-leaf-ccr2004/)           | Border leaf Router, provides access to the internet, NAT, DHCP Server on loopback interface, VPNs and main firewall for North-South traffic       |
 | **Leaf Router**  | [MikroTik CRS326](./leaf-crs326/)           | Leaf router. For now handles BGP, inter-VLAN routing with line-speed thanks to L3HW offload | 
-| **Spine Switch**          | [Dell S4048-ON](./spine-s4048-on/)  | For now, unused. However, after I finish CCNA, it will become the Spine switch for my network and will handle BGP EVPN, VXLANs and West-East traffic with its astronomic Trident 2 ASIC which TCAM memory I am learning about. |
+| **Spine Switch**          | [Dell S4048-ON](./spine-s4048-on/)  | For now unused. However, I am learning a lot of theory about it's StrataXGS BCM56850 switching chip and it's system architecture. It will be the spine switch and will be a part of the ultra fast switching fabric. |
 | **OOB Switch**| [Brocade FastIron LS648](./oob-fls648/)      | Switch for OOB Management. Handles single L2 domain.     |
 | **0U PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
