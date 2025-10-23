@@ -103,14 +103,17 @@ Both routers use eBGP for exchanging routing information.
 The CCR2004 advertises the default route to the internet to the CRS326.   
 Basically the ccr2004 is a edge router, while the crs326 is a core router.    
 
-The crs326 performs the InterVLAN Routing between the networks in a kind of a router-on-a-stick topology.   
+~~The crs326 performs the InterVLAN Routing between the networks in a kind of a router-on-a-stick topology.~~
+The CRS326 performs InterVLAN Routing between VLANs which are stretched through the PVE host, to the VMs.
 I of course use L3 Hardware offloading on it, since it enables line-speed routing.   
 
 > [!NOTE]   
-> Router-on-a-stick from the perspective of the PVE host, not the entire network.   
+> Earlier I said "Router-on-a-stick", which would be theoretically correct from the perspective of the VMs.   
 > Just picture the data flow:    
 > Since the SVIs are on the CRS326, the traffic from VM0 (NET20-VMS) to VM1 (NET30-KUBERNETES) first goes from VM0 to the Open vSwitch, then it gets turned into a 802.1q frame with VID 20 and is sent over the tagged link to the CRS326, then the CRS326 performs InterVLAN routing, changes the VID from 20 to 30, and the traffic is sent again through the same link but this time downstream.
 > Then the VID is taken off on the Open vSwitch and the untagged 802.3 frame arrives on VM1 vNIC.   
+> Looks kind of like ROAS doesn't it?
+> But this messes this up a lot so just forget that I said ROAS in the first place.
 
 
 I just want to mention that the "line speed routing" applies mostly only to static routes, and that in serious BGP routing it will punt all the traffic to the CPU.   
@@ -125,7 +128,7 @@ It has an upstream connection through a 10GbE link to the CRS326.
 That link is separated using VLAN tagging on the CRS326 and the Linux Bridge `vmbr0`, but I will switch to Open vSwitch.   
 Thanks to the VLANs, I can create point-to-point connections between VyOS routers, and the CRS326, even though there is only a single physical link.
 
-I think that this is actually everything that is running now.
+I think that this summarizes the operational state of the lab.
 
 Below you can read some plans which I would like to implement. 
 Sorry for the messy writing, I didn't organize all of that properly, so I will try to re-write all that.   
@@ -151,7 +154,7 @@ I think you can already see how messy this is, even just by reading that and not
 
 The usual setup is to stretch a L2 domain through the devices in the lab.   
 For example we create a network NET10-MGMT-VID10, which as you can see in the name, would use VLAN ID of 10.   
-Then the process is super simple, cause you just need to add one more allowed VLAN to the tagged links between all devices, and assign an IP address from that network, for each device.   
+Then the process is super simple, as it only requires adding one more allowed VLAN to the tagged links between all devices, and assign an IP address from that network, for each device.   
 
 But that does not work in datacenters, since this kind of management network, is strictly intergrated with the rest of the network, the underlay.   
 
@@ -210,6 +213,13 @@ So only thing to add to that is proper CoPP which is nicely supported in Dell EM
 
 ## Second thing is implementing the Dell EMC S4048-ON switch into the lab.     
 
+> [!IMPORTANT]   
+> I would like to explain why am I using one specific term here.
+> I'm talking about "fabric".    
+> I do realize that switching fabrics are groups of super fast switches in a Clos architecture.
+> Again, **Groups** of switches, and I have only one spine switch.
+> So I just want to say that I am using this term because I think that it's usage in my lab is understandable, with the goal of making it as datacenter-like as it can be.   
+
 This is a enormous topic and there is a lot to talk about here.   
 
 Currently the lab is in a somewhat typical collapsed-core architecture.   
@@ -217,7 +227,7 @@ I mean to be honest it's neither much this, nor spine-leaf so I don't think it c
 Just look at the CRS326.
 It maintains eBGP sessions with CCR2004 and with VyOS virtual Routers, while also being an access switch to some occasional devices connected through SFP RJ45 transceivers.
 
-So it's role is unspecified i guess.   
+So it serves multiple roles simultaneously.   
 
 But because of my goal which is, among other things, to learn carrier-grade networking, I am turning the network into a Spine-Leaf fully routed architecture with the Dell EMC S4048-ON as the ultrafast switching fabric.     
 
@@ -290,6 +300,69 @@ There is more explaination there, about the Network Operating System on that swi
 So I think this summarizes how I am going to implement the Dell EMC S4048-ON in the lab.  
 
 ## Distributed firewall
+
+This is one of the coolest topics I think.   
+
+Basically, when designing Clos switching fabrics, there is the issue of security.   
+
+Cause it's pretty self explainatory why those are so fast etc.   
+But it's also pretty obvious that no self-respecting data center network would go without security.    
+
+But where should the firewalls be placed?   
+
+The spine switches are insanely expensive because of their astronomic switching chips etc. but they have low-power, less powerful CPUs cause the only thing the CPU needs to do is to handle the NOS, maintain BGP sessions and program the ASIC with FIB based on the RIB etc.   
+
+So knowing that, can we place a firewall in a spine or leaf switch?   
+
+Of course not cause the spine and leaf switches are powerful only in the ASICs.   
+A firewall is a stateful mechanism and it is impossible to handle a stateful firewall on a switch chip.   
+
+And there is another thing, since nowadays datacenters use Next-Generation firewalls for example the Juniper vSRX3.   
+
+Those firewalls do not only permit/deny packets based on the SRC/DST IP, port, interface, state of the connection etc. but they use something called Deep Packet Inspection.   
+And I don't know much about NGFWs but I know that those devices such as the best Juniper SRX models literally have dedicated chips for cryptography.    
+They need an astronomic amount of processing power.   
+
+But the tasks that they perform is a totally different kind than what the switch chips handle.   
+DPI is not a copy-paste operation where milions of packets are super similar to each other and just need to be routed accordingly to the FIB.  
+DPI is where those NGFWs look deep into the packet and scan it with lots of different engines such as Junipers AppID which can literally spot what kind of application you are using, by tracking the first packets after the TLS handshake.   
+
+So in summary it's just that it requires an insane amount of typically x86_64 processing power.   
+
+You can probaly see now the issue.  
+Though ACLs can be handled fully by the switch chip, they are super simple and the switches physically couldn't do DPI, because of how they are built.
+The data flow is not supposed to even touch the CPU.   
+
+So here is where a pretty cool solution comes up, and that is placing a firewall inside each leaf in the Clos.   
+
+Basically this allows to still keep 100% control over network, but the switching fabric does not have to care even a bit about security.   
+Each leaf will have a vSRX NGFW, which will provide something called microsegmentation for inspecting packets.    
+
+So i'll show how that would actually be done.    
+There would be a separate bridge in the hypervisor, for example `NET20-OVS0`.   
+All VMs, along with a vSRX3 would have vNICs attached to this Open vSwitch.  
+The vSRX3 would have at least three vNICs in this scenario. 
+The first vNIC (net0) would be attached to the `vmbr-oob` as it acts like the `fxp0.0` interface on a real SRX, which is used for management.
+The second vNIX (net1) would be attached to `NET20-OVS0` as it would be the default gateway for all VMs.
+
+And the third vNIC (net2) would be attached to `UPSTREAM-LEAF-OVS0`, since this Open vSwitch would have a physical interface `enp7s0f0` added to it, and it would provide connectivity to the leaf switch.
+
+Notice that this does not slow down the Spine of the network.
+And there is still 100% control over where traffic can and where cannot go.   
+
+This is actually not a compromise as it allows for stopping unwanted traffic before it is even seen by the switching fabric.
+
+There of course will be a vQFX above the vSRX3, as it will be the leaf switch and it will handle eBGP, EVPN-VXLAN etc.   
+
+This is what I am aiming to create. 
+Of course first there has to be a stable switching fabric but I think this pretty nicely outlines the architecture. 
+
+> [!IMPORTANT]    
+> I want to note one crucial thing.
+> Though I use the vSRX3 and vQFX accordingly to their roles, keep in mind that for example the vQFX will reach nowhere near the backplane switching capacity of a real QFX-series datacenter switch. 
+> Same for the vSRX3.
+> But the JunOS is the same as on a real device, only the Packet Forwarding Engine is just a separate VM, rather than a real switching chip.   
+> However, as you probably already noticed, the speed is absolutely not an issue for me, since there is pretty much no bandwidth requiring service running in my lab.
 
 
 
