@@ -1,16 +1,16 @@
 # Datacenter networking lab
 
-Here I document everything about my networking lab which serves as a practical ground for learing modern datacenter technologies.  
-My main focus is building scalable L3-only network fabrics
+Here I document everything about my networking lab which serves as a practical ground for learing modern datacenter technologies.     
 
+Currently I'm mainly focused on turning the lab into a datacenter-styled network, particularly I want to create a ultrafast switching fabric in a Clos architecture using my Dell EMC S4048-ON as the spine switch, along with Juniper vQFXs as leaf switches, all connected with eBGP.
 
 <div align=“center”>
 
 ![MikroTik](https://img.shields.io/badge/routeros-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white)
 ![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white)
-![kubernetes](https://img.shields.io/badge/kubernetes-7D3742?style=for-the-badge&logo=kubernetes&logoColor=white)
-![dell](https://img.shields.io/badge/OS9-A54E3E?style=for-the-badge&logo=dell&logoColor=white)
-![Terraform](https://img.shields.io/badge/terraform-CE653B?style=for-the-badge&logo=terraform&logoColor=white)
+![broadcom](https://img.shields.io/badge/StrataXGS,%20TCAM-7D3742?style=for-the-badge&logo=broadcom&logoColor=white)
+![dell](https://img.shields.io/badge/EMC%20OS9-A54E3E?style=for-the-badge&logo=dell&logoColor=white)
+![Junos](https://img.shields.io/badge/junos-CE653B?style=for-the-badge&logo=juniper-networks&logoColor=white)
 
 </div>
 
@@ -48,11 +48,11 @@ These are projects, case studies and troubleshooting logs.
 
 *   **[L3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)** - Super fast port-speed connection for wide bandwith between Virtual Machines !
 
-* **[IPv6](./IPv6/)** - For now there is not much here since it's hard to get an IPv4 from my ISP.  
+* **[IPv6](./IPv6/)** - For now there is not much here since my ISP does not provide IPv6, and because they use CGNAT, I need to use a Tunnelbroker from Hurricane Electric. But another problem is the lack of a stable IPv4 endpoint.      
 
-* [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)  
+* [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)     
 
-## How This Repository Is Organized
+# How This Repository Is Organized
 
 This repository is structured to be a clear and useful reference. Here’s a map of the key directories:
 
@@ -61,186 +61,154 @@ This repository is structured to be a clear and useful reference. Here’s a map
 *   **`/IaC/`**: Holds all Infrastructure as Code projects, primarily using Terraform to automate deployments on Proxmox.
 *   **`/docs/`**: Contains details about plans for improving the lab. For example a better addressation plan
 
-## Lab Architecture
+# Lab Architecture
 
-#### Modernization and currently ongoing
+## Modernization and currently ongoing
 
-Here is the simplified diagram which shows what Im making my network to look like.   
+Here is the simplified diagram which shows what I'm making my network to look like.   
 
 ![modernization](./media/modernization.png)
 
 
-#### Physical connections diagram
+## Physical connections diagram
 
 ![physical diagram](./media/physical_diagram.png)
 
-#### Logical topology
+## Logical topology
 
 ![logical diagram](./media/logical_diagram.png)
 
 
-### Photos
+## Photos
 
 ![devices](./media/devices.jpeg)   
 
 ![cables](./media/cables.jpeg)
 
-## Main overview + Plans
+# Main overview + Plans
 
-Below is a really in-depth and specific explaination of my lab. 
-However, if you do not want to read everything (though I encourage you to, since I think it's pretty interesting), I can short it for you.  
+> [!NOTE]   
+> I re-wrote the overview and plans so I hope they are a bit less messy and are more understandable.   
 
-Basically, there are:
-*   two routers connected with eBGP with failover, 
-*   proxmox server
-*   VyOS, vSRX3 NGFWs/routers on Proxmox VE
-*   10GbE fiber links
-*   Plans for BGP EVPN implementation (I will get into this after passing CCNA)
 
-However, as I said, I think you might actually enjoy reading this a lot longer description:   
+I would like to divide the description of my network into two main parts: the up-and-running part, and the planned part.   
 
+However, I think the term "planned" might not reflect what I actually mean so here I would like to first write what is running NOW, and by scrolling a bit lower, you can read about what is planned.   
+I just want to say that the planned things are not just a "maybe sometime I will do that" thing but rather I have a lot planned out already and I'm just waiting to finish CCNA. 
+It's just that even though I'm currently doing CCNA, I did not abandon the lab, and I just stopped more practical implementations and projects, but I am still learning a lot of theory about other things, right now especially TCAM memory blocks and the switching engine blocks and their limitations specifically in Broadcom's StrataXGS series chips.
 
+For now, there are two main network devices running: the MikroTik CCR2004-1G-12S+2XS (AS65000, a.k.a. `border-leaf-ccr2004`), and a CRS326 (AS65001, a.k.a. `leaf-crs326`). 
+However, as you probably already noticed, those devices actually are not in a spine-leaf topology.   
+Both routers use eBGP for exchanging routing information. 
+The CCR2004 advertises the default route to the internet to the CRS326.   
+Basically the ccr2004 is a edge router, while the crs326 is a core router.    
 
-My network is oriented towards a datacenter-styled approach because that is the field that I would love to work in.    
+The crs326 performs the InterVLAN Routing between the networks in a kind of a router-on-a-stick topology.   
+I of course use L3 Hardware offloading on it, since it enables line-speed routing.   
 
-I am actively improving things to make this lab as much as possible like a real data center Spine-Leaf Design.   
+> [!NOTE]   
+> Router-on-a-stick from the perspective of the PVE host, not the entire network.   
+> Just picture the data flow:    
+> Since the SVIs are on the CRS326, the traffic from VM0 (NET20-VMS) to VM1 (NET30-KUBERNETES) first goes from VM0 to the Open vSwitch, then it gets turned into a 802.1q frame with VID 20 and is sent over the tagged link to the CRS326, then the CRS326 performs InterVLAN routing, changes the VID from 20 to 30, and the traffic is sent again through the same link but this time downstream.
+> Then the VID is taken off on the Open vSwitch and the untagged 802.3 frame arrives on VM1 vNIC.   
 
-For now the Spine of my network consists of three routers, a MikroTik CCR2004-1G-12S+2XS, a CRS326-24S+2Q+RM and a VyOS vRouter.
-Together, those two physical routers are connected with two eBGP sessions through two 10GbE Fiber links.
-I wanted to enable ECMP between them, however, in RouterOS 7.19.4, ECMP for BGP is not supported.   
 
-The CCR2004 has an ASN of 65000, the CRS326 has 65001 and the VyOS vRouter has a 65101 ASN.  
+I just want to mention that the "line speed routing" applies mostly only to static routes, and that in serious BGP routing it will punt all the traffic to the CPU.   
+I won't get into details here, since I will write a longer document about that sometime, but I just want to say that the chip inside the CRS326 is not an L3 switch chip, even though it might look like it from the documentation.   
+It's simply a L2+ chip, which is kinda like typical L2 switch chip, but with some added TCAM memory blocks so it can perform simple longest prefix match L3 lookup, but only for around 36 thousand routes.
 
-The CCR2004 advertises the default route (`0.0.0.0/0`) to the CRS326 which advertises Networks from it's `BGP_ADV_NET` address list.   
+There is also a Dell R710 which is a Proxmox Virtual Environment host.
+It's running a couple of VyOS VMs, along with a Kubernetes cluster and of course sometimes other Linux VMs.   
 
-There is also a DHCP Server running on a loopback-like interface on the CCR2004. 
-This ensures that it is reachable even when one of the links go down and removes the need for two identical DHCP Servers for two different interfaces, since it's listening on a single bridge.   
+It has an upstream connection through a 10GbE link to the CRS326.
 
-From the outside, this network might look pretty small.
-However, a lot happens in Proxmox Virtual Environment which runs on my Dell PowerEdge R710.   
+That link is separated using VLAN tagging on the CRS326 and the Linux Bridge `vmbr0`, but I will switch to Open vSwitch.   
+Thanks to the VLANs, I can create point-to-point connections between VyOS routers, and the CRS326, even though there is only a single physical link.
 
-In the PVE I run a lot of networking appliances like VyOS and vSRX3 NGFWs/Routers.   
+I think that this is actually everything that is running now.
 
-The PVE is connected through a single DAC 10GbE cable to the CRS326.
-This single cable carries a lot of tagged traffic which then gets switched by the main `vmbr0` bridge.  
+Below you can read some plans which I would like to implement. 
+Sorry for the messy writing, I didn't organize all of that properly, so I will try to re-write all that.   
 
-This way, the inter-VLAN routing between VMs and for example Kubernetes Cluster gets handled by the CRS326 which has enabled L3 Hardware offloading.   
+# Plans
 
-Even though the L3HW offload on CRS326 is fairly simple, as anything above simple routing gets handed to the CPU, it allows for line-speed (10GbE) routing between different VLANs which live on the PVE server.   
+## First thing I want to do is implement OOB-Only Management.    
 
-That is of course a bit of hairpinning since the traffic goes twice through the same physical cable.   
+Currently the network revolves around kind of a "master" network, specifically `10.1.1.0/30`.   
+Traffic outgoing from this network, which is attached to `ether1` interface on the CCR2004, is allowed to go everywhere.   
 
-VLAN segmentation on that link between CRS326 and PVE, allows me to create different logical links without worrying about buying another SFP+ NICs.  
+How did I even got the idea to create it like that?   
 
-USERS_NET is currently reachable through the point-to-point link between the CRS326 and a VyOS vRouter which also travels through that same DAC Cable but is of course separated with VLAN tagging.   
+Well, I thought to myself that, I need to manage networking devices very often, and going to the rack to plug the ethernet cable from the management port to a access port didn't seem very nice.   
 
-There is also eBGP session running on the point-to-point link between the CRS326 and the VyOS router.  
+So I just combined that two things into a single network, which is obviously a bad practise.    
 
-USERS_NET Access is available for PCs in another room next to mine via a dual-port RJ45 10GbE NIC which has both its ports bridged onto `vmbr-users`, where also the mentioned VyOS Router has one of it's interfaces.   
+Also the management network should probably be a single subnet, however in my case it is not, which again is not a good practise.    
+The CCR2004 has management interface in `10.1.1.0/30`, while the CRS326 has it in `10.1.1.4/30`.   
+This makes it neccessary to use routing, when wanting to access one management interface, from the other one.
 
-This VyOS vRouter is also a DHCP Relay for all devices in USERS_NET.
+I think you can already see how messy this is, even just by reading that and not actually using it.   
 
-### Plans
+The usual setup is to stretch a L2 domain through the devices in the lab.   
+For example we create a network NET10-MGMT-VID10, which as you can see in the name, would use VLAN ID of 10.   
+Then the process is super simple, cause you just need to add one more allowed VLAN to the tagged links between all devices, and assign an IP address from that network, for each device.   
 
-<h2>First thing I want to do is implement OOB-Only Management.</h2>   
+But that does not work in datacenters, since this kind of management network, is strictly intergrated with the rest of the network, the underlay.   
 
+So I want to completly abandon in-band management and switch to Out-of-band-only management.   
+Basically there wll be a network dedicated to management and it will be completely independent of the underlay network.    
 
-For now, for management and access to the entire network I used a kind of a master-network which was available through the `ether1` interface on the CCR2004 router.  
+Each networking device will simply have one interface with an IP address from that network, and there will be one single simple L2 switch, which will have direct connections to every management interface in the lab.   
 
-This is of course a bad practise and I will be deprecating it.  
+One thing I would like to note here is that the management interfaces on the mikrotiks, and on the Dell S4048-ON are very different.   
+On my two MikroTik devices, those management ports are basically just an another port, but copper rather than SFP, and with an added "Mgmt" text.
 
-The reason why I got into thinking about this OOB-Only network is because I started learning more about real datacenter networking devices.   
-My MikroTik routers, even though powerful for their price, are not a real datacenter grade networking appliances.   
+I mean yeah on the CRS326 block diagram, you can see that the `ether1` interface is connected to the CPU rather than to the ASIC, but this is not a carrier-grade control and data plane separation.
+The control and data plane would have to be separated also in the software to make any difference.
+Without it, when one service glitches, the entire system can glitch, because it is a monolythic system.
+That would explain why the part of the network reachable through the ASIC, is actually unaccessable from the `ether1` interface, when L3 Hardware offload is enabled on the ASIC.   
 
-However, my new Dell EMC S4048-ON is a real datacenter-grade device.  
+I don't know if that is a feature or a bug, but I tested it a lot of times and it just doesn't work.   
 
-The `mgmt` interface on it is not just an another ethernet port with a `mgmt` text next to it.  
-Since this is a real datacenter switch, it features a physical separation of data and control plane, which means that this management port is physically connected differently than every other interface.  
-It's connected directly to the CPU, while every single other port is connected to the Trident 2 ASIC.    
+That is another reason to leave the mgmt interfaces for management.    
 
-The same thing applies to the vSRX3 vRouters.  
-They also feature a control and data plane separation.  
+You may ask "but how to provide Out-of-band management for virtual routers?".   
+And that is something I myself was trying to solve, and I got one idea.   
 
-New approach will be to make networking devices management available only from a Out-of-band network.  
-Each device will get assigned an IP from the `10.9.0.0/24` network on a physical management interface. **NOT** on an SVI.  
+My solution for that is to just create a Linux Bridge/Open vSwitch in the PVE, for example `vmbr-oob`, and bridge one physical interface of the server to it, for example the `eno1` interface.   
 
-Accessing OOB network from anywhere other than a physical connection to the OOB switch will be impossible and vice-versa.
+Then, when creating, for example, a vQFX VM, just add the Routing Engine's first vNIC (`net0`) to the `vmbr-oob` bridge.   
+This way you can have out-of-band management, from a physical switch, for a virtual router, completely indepentend on the main network.
 
-Proxmox Management will still be available from in-band network.  
+I forgot to mention the Dell EMC S4048-ON.    
 
-However, one problem with this occured when I thought about the vSRX3 vRouters in the PVE. How to make their `fxp0.0` management interfaces available from the OOB Network?  
+It has the best support for OOB Management of all devices in my lab.   
+The management interface, which is called `managementethernet1/1`, is literally fully separated from all other interfaces, on the PCB board.   
+This, combined with modular Network Operating System, allows for complete separation of data and control plane.   
 
-The solution to this is to first create a new bridge in the PVE, for example `vmbr-oob`.
-Then to make it physically separated, it's neccessary to add a physical interface to the `vmbr-oob`, for example `eno1`.  
-Then what's left is to connect the `eno1` interface to the OOB switch and add all `net0` vNICs for the vSRX3 vRouters to the `vmbr-oob`.  
+Even if you exhausted the switching capability of the switch chip, the Management interface is always available and it cannot become congested from the traffic passing through the data plane. 
 
-The first networking device (`net0`) added to the vSRX3 vRouter is always assigned as `fxp0.0` port, which is specifically a management interface.
+So the OOB Switch will be the Brocade FLS648.   
+It's a piece of junk actually, but I don't need more just for the OOB network.   
 
-This way, the management interfaces for the vSRX3 appliances will be always reachable through the OOB network even when the main PVE link goes down.  
+The only thing I need from it is to handle a single L2 domain, even without any VLAN tagging etc.   
 
-This also improves security a lot.
+So the management interface of the Dell S4048-ON will be connected to the FLS648, along with all the other networking devices.   
 
+One important thing is that the management interface should be on the physical port, not on an SVI.
+So for example to allow the management of the Dell S4048-ON, I would assign an IP address on the `managementethernet1/1` interface, and that's it.   
+I would **not** create an SVI, and add the `managementethernet1/1` as a untagged port for this VLAN.
 
-<h2>Second thing is implementing the Dell EMC S4048-ON switch into the lab</h2>
+The OOB Management is after all supposed to be highly available out-of-band.
+Using an SVI is another thing which can break, and also it overly complicates the pretty straightforward task of allowing management of the device.   
 
+The out-of-band management interfaces are also important for automatization like Ansible.   
+Sometimes things will break and you just would not want to have your only way of accessing the switch cut off.   
+If you want to be safe from that, just run Ansible through the management interface, and never let Ansible touch it.  
 
-I want to use this switch as the Spine switch in my lab.  
-
-It's absolutely insane and it's a gigantic upgrade for me.  
-After all, it's my first real datacenter-grade L3 fabric switch.   
-
-It will be a great L3 fabric for my network which will allow me to create super-fast links to my vSRX3 NGFWs/vMX Routers and handle VXLAN Tunnels.
-
-<h2>Third thing is L3-Only network </h2>
-
-I want to make my network more to be like a real datacenter network.   
-Now, hyperscalers use a L3-Only Spine-Leaf architecture in their datacenters.   
-
-A L3-Only network means that there is no stretching of L2 domains, no issues caused by LACP, no locked ports cause of STP and no fake load-balancing with bond interfaces.  
-
-By making my network L3-Only, I will be able to do everything a lot more elastically, and also utilize real load-balancing using ECMP for BGP.   
-
-Creating a stable L3-Only network fabric also makes up a great environment for a very advanced datacenter technologies like VXLAN which is currently used routinely in datacenters.  
-
-I would create a VXLAN tunnel between VMs_NET, which would be behind a vMX router, and USERS_NET, which would be reachable through a vSRX3 NGFW.   
-
-The vMX and vSRX would be the VTEPs for this tunnel and would maintain EVPN session and advertise `l2vpn` afi to the rest of the network.    
-
-Basically, there will be absolutely no L2 domain stretching, no STP, no LAG etc.  
-
-Typically there are VLANs connected to a switch and traffic is carried from a VLAN, to the L3 switch (or router, wherever the SVI/IRB is) and sent back to another VLAN.   
-
-I will be leaving that behind and everything will be routable.   
-For example:   
-
-USERS_NET - reachable through AS65103, vSRX3 NGFW, `leaf-vsrx3-0`.   
-VMS_NET - reachable through AS65102, vMX router, `leaf-vmx-0`.   
-etc..   
-
-This is just so much more elegant than messing with LACP and STP.  
-That is just what is done in datacenters.   
-
-I could then create a new network `VMS_NET_1` and connect it to a new vMX router.  
-the new vMX router, `leaf-vmx-1` for example, would get assigned a ASN of 65104 and would be connected to the Dell EMC S4048-ON Spine switch.   
-
-As you can see, this topology matches (in a miniature scale) the policy of a L3 Clos fabric in datacenters:   
-No leaf is connected to another leaf.   
-
-Then I could create an Anycast Gateway on the `leaf-vmx-0` and `leaf-vmx-1` on the side of their networks (`VMS_NET` & `VMS_NET_1`) on an IRB.   
-After this I would create BGP EVPN sessions by making the vMX leafs advertise a new afi, which is `l2vpn`.   
-
-This way, the VMs in `VMS_NET` and `VMS_NET_1` could talk to each other like they were in the same L2 domain, but of course they are not.
-
-The insanely powerful Trident 2 ASIC allows this Dell switch to perform VXLAN encapsulation, BGP EVPN etc. with incredible line-speed bandwidth.
-
-However, in the scenario depicted above, EVPN would not be enabled on the Dell S4048-ON.   
-So I would simply add a new SVI which would be the Anycast gateway for a new network `USERS_NET_1` and I would simply enable EVPN on this Dell and also on the `leaf-vsrx3-0`.   
-
-That is how I could access the USERS_NET, through a SFP RJ45 transceiver plugged into the Dell, like I would be in the same L2 domain.
-
-This is what I want to achieve for now but first just need to finish CCNA.
-
-
+## Second thing is implementing the Dell EMC S4048-ON switch into the lab.     
+writing here
+## Third thing is L3-Only network.     
 ## Hardware
 
 A list of the key components in my lab. Click a device name to see its configuration files.
