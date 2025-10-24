@@ -135,7 +135,9 @@ Sorry for the messy writing, I didn't organize all of that properly, so I will t
 
 # Plans
 
-## First thing I want to do is implement OOB-Only Management.    
+## OOB Network    
+
+This is the firs thing I would like to implement as it is actually neccessary to accomplish everthing outlined below.   
 
 Currently the network revolves around kind of a "master" network, specifically `10.1.1.0/30`.   
 Traffic outgoing from this network, which is attached to `ether1` interface on the CCR2004, is allowed to go everywhere.   

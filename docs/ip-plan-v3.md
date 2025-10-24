@@ -1,5 +1,11 @@
 # Yet another addressation plan
 
+> [!CAUTION]   
+> This is deprecated. 
+> I planned this out when I didn't have enough networking knowledge and this is just bad.   
+> You can read about it in the [README.md](../README.md) file in the [OOB Network section](../README.md#oob-network)
+
+
 10.100.0.0/16 block is a bit too long to type in to be honest.  
 What I planned to use was a 10.1.0.0/16 block for addressation.  
 
