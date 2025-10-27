@@ -6,11 +6,11 @@ Currently I'm mainly focused on turning the lab into a datacenter-styled network
 
 <div align=“center”>
 
-![MikroTik](https://img.shields.io/badge/routeros-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white)
-![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white)
-![broadcom](https://img.shields.io/badge/StrataXGS,%20TCAM-7D3742?style=for-the-badge&logo=broadcom&logoColor=white)
-![dell](https://img.shields.io/badge/EMC%20OS9-A54E3E?style=for-the-badge&logo=dell&logoColor=white)
-![Junos](https://img.shields.io/badge/junos-CE653B?style=for-the-badge&logo=juniper-networks&logoColor=white)
+![MikroTik](https://img.shields.io/badge/routeros-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white&logoSize=auto)
+![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white&logoSize=auto)
+![broadcom](https://img.shields.io/badge/StrataXGS,%20TCAM-7D3742?style=for-the-badge&logo=broadcom&logoColor=white&logoSize=auto)
+![dell](https://img.shields.io/badge/EMC%20OS9-A54E3E?style=for-the-badge&logo=dell&logoColor=white&logoSize=auto)
+![Junos](https://img.shields.io/badge/junos-CE653B?style=for-the-badge&logo=juniper-networks&logoColor=white&logoSize=auto)
 
 </div>
 
@@ -254,7 +254,7 @@ The PVE host will be transparent in this architecture.
 It will not touch the network at all, it will only maintain the Open vSwitch so the VMs can communicate in some way with the spine.   
 
 What about traffic to VMs?  
-That is also a very cool thing I think so you can check the [Distributed firewall](##distributed-firewall) section.
+That is also a very cool thing I think so you can check the [Distributed firewall](#Distributed-firewall) section.
 
 But getting back to the spine switch, it will simply be the main point of the underlay network.   
 
