@@ -456,6 +456,14 @@ So when the new C3850 arrives, it will be possible to check if the entire old C3
 
 And if it doesn't wake up, then we will still have an another working C3850 with more ports.
 
+There is also the issue of licenses as I mentioned a couple times probably.   
+
+If we wanted to use the new C3850 as a WLC controller, then we would need a neccessary license.  The two licenses that I think enable the functionality of the WLC on C3850 are `ipservices` and `ipbase`.
+Of course, we do not have either of those, and it is not possible to buy them anymore.   
+
+So another arugment towards my suggested approach, which is to use the new C3850 as a L3 PoE switch, and a CT5508 as the WLC.   
+
+
 
 ## Contact
 
