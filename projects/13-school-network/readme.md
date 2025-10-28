@@ -438,6 +438,25 @@ And as you probably can see now, there is no way we will fully utilize that band
 As for now (14th of October 2025), I don't really have anything more to write here.   
 I'm waiting for the decision regarding if we are getting the CT5508 or not etc.   
 
+28th October 2025    
+
+So a couple of cool updates.   
+I found out more about the WAN design that the school uses.
+That is important since as I mentioned somewhere above, the school has a VPN Site-To-Site tunnnel.
+Actually there are two VPNs, one from OSE which tunnels traffic directly to NASK, and the other one which tunnels traffic to a nearby university.   
+
+Both of this tunnels are physically handled by ISPs fiber connection.
+
+And I think soon the school will order a new switch.
+Specifically a Catalyst 3850-48F-S that I found.
+
+Cause from what we checked, the main problem right now is that both the PSUs for the old C3850 are fried, even the error light doesn't light up.   
+
+So when the new C3850 arrives, it will be possible to check if the entire old C3850 is fried or only it's PSUs are fried.   
+
+And if it doesn't wake up, then we will still have an another working C3850 with more ports.
+
+
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
