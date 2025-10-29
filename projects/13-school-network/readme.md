@@ -463,7 +463,25 @@ Of course, we do not have either of those, and it is not possible to buy them an
 
 So another arugment towards my suggested approach, which is to use the new C3850 as a L3 PoE switch, and a CT5508 as the WLC.   
 
+I also looked a bit more into the configuration of the integrated WLC on the Catalyst 3850, in case the old one turns out to be working, and honestly I hope that we will have to use the new 3850 with a separate WLC.   
+The configuration of that integrated WLC is really really complicated from what I saw, since I never had my hands on such a piece of equipment.    
 
+So I think I said that already a couple of times, but the best approach in my opinion is to use the Catalyst 3850 as a L3, PoE switch and the CT5508 as the WLC.   
+
+The upstream connection will be a L3 link from the **C3850** to the **Cisco 2921**, which will be the gateway to the internet.   
+
+There will also need to be a L2 connection from the **C3850** to some other switch, since there also will be network-attached projectors, which are supposed to be reachable through WiFi, and NEC's proprietary solution uses broadcast to let the user's device find the appropriate projector, without caring about IP addresses.   
+
+The projectors will be probably plugged into one of the Tp-link switches.   
+
+I put a simple diagram on what it would look like.   
+```
+                              [2921]
+                                ┃ <-L3 upstream
+[Tp-link] ━VLAN 20 untagged━ [C3850, InterVLAN Routing] ━━━Tagged━━━[CT5508]
+    ┃                           ┃ <-VLAN 10 CAPWAP
+[Projectors]                  [APs]
+```
 
 ## Contact
 
