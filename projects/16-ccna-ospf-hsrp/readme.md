@@ -124,6 +124,83 @@ The virtual Gateway IP address is `10.1.20.1/24`.
 
 For now there is only a single subnet here but I will swap the HSRP between physical interfaces, for HSRP betwenn subinterfaces, which will allow for the usage of VLANs here.
 
+# HSRP on subinterfaces with VLANs.   
+
+First I removed the configurations from the physical `g0/0/1` interfaces and created two subinterfaces for VLANs 20 and 30 and assigned them appropriate IPs.   
+
+```IOS
+A0-R4(config)#int g0/0/1.20
+A0-R4(config-subif)#encapsulation dot1Q 20
+A0-R4(config-subif)#ip ad 10.1.20.2 255.255.255.0
+A0-R4(config-subif)#int g0/0/1.30
+A0-R4(config-subif)#encapsulation dot1Q 30
+A0-R4(config-subif)#ip ad 10.1.30.2 255.255.255.0
+```
+
+And on the `A0-R5`:
+
+```IOS
+A0-R5(config)#int g0/0/1.20
+A0-R5(config-subif)#encapsulation dot1Q 20
+A0-R5(config-subif)#ip ad 10.1.20.3 255.255.255.0
+A0-R5(config-subif)#int g0/0/1.30
+A0-R5(config-subif)#encapsulation dot1Q 30
+A0-R5(config-subif)#ip ad 10.1.30.3 255.255.255.0
+```
+
+The IPs are `.2` and `.3` for `A0-R4` and `A0-R5` as appropriate.   
+
+Now there are going to be two HSRP groups, one for each VLAN.   
+
+Group 2 for VLAN 20 and group 3 for VLAN 30.
+The IPs of the virtual gateways will be `.1`.   
+
+Of course it is also necessary to enable tagged traffic on the switches.  
+
+For example on `A0-SW0`:    
+
+```IOS
+A0-SW0(config)#int g0/2
+A0-SW0(config-if)#sw mo tr
+A0-SW0(config-if)#sw tr al vl 20,30
+A0-SW0(config-if)#int g0/1
+A0-SW0(config-if)#sw mo tr
+A0-SW0(config-if)#sw tr al vl 20,30
+```
+
+And as appropriate for the three other switches.   
+
+And I also set them to be the primary root bridges for different VLANs.   
+
+```IOS
+A0-SW0(config)#spanning-tree vlan 20 root primary
+A0-SW0(config)#spanning-tree vlan 30 root secondary
+```
+
+Then after restarting Packet Tracer, cause something seemed to be broken, I checked if the subinterfaces are able to ping each other.   
+On `A0-R4`:   
+
+```IOS
+A0-R4#ping 10.1.20.3
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.1.20.3, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent
+A0-R4#ping 10.1.30.3
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.1.30.3, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/0/0 ms
+```
+
+Here is a screenshot from Packet Tracer. 
+The purple segments indicate where the traffic is tagged.  
+Those Crossed connections in the middle are also tagged but I don't know how to draw that in Packet Tracer.   
+
+![topology2](./topology2.png)    
+
+So the subinterfaces are able to reach each other which allows me to proceed with the Hot Standby Router Protocol Setup.     
+
 
 ## Contact
 
