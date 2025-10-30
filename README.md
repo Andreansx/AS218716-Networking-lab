@@ -384,4 +384,4 @@ A list of the key components in my lab. Click a device name to see its configura
 
 ## Contact
 
-[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/Andrtexh)
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white&logoSize=auto)](https://t.me/Andrtexh)
