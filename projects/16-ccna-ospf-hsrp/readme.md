@@ -155,6 +155,9 @@ Now there are going to be two HSRP groups, one for each VLAN.
 Group 2 for VLAN 20 and group 3 for VLAN 30.
 The IPs of the virtual gateways will be `.1`.   
 
+`A0-R4` and `A0-R5` will have bigger priorities in the HSRP groups for kind of a load balancing configuration.   
+So `A0-R4` will be the **Active** gateway for VLAN 20 and **Standby** for VLAN 30 and similarly for `A0-R5`. 
+
 Of course it is also necessary to enable tagged traffic on the switches.  
 
 For example on `A0-SW0`:    
@@ -200,6 +203,58 @@ Those Crossed connections in the middle are also tagged but I don't know how to 
 ![topology2](./topology2.png)    
 
 So the subinterfaces are able to reach each other which allows me to proceed with the Hot Standby Router Protocol Setup.     
+
+So first the setup of Group 2 on `A0-R4`:   
+
+```IOS
+A0-R4(config)#int g0/0/1.20
+A0-R4(config-subif)#standby 2 ip 10.1.20.1
+A0-R4(config-subif)#standby 2 preempt
+A0-R4(config-subif)#standby 2 priority 150
+%HSRP-6-STATECHANGE: GigabitEthernet0/0/1.20 Grp 2 state Speak -> Standby
+%HSRP-6-STATECHANGE: GigabitEthernet0/0/1.20 Grp 2 state Standby -> Active
+```
+As you can see below, when I enabled HSRP Group 2 on the `A0-R5` it became the Standby Gateway.   
+```IOS
+A0-R5(config)#int g0/0/1.20
+A0-R5(config-subif)#standby 2 ip 10.1.20.1
+A0-R5(config-subif)#standby 2 priority 50
+%HSRP-6-STATECHANGE: GigabitEthernet0/0/1.20 Grp 2 state Speak -> Standby
+```
+Then I set `A0-R5` as the Active gateway for VLAN 30 by giving it priority of 150.  
+```IOS
+A0-R5(config-subif)#int g0/0/1.30
+A0-R5(config-subif)#standby 3 ip 10.1.30.1
+A0-R5(config-subif)#standby 3 priority 150
+%HSRP-6-STATECHANGE: GigabitEthernet0/0/1.30 Grp 3 state Speak -> Standby
+%HSRP-6-STATECHANGE: GigabitEthernet0/0/1.30 Grp 3 state Standby -> Active
+```
+And then `A0-R4` as the standby gateway for VLAN 30.   
+
+```IOS
+A0-R4(config-subif)#int g0/0/1.30
+A0-R4(config-subif)#standby 3 ip 10.1.30.1
+A0-R4(config-subif)#standby 3 priority 50
+%HSRP-6-STATECHANGE: GigabitEthernet0/0/1.30 Grp 3 state Speak -> Standby
+```
+And of course it became the Stanby because of the lower priority.   
+
+This kind of configuration provides some way of balancing the traffic while still ensuring that there is first hop redundancy.   
+
+Below you can see the status of HSRP groups on `A0-R5`:   
+
+```IOS
+A0-R5#sh standby br
+                     P indicates configured to preempt.
+                     |
+Interface   Grp  Pri P State    Active          Standby         Virtual IP
+Gig         2    50    Standby  10.1.20.2       local           10.1.20.1      
+Gig         3    150   Active   local           10.1.30.2       10.1.30.1  
+```
+
+> [!NOTE]
+> I don't know why but as you can see, there is no interface number in the Interface column.   
+> So just know that both of those groups are on subinterfaces of the `g0/0/1` physical interface.   
 
 
 ## Contact
