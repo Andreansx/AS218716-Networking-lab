@@ -1,0 +1,51 @@
+!
+version 15.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname A0-R5
+!
+ip cef
+no ipv6 cef
+!
+spanning-tree mode pvst
+!
+interface Loopback0
+ ip address 172.16.255.5 255.255.255.255
+!
+interface GigabitEthernet0/0/0
+ media-type sfp
+ ip address 172.16.0.22 255.255.255.252
+!
+interface GigabitEthernet0/0/1
+ ip address 10.1.20.2 255.255.255.0
+ duplex auto
+ speed auto
+ standby version 2
+ standby 1 ip 10.1.20.1
+ standby 1 priority 50
+ standby 1 preempt
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ log-adjacency-changes
+ network 172.16.255.5 0.0.0.0 area 0
+ network 172.16.0.20 0.0.0.3 area 0
+ network 10.1.20.0 0.0.0.255 area 0
+!
+ip classless
+!
+ip flow-export version 9
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+end

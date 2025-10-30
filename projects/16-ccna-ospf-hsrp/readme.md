@@ -2,6 +2,8 @@
 
 I normally don't document my CCNA Labs from Cisco Packet Tracer here but I thought that this one is a bit more advanced so I'll write about it here.   
 
+I'm not gonna explain how I did everything from scratch because honestly there is a lot of documentation on the internet about those things but I wanted to show just some issues I had and just a couple of more interesting things.
+
 ## Key technologies used here
 * OSPF
 * HSRP (+ on subinterfaces/SVIs)
@@ -11,6 +13,18 @@ I normally don't document my CCNA Labs from Cisco Packet Tracer here but I thoug
 
 ![Topology](./topology.png)    
 
+## configurations
+
+Here are listed files with exported configurations of the devices.   
+
+* [A0-R0](./A0-R0)
+* [A0-R1](./A0-R1)
+* [A0-R2](./A0-R2)
+* [A0-R3](./A0-R3)
+* [A0-R4](./A0-R4)
+* [A0-R5](./A0-R5)
+* [A0-R6](./A0-R6)
+* [A0-MSW0](./A0-MSW0)
 
 # OSPF
 
@@ -46,7 +60,9 @@ ip route 10.1.10.0 255.255.255.0 172.16.1.2
 ```
 Here is the redistribution section.   
 
-There is an important thing here.   
+
+> [!NOTE]
+> The `passive-interface g0/0/1` is actually unnecessary here since that command is used when the interface IS in the OSPF Area and we want to prevent it from sending unnecessary OSPF messages.   
 ```IOS
 router ospf 1
  log-adjacency-changes
@@ -55,6 +71,8 @@ router ospf 1
  network 172.16.255.6 0.0.0.0 area 0
  network 172.16.0.24 0.0.0.3 area 0
 ```
+
+There is an important thing here.   
 
 Notice that the `g0/0/1` interface with an IP address of `172.16.1.1/30` is not added to the OSPF process.  
 That is because it would interfere with OSPF logic and it would make it impossible for the static route to enter the Routing Table.   
@@ -91,6 +109,21 @@ Gateway of last resort is not set
 O E2    10.1.10.0/24 [110/20] via 172.16.0.26, 01:55:24, GigabitEthernet0/2/0
 ...
 ```
+
+# HSRP
+
+There is currently one HSRP group and it uses routers `A0-R4` and `A0-R5`.  
+
+The `A0-R5` has a higher priority of 150 and preemtion enabled while the `A0-R4` has a priority of 50.  
+
+Both of these routers maintain OSPF adjacencies with `A0-R0`.
+
+The `A0-R4` has an IP address of `10.1.20.2/24` on the `g0/0/1` interface, while the `A0-R5` uses `10.1.20.3/24`.   
+
+The virtual Gateway IP address is `10.1.20.1/24`.  
+
+For now there is only a single subnet here but I will swap the HSRP between physical interfaces, for HSRP betwenn subinterfaces, which will allow for the usage of VLANs here.
+
 
 ## Contact
 
