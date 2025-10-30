@@ -112,17 +112,19 @@ O E2    10.1.10.0/24 [110/20] via 172.16.0.26, 01:55:24, GigabitEthernet0/2/0
 
 # HSRP
 
-There is currently one HSRP group and it uses routers `A0-R4` and `A0-R5`.  
+~~There is currently one HSRP group and it uses routers `A0-R4` and `A0-R5`.~~  
 
-The `A0-R5` has a higher priority of 150 and preemtion enabled while the `A0-R4` has a priority of 50.  
+~~The `A0-R5` has a higher priority of 150 and preemtion enabled while the `A0-R4` has a priority of 50.~~  
 
 Both of these routers maintain OSPF adjacencies with `A0-R0`.
 
-The `A0-R4` has an IP address of `10.1.20.2/24` on the `g0/0/1` interface, while the `A0-R5` uses `10.1.20.3/24`.   
+~~The `A0-R4` has an IP address of `10.1.20.2/24` on the `g0/0/1` interface, while the `A0-R5` uses `10.1.20.3/24`.~~   
 
-The virtual Gateway IP address is `10.1.20.1/24`.  
+~~The virtual Gateway IP address is `10.1.20.1/24`.~~  
 
-For now there is only a single subnet here but I will swap the HSRP between physical interfaces, for HSRP betwenn subinterfaces, which will allow for the usage of VLANs here.
+~~For now there is only a single subnet here but I will swap the HSRP between physical interfaces, for HSRP betwenn subinterfaces, which will allow for the usage of VLANs here.~~
+
+HSRP is now on subinterfaces. Read below   
 
 # HSRP on subinterfaces with VLANs.   
 
@@ -255,6 +257,50 @@ Gig         3    150   Active   local           10.1.30.2       10.1.30.1
 > [!NOTE]
 > I don't know why but as you can see, there is no interface number in the Interface column.   
 > So just know that both of those groups are on subinterfaces of the `g0/0/1` physical interface.   
+
+So now I could test if the routes are correct using `tracert` on `PC0`:
+
+```sh
+C:\>tracert 10.1.10.2
+
+Tracing route to 10.1.10.2 over a maximum of 30 hops: 
+
+  1   0 ms      0 ms      0 ms      10.1.30.3
+  2   0 ms      0 ms      0 ms      172.16.0.21
+  3   0 ms      0 ms      0 ms      172.16.0.2
+  4   0 ms      0 ms      0 ms      172.16.0.26
+  5   0 ms      0 ms      0 ms      172.16.1.2
+  6   0 ms      0 ms      0 ms      10.1.10.2
+
+Trace complete.
+```
+
+> [!NOTE]
+> `10.1.10.2` is a server reachable through an OSPF External route through `A0-R6` and `A0-MSW0`.   
+
+The traceroute output is pretty self exaplainatory.  
+One thing I will point out is the First hop IP. 
+As you can see it's `10.1.30.3` which is the `A0-R5`'s IP in the HSRP Group 3 for VLAN 30.   
+
+Now I will shutdown the `g0/0/1` interface on the `A0-R5` and I will show what happens.  
+
+```sh
+C:\>tracert 10.1.10.2
+
+Tracing route to 10.1.10.2 over a maximum of 30 hops: 
+
+  1   0 ms      0 ms      0 ms      10.1.30.2
+  2   0 ms      0 ms      0 ms      172.16.0.17
+  3   0 ms      0 ms      0 ms      172.16.0.2
+  4   0 ms      1 ms      0 ms      172.16.0.26
+  5   0 ms      0 ms      0 ms      172.16.1.2
+  6   0 ms      0 ms      1 ms      10.1.10.2
+
+Trace complete.
+```
+
+As you can see, HSRP took care of the interface going down and the traffic automatically went through the Standby gateway, which is `A0-R4`.   
+
 
 
 ## Contact
