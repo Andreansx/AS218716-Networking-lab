@@ -25,6 +25,13 @@ Here are listed files with exported configurations of the devices.
 * [A0-R5](./A0-R5)
 * [A0-R6](./A0-R6)
 * [A0-MSW0](./A0-MSW0)
+* [A0-SW0](./A0-SW0)
+* [A0-SW1](./A0-SW1)
+* [A0-SW2](./A0-SW2)
+* [A0-SW3](./A0-SW3)
+
+
+
 
 # OSPF
 
