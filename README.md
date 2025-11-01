@@ -260,18 +260,32 @@ That is also a very cool thing I think so you can check the [Distributed firewal
 
 But getting back to the spine switch, it will simply be the main point of the underlay network.   
 
-I don't want to get too much in depth about it here, since there will be a separate document dedicated to the StrataXGS chips, based on the Dell EMC S4048-ON, but I just want to say that it probably will not be a VTEP.   
+> [!IMPORTANT]
+> There is a very very important thing to mention here.   
+> I wrote about the S4048-ON being a VTEP.   
+> I said that because I had in mind that it would handle another afi in it's BGP sessions, being `l2vpn` or simply EVPN-VXLAN.   
+> The BCM56850 chip **CAN** do it.
+> But Dell EMC OS9 can't.   
+> That is something I recently discovered.
+> Networking OS9 does not have support for EVPN-VXLAN.   
+> However, the switch could be a hardware VTEP with EVPN-VXLAN if it had a different OS.    
+> For exmaple, I could install NVIDIA's Cumulus Linux on it using ONIE and then it could easily be a hardware VTEP.    
+> But I won't do that for now.   
+> After all, it's meant to be a spine switch in my network, and spine switches are never VTEPs.   
+> So the lack of EVPN-VXLAN support on OS9 does not really affect my plans for this network that much, since it will be the vQFXs or vSRXs that will advertise `l2vpn` address families.   
+
+I don't want to get too much in depth about it here, since there will be a separate document dedicated to the StrataXGS chips, based on the Dell EMC S4048-ON, but I just want to say that it ~~probably~~ will not be a VTEP.   
 
 That brings up the topic of VXLANs, which are an absolute neccesity in datacenters.  
 
 However, there are two main ways of deploying VXLANs and they differ by the mappings and the VTEP location.   
 
-For example, the Dell EMC S4048-ON could be a very good VTEP. Why?     
+~~For example, the Dell EMC S4048-ON could be a very good VTEP. Why?~~     
 Well, because it has a StrataXGS BCM56850 switching chip which is manufactured by Broadcom.   
 And Broadcom after all is one of the co-authors of the RFC7348, and they took an active part in standarization of the VXLAN technology.   
 
 The BCM56850 is actually not a just another switch chip, but it is one of the first which had such a good VXLAN implementation.   
-Though it cannot do single-pass InterVXLAN routing, it would still be very good in the role of a VTEP.    
+~~Though it cannot do single-pass InterVXLAN routing, it would still be very good in the role of a VTEP.~~    
 
 Those two things may sound kinda stupid together cause you normally would not use a VTEP as a point of InterVXLAN Routing.   
 
@@ -295,8 +309,11 @@ This is actually more like the first type of the deployment rather than the hype
 
 The thing is that I have only one server, and it would be hard to pull off the deployment of a hyperscaler-like cloud architecture with VNI to VID mappings on the hypervisor.  
 
-In summary, cause I want to write the next thing, the Dell S4048-ON will be just an insanely fast underlay network, without any firewalls etc.  
-Just pure BGP and ECMP (When there will be a second spine switch).   
+**In summary, the Dell S4048-ON will be just an insanely fast spine switch for the underlay netowrk with eBGP.** 
+
+I just want to make it clear that it won't be a VTEP not because of OS9 limitations, but because it is not meant for it.   
+This is a architectural decision which goes along with the Spine-Leaf topology.   
+
 Again, if you want to read more about why I chose this particular switch, [read this document](./projects/14-dell-s4048-on-comparative-analysis/readme.md)
 
 There is more explaination there, about the Network Operating System on that switch and it's architecture.   

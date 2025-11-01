@@ -309,7 +309,6 @@ Trace complete.
 As you can see, HSRP took care of the interface going down and the traffic automatically went through the Standby gateway, which is `A0-R4`.   
 
 
-
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white&logoSize=auto)](https://t.me/Andrtexh)
