@@ -60,7 +60,6 @@ This repository is structured to be a clear and useful reference. Here’s a map
 
 *   **`/projects/`**: Probably the most interesting directory cause it's where all project documentations are.
 *   **/[device-name]/** (e.g., [`./ccr2004/`](./ccr2004/), [`./r710/`](./r710/)): Contains the latest configuration files and documentation for each piece of hardware. This is the source of truth for device settings.
-*   **`/IaC/`**: Holds all Infrastructure as Code projects, primarily using Terraform to automate deployments on Proxmox.
 *   **`/docs/`**: Contains details about plans for improving the lab. For example a better addressation plan
 
 # Lab Architecture
@@ -214,6 +213,12 @@ Sometimes things will break and you just would not want to have your only way of
 If you want to be safe from that, just run Ansible through the management interface, and never let Ansible touch it.  
 
 So only thing to add to that is proper CoPP which is nicely supported in Dell EMC OS9.
+
+One thing I forgot to mention is the issue of ADs here.   
+When I will connect all management interfaces to a single L2 domain, there will be a new directly connected route and it will have the lowest AD, so the devices might want to push traffic through the OOB management network, which of course is absolutely wrong.   
+But this is easily preventable by using VRFs.   
+Both JunOS and Dell EMC OS9 devices have dedicated VRF instances which usually already include the fxp0 or similar interface and they ensure that the management route is available only for the management interface, as it is the only one in the management VRF.  
+I think that on RouterOS it's a bit different since those devices are not carrier-grade and they don't have the same level of separation of the control plane from the data plane but it's doable with route marks.
 
 ## Second thing is implementing the Dell EMC S4048-ON switch into the lab.     
 
