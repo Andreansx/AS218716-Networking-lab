@@ -483,6 +483,47 @@ I put a simple diagram on what it would look like.
 [Projectors]                  [APs]
 ```
 
+4th November 2025    
+
+So today I got a chance to connect to that supposedly fried Catalyst 3850 via console port. 
+The IT teacher borrowed a PSU from someone and it turns out that the switch works.   
+So it were only the two PSUs which got fried.   
+
+IOS-XE normally booted without any errors.
+However I wasn't able to actually do anything since I don't know the enable password.   
+
+I mean it's possible to recover the password via the Bootloader interrupt or something like that but for now we will try to find the password.   
+
+I planned a bit more about the network, especially about the WAN connection.
+Turns out the school will be probably getting rid of a public IP, since they will remove the VPN tunnel to one of nearby universities.   
+
+The current edge router is a Cisco 2921, which has a 245Mbps of maximum throughput with VPN tunneling, NAT and a Firewall.    
+
+As I said somewhere above, this router is the reason why the school network stays the same even though they upgraded the fiber connection to the ISP to a symmetrical 2Gbps.   
+
+I proposed that we get a MikroTik RB5009 and replace the 2921 with it.
+It's actually cheap and it offers around 3Gbps of throughput with NAT and a Firewall.   
+
+Also it's insanely more cost effective.   
+
+Another idea was to use a Catalyst 3850 in place of the 2921, since now we will have two Catalysts 3850 because the new one will arrive soon and the old one actually works.  
+
+It has 176Gbps of non-blocking throughput and with a IPBase license it can handle static routing which is completely enough for our needs.   
+
+However the issue is NAT which requires a lot more computing power than basic routing and since the Catalyst 3850 has a very low-power and weak CPU, the need for NAT would probably make it run on 100% usage 24/7.   
+
+So I think the best idea is to get the RB5009.   
+
+Another thing was that the teacher asked me if it's possible to use the OSE connection as a backup connection and is it possible to make the router intefaces automatically turn on when re-plugging the cables etc.  
+And of course I told him that there is absolutely no need for re-plugging any cables and all that can be done with simply creating two 0.0.0.0/0 static routes with different ADs.   
+
+The main route through ISP will have an AD of 1 while the route through OSE will have an AD of 2.   
+
+But what if the connection stays up but the ISPs network has issues?   
+
+And that is where RouterOS comes in beacuse it has a built in feature called Netwatch which will check if a stable target over the internet is reachable and if it is not then it will automatically change the route.   
+
+
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
