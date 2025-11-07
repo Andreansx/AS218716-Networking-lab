@@ -523,6 +523,18 @@ But what if the connection stays up but the ISPs network has issues?
 
 And that is where RouterOS comes in beacuse it has a built in feature called Netwatch which will check if a stable target over the internet is reachable and if it is not then it will automatically change the route.   
 
+There was also an idea which included extracting the WLC license from the old 3850-24 and activating it on the new 3850-48.   
+
+This would be pretty cool actually cause we would still have the integrated WLC but also a better PSU and more ports.   
+
+However that is not possible from what I know since Licenses on Cisco devices like this are bound to the device's serial number.   
+
+I prefer not to mess around with that since I never had such cisco equipment in my hands and I have no way of having any experience with cisco licensing.
+
+I explained a bit more about how will it be possible for the DHCP server to be left on the Router while the SVIs on 3850 will be the gateways for the networks, with the usage of DHCP Relay and also how we are gonna stretch the L2 domain so the projectors, cabled LAN and one of the Wireless networks will be in a single broadcast domain.   
+
+I am mostly repeating myself for a while now but there is just so much information and I'm just trying to explain everything I find out by myself, since there is no usable documentation available.   
+
 
 ## Contact
 
