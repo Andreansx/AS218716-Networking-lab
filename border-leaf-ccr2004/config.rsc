@@ -1,4 +1,4 @@
-# 2025-09-30 22:40:35 by RouterOS 7.19.4
+# 2025-11-08 00:15:24 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -138,18 +138,18 @@ set api disabled=yes
 /ipv6 nd
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
-add as=65000 disabled=no keepalive-time=20s local.role=ebgp name=\
+add as=4201000001 disabled=no keepalive-time=20s local.role=ebgp name=\
     eBGP_CON_AS65001_0 output.default-originate=if-installed .network=\
-    BGP_ADV_NET remote.address=172.16.255.1 router-id=172.16.0.1 \
-    routing-table=main
-add as=65000 disabled=no keepalive-time=20s local.role=ebgp name=\
+    BGP_ADV_NET remote.address=172.16.255.1 .as=4201000002 router-id=\
+    172.16.0.1 routing-table=main
+add as=4201000001 disabled=no keepalive-time=20s local.role=ebgp name=\
     eBGP_CON_AS65001_1 output.default-originate=if-installed .network=\
-    BGP_ADV_NET remote.address=172.16.255.3 router-id=172.16.0.1 \
-    routing-table=main
-add as=65000 disabled=no keepalive-time=20s local.role=ebgp name=\
+    BGP_ADV_NET remote.address=172.16.255.3 .as=4201000002 router-id=\
+    172.16.0.1 routing-table=main
+add as=4201000001 disabled=no keepalive-time=20s local.role=ebgp name=\
     eBGP_CON_AS65001_2 output.default-originate=if-installed .network=\
-    BGP_ADV_NET remote.address=172.16.255.5 router-id=172.16.0.1 \
-    routing-table=main
+    BGP_ADV_NET remote.address=172.16.255.5 .as=4201000002 router-id=\
+    172.16.0.1 routing-table=main
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.1/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30

@@ -1,4 +1,4 @@
-# 2025-09-30 22:40:42 by RouterOS 7.19.4
+# 2025-11-08 00:15:30 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -14,6 +14,7 @@ add interface=main-bridge name=eBGP_LINK_AS65002_0 vlan-id=106
 add interface=main-bridge name=vlan20-bare-metal vlan-id=20
 add interface=main-bridge name=vlan40-vms-cts vlan-id=40
 add interface=main-bridge name=vlan50-kubernetes vlan-id=50
+add interface=main-bridge name=vlan90-mgmt vlan-id=90
 /interface list
 add name=ZONE_TO_AS65000
 add name=LINK_USERS_NET
@@ -79,7 +80,7 @@ add interface=eBGP_LINK_AS65000_2 list=ZONE_TO_AS65000
 /ip address
 add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
 add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
-add address=10.1.1.5/30 interface=ether1 network=10.1.1.4
+add address=10.1.90.2/24 interface=ether1 network=10.1.90.0
 add address=172.16.255.1/31 interface=eBGP_LINK_AS65000_0 network=\
     172.16.255.0
 add address=172.16.0.2 interface=lo network=172.16.0.2
@@ -90,6 +91,7 @@ add address=172.16.255.6/31 interface=eBGP_LINK_AS65002_0 network=\
     172.16.255.6
 add address=172.16.255.5/31 interface=eBGP_LINK_AS65000_2 network=\
     172.16.255.4
+add address=10.1.1.5/30 interface=vlan90-mgmt network=10.1.1.4
 /ip dhcp-relay
 add dhcp-server=172.16.0.1 disabled=no interface=vlan20-bare-metal \
     local-address-as-src-ip=yes name=vlan20-dhcp-relay
@@ -133,18 +135,18 @@ set api disabled=yes
 /ipv6 nd
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
-add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_0 \
-    output.network=BGP_ADV_NET remote.address=172.16.255.0 router-id=\
-    172.16.0.2
-add as=65001 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_1 \
-    output.network=BGP_ADV_NET remote.address=172.16.255.2 router-id=\
-    172.16.0.2
-add as=65001 disabled=no keepalive-time=20s local.role=ebgp name=\
-    eBGP_CON_AS65000_2 output.network=BGP_ADV_NET remote.address=172.16.255.4 \
+add as=4201000002 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_0 \
+    output.network=BGP_ADV_NET remote.address=172.16.255.0 .as=4201000001 \
     router-id=172.16.0.2
-add as=65001 disabled=no keepalive-time=20s local.role=ebgp name=\
+add as=4201000002 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_1 \
+    output.network=BGP_ADV_NET remote.address=172.16.255.2 .as=4201000001 \
+    router-id=172.16.0.2
+add as=4201000002 disabled=no keepalive-time=20s local.role=ebgp name=\
+    eBGP_CON_AS65000_2 output.network=BGP_ADV_NET remote.address=172.16.255.4 \
+    .as=4201000001 router-id=172.16.0.2
+add as=4201000002 disabled=no keepalive-time=20s local.role=ebgp name=\
     eBGP_CON_AS65002_0 output.network=BGP_ADV_NET remote.address=172.16.255.7 \
-    .as=65002 router-id=172.16.0.2
+    .as=4201000001 router-id=172.16.0.2
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
