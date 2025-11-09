@@ -1,9 +1,286 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0" version="28.2.8">
   <diagram name="Page-1" id="sUVDMpfC7aB42n1e98N4">
-    <mxGraphModel dx="1358" dy="866" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1787" dy="597" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="AzuDjz7oCby00qlzN69z-1" value="" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://freelogopng.com/images/all_img/1683000849orange-telecom-logo.png;" vertex="1" parent="1">
+          <mxGeometry x="281.32" y="250" width="109.86" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-2" value="" style="endArrow=blockThin;html=1;rounded=0;endFill=1;strokeWidth=2;fillColor=#fad7ac;strokeColor=light-dark(#000000,#E86A51);" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="360" y="400" as="sourcePoint" />
+            <mxPoint x="360" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-3" value="&lt;div&gt;1.25Gbps&lt;/div&gt;&lt;div&gt;up/down&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="350" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-4" value="FunBox 6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad7ac;strokeColor=#b46504;" vertex="1" parent="1">
+          <mxGeometry x="320" y="400" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-5" value="Cisco 2921" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="1">
+          <mxGeometry x="320" y="480" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-6" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="AzuDjz7oCby00qlzN69z-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="360" y="480" as="sourcePoint" />
+            <mxPoint x="410" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-7" value="&lt;div&gt;Catalyst 3850&lt;/div&gt;&lt;div&gt;SVIs for most networks&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="1">
+          <mxGeometry x="490" y="470" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-8" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-5" target="AzuDjz7oCby00qlzN69z-7">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="380" y="530" as="sourcePoint" />
+            <mxPoint x="430" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-9" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;font style=&quot;line-height: 100%; font-size: 10px;&quot;&gt;Supposedly this interface receives an IP from DHCP. I dont know why and I dont really think it does since this should be just a interrouter link&lt;/font&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="350" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-10" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-9">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="530" as="sourcePoint" />
+            <mxPoint x="480" y="490" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-11" value="Integrated WLC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="540" y="450" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-12" value="school is supposedly reachable through some public IPs. Those addresses are supposedly here. although I dont know how is that really done" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="91.32" y="350" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.993;exitY=0.463;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="510" as="sourcePoint" />
+            <mxPoint x="360" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-14" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="510" as="sourcePoint" />
+            <mxPoint x="360" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-15" value="&lt;font style=&quot;font-size: 15px;&quot;&gt;State of the network &lt;u&gt;&lt;b&gt;now&lt;/b&gt;&lt;/u&gt;&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-58.68000000000001" y="290" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-16" value="AP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="600" y="550" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-17" value="AP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="600" y="580" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-18" value="AP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="600" y="610" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-19" value="AP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="600" y="640" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-20" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;...&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="605" y="660" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-21" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-7" target="AzuDjz7oCby00qlzN69z-16">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="590" as="sourcePoint" />
+            <mxPoint x="550" y="540" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="573" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-22" value="" style="endArrow=none;html=1;rounded=0;exitX=0.685;exitY=0.998;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-7" target="AzuDjz7oCby00qlzN69z-17">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="573" y="560" as="sourcePoint" />
+            <mxPoint x="680" y="590" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="565" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-23" value="" style="endArrow=none;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.638;exitY=0.99;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-7" target="AzuDjz7oCby00qlzN69z-18">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="565" y="560" as="sourcePoint" />
+            <mxPoint x="680" y="620" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="560" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-24" value="" style="endArrow=none;html=1;rounded=0;exitX=0.599;exitY=0.983;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-7">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="560" y="560" as="sourcePoint" />
+            <mxPoint x="600" y="650" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="556" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-33" value="Lots of different Wireless networks" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="650" y="560" width="60" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-34" value="&lt;div&gt;MikroTik&lt;/div&gt;&lt;div&gt;RB2011&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="1">
+          <mxGeometry x="445" y="560" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-35" value="" style="endArrow=none;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-34" target="AzuDjz7oCby00qlzN69z-5">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="435" y="650" as="sourcePoint" />
+            <mxPoint x="455" y="520" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="485" y="540" />
+              <mxPoint x="380" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-36" value="&lt;font style=&quot;font-size: 11px;&quot;&gt;here its wild cause there are /24 networks just for connecting the rb2011 to different wifi routers like tp-links etc. which should be working only as Access Points&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="275" y="555" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-37" value="Tp-Link archer C6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="1">
+          <mxGeometry x="324.86" y="690" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-38" value="" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.625;entryY=1.025;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-37" target="AzuDjz7oCby00qlzN69z-34">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="515" y="680" as="sourcePoint" />
+            <mxPoint x="565" y="630" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="375" y="650" />
+              <mxPoint x="495" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-39" value="Tp-Link archer C6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="1">
+          <mxGeometry x="435" y="690" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-40" value="" style="endArrow=none;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-39" target="AzuDjz7oCby00qlzN69z-34">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="525" y="710" as="sourcePoint" />
+            <mxPoint x="575" y="660" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="485" y="660" />
+              <mxPoint x="504" y="660" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-42" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;...&lt;/font&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="545" y="690" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-43" value="192.168.1.0/24" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="345" y="640" width="100" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-45" value="192.168.2.0/24" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="395" y="660" width="100" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-46" value="other wireless networks all with different SSIDs and also they block DoH for some reason" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="430" y="730" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-47" value="HP ProCurve" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="1">
+          <mxGeometry x="200" y="690" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-48" value="" style="endArrow=none;html=1;rounded=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;fillColor=#fad9d5;strokeColor=#ae4132;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-47" target="AzuDjz7oCby00qlzN69z-34">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="385" y="660" as="sourcePoint" />
+            <mxPoint x="435" y="610" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="245" y="630" />
+              <mxPoint x="465" y="630" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-49" value="This is the only normal link under the rb2011" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="121.32" y="590" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-51" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;fillColor=#fad9d5;strokeColor=#ae4132;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-49">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="660" as="sourcePoint" />
+            <mxPoint x="240" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-53" value="&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Old part of the school. network there is really messy and the only thing I will worry about is how to connect it to the new part. There is no documentation available but it works so I&#39;m not even touching it&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bac8d3;strokeColor=#23445d;" vertex="1" parent="1">
+          <mxGeometry x="198.68" y="760" width="192.5" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-54" value="" style="endArrow=none;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-47" target="AzuDjz7oCby00qlzN69z-53">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="270" y="730" as="sourcePoint" />
+            <mxPoint x="320" y="680" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="270" y="740" />
+              <mxPoint x="295" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-55" value="" style="endArrow=blockThin;html=1;rounded=0;endFill=1;strokeWidth=2;fillColor=#fad7ac;strokeColor=light-dark(#000000,#E86A51);exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-56">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="310" y="400" as="sourcePoint" />
+            <mxPoint x="310" y="280" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="310" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-56" value="Some OSE proprietary device" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="1">
+          <mxGeometry x="60" y="480" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-57" value="NASK leased one of the fibers from Orange" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="170" y="480" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-59" value="HP switch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="1">
+          <mxGeometry x="21.32" y="560" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-60" value="" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-59" target="AzuDjz7oCby00qlzN69z-56">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="580" as="sourcePoint" />
+            <mxPoint x="160" y="530" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="56" y="550" />
+              <mxPoint x="110" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-61" value="" style="endArrow=none;html=1;rounded=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="AzuDjz7oCby00qlzN69z-59">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-30" y="620" as="sourcePoint" />
+            <mxPoint x="160" y="700" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="30" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-62" value="Tp-link switch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="1">
+          <mxGeometry x="50" y="690" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-63" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-62" target="AzuDjz7oCby00qlzN69z-59">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="750" as="sourcePoint" />
+            <mxPoint x="160" y="700" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="95" y="640" />
+              <mxPoint x="56" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-65" value="All PCs in one of the Computer Classrooms" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bac8d3;strokeColor=#23445d;" vertex="1" parent="1">
+          <mxGeometry x="33.75" y="760" width="122.5" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-66" value="" style="endArrow=none;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-65" target="AzuDjz7oCby00qlzN69z-62">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="750" as="sourcePoint" />
+            <mxPoint x="160" y="700" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-67" value="All traffic accessing the internet through this link, gets encrypted and sent over a VPN Site-to-Site tunnel to NASK HQ or one of their Datacenters" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-180" y="420" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-68" value="" style="endArrow=openThin;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fillColor=#bac8d3;strokeColor=light-dark(#000000,#9E1533);endFill=0;strokeWidth=2;" edge="1" parent="1" source="AzuDjz7oCby00qlzN69z-67" target="AzuDjz7oCby00qlzN69z-56">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="120" y="580" as="sourcePoint" />
+            <mxPoint x="170" y="530" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="AzuDjz7oCby00qlzN69z-69" value="Tp-link switch in another computer classroom" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b1ddf0;strokeColor=#10739e;" vertex="1" parent="1">
+          <mxGeometry x="-140" y="600" width="110" height="45" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
