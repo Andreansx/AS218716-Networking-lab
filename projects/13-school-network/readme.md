@@ -535,6 +535,19 @@ I explained a bit more about how will it be possible for the DHCP server to be l
 
 I am mostly repeating myself for a while now but there is just so much information and I'm just trying to explain everything I find out by myself, since there is no usable documentation available.   
 
+9th of November 2025    
+
+So the new 3850 boots up which is great news and that means that next week I can get into some actual work with it.   
+
+The only issue is that now we have two 3850s but one 1100W PSU, so I guess we have two choices.   
+First one is to only use the old 3850 as a L3 switch + WLC cause it already has the configs and it also has a license for the integrated WLC.
+The second choice is to get another PSU.
+Then we would use the 3850-24 as a WLC and L3 switch for WiFi etc. and the 3850-48 as a extension that we could connect all projectors and Wired LAN into.   
+
+Below you can see a diagram I put together that illustrates how the network looks like right now. (except the 3850 as it is now unplugged)    
+
+![diagram](./diagram.png)   
+
 
 ## Contact
 
