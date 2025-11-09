@@ -1,5 +1,10 @@
 # School Network
 
+> [!NOTE]
+> This is a long document and a lot of informations are not from any documentation but rather from my own research so a lot of assumption made by me early, change later.   
+> So please don't read all the information from the beggining as a finished project but rather just as a story about how I found out a lot of things.   
+> More concise informations start in the [Most confirmed](#most-confirmed) section which I started to write around November 4th so be sure to read that because that's where some actual configuration begins.   
+
 Description of the process of fixing the school network and what I uncovered.
 
 > [!IMPORTANT]   
@@ -483,6 +488,8 @@ I put a simple diagram on what it would look like.
 [Projectors]                  [APs]
 ```
 
+# Most confirmed
+
 4th November 2025    
 
 So today I got a chance to connect to that supposedly fried Catalyst 3850 via console port. 
@@ -548,6 +555,9 @@ Below you can see a diagram I put together that illustrates how the network look
 
 ![diagram](./diagram.png)   
 
+And here is the planned network diagram.   
+
+![diagram2](./diagram2.png)    
 
 ## Contact
 
