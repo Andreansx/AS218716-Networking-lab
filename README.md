@@ -56,11 +56,12 @@ These are projects, case studies and troubleshooting logs.
 
 # How This Repository Is Organized
 
-This repository is structured to be a clear and useful reference. Here’s a map of the key directories:
-
-*   **`/projects/`**: Probably the most interesting directory cause it's where all project documentations are.
-*   **/[device-name]/** (e.g., [`./ccr2004/`](./ccr2004/), [`./r710/`](./r710/)): Contains the latest configuration files and documentation for each piece of hardware. This is the source of truth for device settings.
-*   **`/docs/`**: Contains details about plans for improving the lab. For example a better addressation plan
+*   **`/projects/`**: Probably the most interesting directory cause it's where all project documentations are.    
+*  Device files:    
+    *   **[`/border-leaf-ccr2004`](./border-leaf-ccr2004/)** - MikroTik CCR2004 config    
+    *   **[`leaf-crs326`](./leaf-crs326/)** - MikroTik CRS326 config   
+    *   **[`spine-s4048-on`](./spine-s4048-on/)** - Dell EMC S4048-ON config
+*   **`/docs/`** - Some other documents but honstly nothing really important.
 
 # Lab Architecture
 

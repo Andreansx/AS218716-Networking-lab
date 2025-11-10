@@ -559,6 +559,18 @@ And here is the planned network diagram.
 
 ![diagram2](./diagram2.png)    
 
+Keep in mind that I assume that we will get a second PSU for the 3850s. 
+If we don't get another PSU then we will have to use only the 3850-24 both as a L3 switch and the WLC.   
+
+Also for now we won't switch the 2921 for the RB5009 since now I just want to get the wireless network to work.   
+I will worry about performance when the main network works.   
+
+The issue that still persists is that I don't know how to connect the 3850 to the 2921.  
+The 2921 is locked behind a password which is unknown and I have no way of checking out the configuration which is a big problem.   
+I will try to run DHCP Client on one of 3850s interfaces and connect it to 2921 and I will see if that works but I hardly think so, cause why would a point-to-point link use DHCP?   
+There is still a theory that the 3850 wasn't a L3 switch here and that it all based on ROAS setup, where it's the 2921 that was the gateway for all networks.   
+
+
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
