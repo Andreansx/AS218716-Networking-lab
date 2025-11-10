@@ -570,7 +570,86 @@ The 2921 is locked behind a password which is unknown and I have no way of check
 I will try to run DHCP Client on one of 3850s interfaces and connect it to 2921 and I will see if that works but I hardly think so, cause why would a point-to-point link use DHCP?   
 There is still a theory that the 3850 wasn't a L3 switch here and that it all based on ROAS setup, where it's the 2921 that was the gateway for all networks.   
 
+I kind of planned out what I will be doing this thursday.  
+IF we get the password to the 3850-24, then I will most importantly copy the entire configuration to my laptop and I will finally be able to confirm how it's all actually built.   
+If there is still no password then I will just boot the switch to the ROMMON and recover the password.
+It's done something like this:  
 
+```IOS-XE
+SWITCH_IGNORE_STARTUP_CFG=1 
+SWITCH_DISABLE_PASSWORD_RECOVERY=0 
+boot
+```
+
+And after that I will just backup the startup config and that way I will still be able to check out the configuration.
+
+This is the most important step since without knowing, for example, where the gateways are, I won't be able to actually do anything.  
+
+I won't worry about MikroTiks and the rest of the network for now.  
+The current focus is just to delete the 6 WiFis and replace them with only two WLANs, one for the teachers and one for students.   
+The teachers network must have an L2 connection to the projectors, but I don't know how it's done so I will check when I finally access the switch.   
+
+I wanted to show here some very simplified configuration example related to what I would do, but since as I said a couple of times, there is no confirmation of any physical connections so here I will use random ports etc.   
+
+Example VLANs:   
+*   10 - CAPWAP
+*   20 - Staff, Projectors
+*   30 - Students
+*   99 - Management   
+
+So let's say that there are two APs plugged into `g1/0/4` and `g1/0/5` interfaces on the 3850-24. 
+The switch which connects the projectors is plugged into `g1/0/6` and upstream to 2921 is on `g1/0/2`.   
+
+First let's set the ports for APs
+```IOS-XE
+interface ra g1/0/4-5
+sw mo ac
+sw ac vl 10
+sw portfast
+desc "To APs"
+```
+Then the likn to the switch for Projectors
+```IOS-XE
+int g1/0/6 
+sw mo ac 
+sw ac vl 20 
+sw portfast
+desc "to projectors"
+```
+Then upstream to 2921. This is weird but let's say that it needs to get the IP from DHCP on the link to the 2921.
+```IOS-XE
+int g1/0/2 
+no sw
+ip ad dhcp
+desc "upstream"
+```
+now the SVIs on 3850-24
+```IOS-XE
+vla 10 
+name NET10CAPWAP
+vla 20 
+name NET20STAFF
+vla 30 
+name NET30STUDENTS
+vlan 99
+name NET99MGMT
+
+! I would add ip helper-address here if I knew what IP is it on
+int vlan 10 
+ip ad 10.0.10.1 255.255.255.0 
+int vlan 20 
+ip ad 10.0.20.1 255.255.255.0 
+int vlan 30 
+ip ad 10.0.30.1 255.255.255.0 
+int vlan 99  
+ip ad 10.0.99.1 255.255.255.0 
+```
+Then let's set the management IP for the WLC and define under what address should the APs expect a WLC.
+```IOS-XE
+wireless manage int Vlan99
+wireless manage ip add 10.0.99.3 255.255.255.0 10.0.99.1
+wireless mobility controller ip 10.99.0.3 
+```
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
