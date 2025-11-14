@@ -59,8 +59,8 @@ These are projects, case studies and troubleshooting logs.
 *   **`/projects/`**: Probably the most interesting directory cause it's where all project documentations are.    
 *  Device files:    
     *   **[`/border-leaf-ccr2004`](./border-leaf-ccr2004/)** - MikroTik CCR2004 config    
-    *   **[`leaf-crs326`](./leaf-crs326/)** - MikroTik CRS326 config   
-    *   **[`spine-s4048-on`](./spine-s4048-on/)** - Dell EMC S4048-ON config
+    *   **[`/leaf-crs326`](./leaf-crs326/)** - MikroTik CRS326 config   
+    *   **[`/spine-s4048-on`](./spine-s4048-on/)** - Dell EMC S4048-ON config
 *   **`/docs/`** - Some other documents but honstly nothing really important.
 
 # Lab Architecture

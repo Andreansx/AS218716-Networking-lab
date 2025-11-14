@@ -650,6 +650,91 @@ wireless manage int Vlan99
 wireless manage ip add 10.0.99.3 255.255.255.0 10.0.99.1
 wireless mobility controller ip 10.99.0.3 
 ```
+
+November 13th    
+
+So I finally recovered access to the switch by bypassing password checking.
+I actually had to use one more command to do that. 
+First I tried:
+
+```IOS-XE
+Switch: SWITCH_IGNORE_STARTUP_CFG=1
+Switch: SWITCH_DISABLE_PASSWORD_RECOVERY=0
+```
+
+However that returned an error stating that I cannot change a Read-only variable.
+After looking a bit through a thread about Catalyst 3850 on Cisco Forum I found that I should use one more command accordingly to my IOS-XE version.   
+
+I did the same thing and it still returned an error but I also ran:
+
+```IOS-XE
+Switch: BOOT=flash:/packages.conf
+Switch: boot
+
+```
+And that allowed me to stop the startup-config from initiating and then I escalated the privileges and copied the startup-config to running-config:
+```IOS-XE
+enable
+copy startup-config running-config
+conf t
+username ADM privilege 15 secret ****
+enable secret ****
+do write memory
+```
+
+Then I had full access to the switch with my new password.   
+
+I spent like four hours that day messing around with that swithc and I discovered a lot of important information but I won't cover all of that here since it would take an enormous amount of text, but I want to mention a couple of things.   
+
+First interesting and weird thing I found out is that the topology of this part of the network seems to be a some kind of double InterVLAN Routing on ROAS and Catalyst 3850's SVIs.   
+
+There are 4 VLANs defined on the switch and there are some access ports for APs and some for those other 3 networks.
+And there are also 4 SVIs, one for each VLAN. 
+The switch has IP addresses on those SVIs like 10.0.74.2/24, 10.0.78.2/24 etc.  
+But here is where it gets more interesting.
+It has routes configured, which seem to point at the Cisco 2921 interface, but the routing on the switch will never take place.   
+Why is that?  
+Because all VLANs have an L2 connection to the Cisco 2921 subinterfaces.   
+I haven't seen 2921's config but its the one that problably has `.1` addresses for those VLANs.   
+
+The 3850 has a trunk link to the 2921, and in the config it looks like this:   
+
+```IOS-XE
+interface GigabitEthernet1/0/24
+ description link to R01
+ switchport trunk allowed vlan 70,72,74,77,80
+ switchport mode trunk
+ switchport port-security maximum 2
+ switchport port-security mac-address sticky
+```
+So that looks like a typical ROAS topology.   
+
+But I thought that maybe the InterVLAN Routing actually takes place on the 3850 because after all it has the SVIs in those VLANs.   
+
+But that's when I found something even more interesting   
+
+There are DHCP pools (yes, on the switch) with default gateway addresses like `10.0.74.1`, and the 3850 has IPs like `.2`, so the default gateway is definetly not on the 3850 but rather on the 2921.   
+
+There is a route pointing to R1:
+```IOS-XE
+ip route 0.0.0.0 0.0.0.0 10.1.70.1
+```
+But it won't even be used in most cases, because all traffic in the VLANs doesn't have any reason to go to the `.2` addresses, because the default gateway is the R1, which is connected on L2 to every VLAN.   
+
+And one more thing which you might already had spotted.   
+There is a DHCP Server runnning on the switch.   
+
+So it's all actually kind of reversed.
+The default gateway is on the router, but the DHCP server is on the switch.   
+
+AND the DHCP server gives out an default-router IP of `.1` for every VLAN. 
+So traffic will never get to `.2` SVIs on the switch (except for the WLC which I will talk about more later).    
+
+I think this might explain why the switch was on 100% utilization all the time.  
+Switches are absolutely not built to handle compute-intensive tasks like handling DHCP.   
+The switch should instead have `ip helper-address` configured on the SVIs and it should capture the broadcast DHCPDISCOVER messages from the VLANs, and then it should send a unicast with that DHCP message to the DHCP Server, which should be on the router.   
+
+
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
