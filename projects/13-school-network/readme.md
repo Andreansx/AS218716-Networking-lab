@@ -748,7 +748,55 @@ And its all right but I cannot do everything on this switch and then just copy t
 As I said a couple of times, the modernization requires a lot of changes on other devices.
 It's simply not possible to make it "just work", because this is a advanced network and there is no such thing here as "replacing the router with any other router and just re-plugging the cables".   
 
-The 3850-48 runs a newer version of IOS-XE than the 3850-24 and it does not include the WLC firmware, so sadly it's not possible for me to try to configure it as a WLC.
+The 3850-48 runs a newer version of IOS-XE than the 3850-24 and it does not include the WLC firmware, so sadly it's not possible for me to try to configure it as a WLC.   
+
+As a side note here, I wanted to see the Linux shell on this switch, since I never had any device with IOS-XE and I knew that it runs on the Linux Kernel so there must be some way to get into the shell.   
+
+I searched around for a bit and first i had to enable IOx feature:
+```IOS-XE
+conf t
+feature iox
+```
+
+Then I could enable the guest shell and then run bash inside of it.   
+
+```IOS-XE
+guestshell enable
+3850-48#guestshell enable 
+Management Interface will be selected if configured
+Please wait for completion
+
+
+
+3850-48#guestshell run bash
+[guestshell@guestshell ~]$
+```
+
+I then could see for real the linux functionality inside of IOS-XE.
+
+```IOS-XE
+[guestshell@guestshell ~]$ uname -a
+Linux guestshell 3.10.101-rt110 #1 SMP Fri May 4 18:42:35 PDT 2018 mips64 GNU/Linux
+```
+As you can see, it doesn't allow me to access the main linux shell but instead it gave me access to a LXC, inside of which I can run Python scripts etc. and it uses a MIPS architecture, which is not uncommon in networking devices especially switches.  
+
+```IOS-XE
+[guestshell@guestshell ~]$ ps aux
+PID   USER     TIME   COMMAND
+    1 root       0:00 {init} /bin/busybox init
+  267 root       0:00 /usr/sbin/sshd -f /cisco/lib/sshd_gs_config
+  277 root       0:00 /bin/bash -c exec /sbin/syslogd -n -O - -l 5 |& tee -a /v
+  281 root       0:00 {syslogd} /bin/busybox /sbin/syslogd -n -O - -l 5
+  282 root       0:00 {tee} /bin/busybox /usr/bin/tee -a /var/log/messages /dev
+  284 root       0:00 {init} /bin/busybox init
+  302 root       0:00 sshd: guestshell@pts/4
+  303 guestshe   0:00 bash
+  309 guestshe   0:00 {ps} /bin/busybox /bin/ps aux
+```
+running `ps aux` shows that the whole environment is based on busybox which is also common and it minimalizes the memory usage.
+Of course you can see SSH process running under `sshd` and similarly `syslogd`.
+
+Of course this won't be needed for the tasks that I have related to the school network but I wouldn't be myself if I didn't play around a bit in the Linux shell when I have a chance, would I?
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
