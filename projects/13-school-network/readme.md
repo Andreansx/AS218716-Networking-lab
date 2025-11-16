@@ -651,7 +651,12 @@ wireless manage ip add 10.0.99.3 255.255.255.0 10.0.99.1
 wireless mobility controller ip 10.99.0.3 
 ```
 
+> [!NOTE]
+> This is actually done a bit differently Specifically on the 3850. Look below to see more of the configs from the actual switch.  
+
 November 13th    
+
+![3850-24](./3850-24.jpeg)   
 
 So I finally recovered access to the switch by bypassing password checking.
 I actually had to use one more command to do that. 
@@ -670,7 +675,6 @@ I did the same thing and it still returned an error but I also ran:
 ```IOS-XE
 Switch: BOOT=flash:/packages.conf
 Switch: boot
-
 ```
 And that allowed me to stop the startup-config from initiating and then I escalated the privileges and copied the startup-config to running-config:
 ```IOS-XE
@@ -734,7 +738,17 @@ I think this might explain why the switch was on 100% utilization all the time.
 Switches are absolutely not built to handle compute-intensive tasks like handling DHCP.   
 The switch should instead have `ip helper-address` configured on the SVIs and it should capture the broadcast DHCPDISCOVER messages from the VLANs, and then it should send a unicast with that DHCP message to the DHCP Server, which should be on the router.   
 
+I got to take the second switch, the 3850-48, home.    
 
+![3850-48](./3850-48.jpeg)   
+
+The IT guy told me to try to make my proposed config on this one.
+And its all right but I cannot do everything on this switch and then just copy the config to the 3850-24 and make everything work.   
+
+As I said a couple of times, the modernization requires a lot of changes on other devices.
+It's simply not possible to make it "just work", because this is a advanced network and there is no such thing here as "replacing the router with any other router and just re-plugging the cables".   
+
+The 3850-48 runs a newer version of IOS-XE than the 3850-24 and it does not include the WLC firmware, so sadly it's not possible for me to try to configure it as a WLC.
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)

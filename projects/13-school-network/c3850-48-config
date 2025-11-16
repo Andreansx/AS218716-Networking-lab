@@ -1,0 +1,377 @@
+!
+! Last configuration change at 13:35:52 UTC Sun Nov 16 2025
+!
+version 16.6
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+!
+hostname 3850-48
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 5 $1$qADp$F2Zg8xdopOIcj5cSxadfh.
+!
+no aaa new-model
+switch 1 provision ws-c3850-48p
+!
+!
+!
+!
+ip routing
+!
+ip domain name mche.edu.pl
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!         
+diagnostic bootup level minimal
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+username ADM privilege 15 secret 5 $1$uhHl$Wad3Vmujk1vN2fs5b1La60
+!
+redundancy
+ mode sso
+!
+!
+!
+class-map match-any system-cpp-police-topology-control
+  description Topology control
+class-map match-any system-cpp-police-sw-forward
+  description Sw forwarding, L2 LVX data, LOGGING
+class-map match-any system-cpp-default
+  description DHCP Snooping, EWLC control, EWCL data 
+class-map match-any system-cpp-police-sys-data
+  description Learning cache ovfl, Crypto Control, Exception, EGR Exception, NFL SAMPLED DATA, Gold Pkt, RPF Failed
+class-map match-any system-cpp-police-punt-webauth
+  description Punt Webauth
+class-map match-any system-cpp-police-l2lvx-control
+  description L2 LVX control packets
+class-map match-any system-cpp-police-forus
+  description Forus Address resolution and Forus traffic
+class-map match-any system-cpp-police-multicast-end-station
+  description MCAST END STATION
+class-map match-any system-cpp-police-multicast
+  description Transit Traffic and MCAST Data
+class-map match-any system-cpp-police-l2-control
+  description L2 control
+class-map match-any system-cpp-police-dot1x-auth
+  description DOT1X Auth
+class-map match-any system-cpp-police-data
+  description ICMP redirect, ICMP_GEN and BROADCAST
+class-map match-any system-cpp-police-stackwise-virt-control
+  description Stackwise Virtual
+class-map match-any non-client-nrt-class
+class-map match-any system-cpp-police-routing-control
+  description Routing control
+class-map match-any system-cpp-police-protocol-snooping
+  description Protocol snooping
+class-map match-any system-cpp-police-system-critical
+  description System Critical
+!         
+policy-map system-cpp-policy
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ ip address 10.99.0.5 255.255.255.0
+ speed 1000
+ negotiation auto
+!
+interface GigabitEthernet1/0/1
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/2
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/3
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/4
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/5
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/6
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/7
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/8
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!         
+interface GigabitEthernet1/0/9
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/10
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/11
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/12
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/13
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/14
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/15
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/16
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/17
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/18
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/19
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/20
+ description "to APs"
+ switchport access vlan 72
+ switchport mode access
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/21
+ description ACCESS_UCZNIOWIE
+ switchport access vlan 70
+ switchport mode access
+!
+interface GigabitEthernet1/0/22
+ description ACCESS_NAUCZYCIELE
+ switchport access vlan 74
+!
+interface GigabitEthernet1/0/23
+ switchport access vlan 76
+ switchport mode access
+!
+interface GigabitEthernet1/0/24
+!
+interface GigabitEthernet1/0/25
+!
+interface GigabitEthernet1/0/26
+!
+interface GigabitEthernet1/0/27
+!
+interface GigabitEthernet1/0/28
+!
+interface GigabitEthernet1/0/29
+!
+interface GigabitEthernet1/0/30
+!
+interface GigabitEthernet1/0/31
+!
+interface GigabitEthernet1/0/32
+!
+interface GigabitEthernet1/0/33
+!
+interface GigabitEthernet1/0/34
+!
+interface GigabitEthernet1/0/35
+!
+interface GigabitEthernet1/0/36
+!
+interface GigabitEthernet1/0/37
+!
+interface GigabitEthernet1/0/38
+!         
+interface GigabitEthernet1/0/39
+!
+interface GigabitEthernet1/0/40
+!
+interface GigabitEthernet1/0/41
+!
+interface GigabitEthernet1/0/42
+!
+interface GigabitEthernet1/0/43
+!
+interface GigabitEthernet1/0/44
+!
+interface GigabitEthernet1/0/45
+!
+interface GigabitEthernet1/0/46
+!
+interface GigabitEthernet1/0/47
+!
+interface GigabitEthernet1/0/48
+ description "upstream to border router"
+ no switchport
+ ip address 172.16.0.2 255.255.255.252
+!         
+interface GigabitEthernet1/1/1
+!
+interface GigabitEthernet1/1/2
+!
+interface GigabitEthernet1/1/3
+!
+interface GigabitEthernet1/1/4
+!
+interface TenGigabitEthernet1/1/1
+!
+interface TenGigabitEthernet1/1/2
+!
+interface TenGigabitEthernet1/1/3
+!
+interface TenGigabitEthernet1/1/4
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan70
+ description SVI_UCZNIOWIE
+ ip address 10.0.70.1 255.255.255.0
+ ip helper-address 172.16.0.1
+!
+interface Vlan72
+ ip address 10.0.72.1 255.255.255.0
+ ip helper-address 172.16.0.1
+!
+interface Vlan74
+ description SVI_NAUCZYCIELE
+ ip address 10.0.74.1 255.255.255.0
+ ip helper-address 172.16.0.1
+!
+interface Vlan76
+ description SVI_TP
+ ip address 10.0.76.1 255.255.255.0
+ ip helper-address 172.16.0.1
+!
+ip forward-protocol nd
+ip http server
+ip http secure-server
+ip route 0.0.0.0 0.0.0.0 172.16.0.1
+ip ssh version 2
+!
+!
+!
+!         
+!
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+!
+line con 0
+ logging synchronous
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ logging synchronous
+ login local
+ transport input ssh
+line vty 5 15
+ logging synchronous
+ login local
+ transport input ssh
+!
+!
+mac address-table notification mac-move
+wsma agent exec
+!
+wsma agent config
+!
+wsma agent filesys
+!
+wsma agent notify
+!
+!
+end
