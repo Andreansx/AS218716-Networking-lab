@@ -1,5 +1,5 @@
 !
-! Last configuration change at 13:35:52 UTC Sun Nov 16 2025
+! Last configuration change at 19:12:35 UTC Mon Nov 17 2025
 !
 version 16.6
 no service pad
@@ -19,7 +19,7 @@ vrf definition Mgmt-vrf
  exit-address-family
 !
 enable secret 5 $1$qADp$F2Zg8xdopOIcj5cSxadfh.
-!
+!         
 no aaa new-model
 switch 1 provision ws-c3850-48p
 !
@@ -29,6 +29,22 @@ switch 1 provision ws-c3850-48p
 ip routing
 !
 ip domain name mche.edu.pl
+ip dhcp excluded-address 10.0.70.1 10.0.70.10
+ip dhcp excluded-address 10.0.72.1 10.0.72.10
+ip dhcp excluded-address 10.0.74.1 10.0.74.10
+ip dhcp excluded-address 10.0.76.1 10.0.76.10
+!
+ip dhcp pool POOL_UCZNIOWIE
+ network 10.0.70.0 255.255.255.0
+ default-router 10.0.70.1 
+ domain-name mche.edu.pl
+ dns-server 1.1.1.1 
+!
+ip dhcp pool POOL_NAUCZYCIELE
+ network 10.0.74.0 255.255.255.0
+ default-router 10.0.74.1 
+ domain-name mche.edu.pl
+ dns-server 1.1.1.1 
 !
 !
 !
@@ -43,15 +59,16 @@ ip domain name mche.edu.pl
 !
 !
 !
-!         
+!
 diagnostic bootup level minimal
 spanning-tree mode rapid-pvst
 spanning-tree extend system-id
 !
 username ADM privilege 15 secret 5 $1$uhHl$Wad3Vmujk1vN2fs5b1La60
-!
+!         
 redundancy
  mode sso
+service-routing mdns-sd
 !
 !
 !
@@ -88,12 +105,12 @@ class-map match-any system-cpp-police-protocol-snooping
   description Protocol snooping
 class-map match-any system-cpp-police-system-critical
   description System Critical
-!         
+!
 policy-map system-cpp-policy
 !
 ! 
 !
-!
+!         
 !
 !
 !
@@ -139,7 +156,7 @@ interface GigabitEthernet1/0/5
  switchport access vlan 72
  switchport mode access
  spanning-tree portfast
-!
+!         
 interface GigabitEthernet1/0/6
  description "to APs"
  switchport access vlan 72
@@ -157,7 +174,7 @@ interface GigabitEthernet1/0/8
  switchport access vlan 72
  switchport mode access
  spanning-tree portfast
-!         
+!
 interface GigabitEthernet1/0/9
  description "to APs"
  switchport access vlan 72
@@ -254,7 +271,7 @@ interface GigabitEthernet1/0/27
 interface GigabitEthernet1/0/28
 !
 interface GigabitEthernet1/0/29
-!
+!         
 interface GigabitEthernet1/0/30
 !
 interface GigabitEthernet1/0/31
@@ -272,7 +289,7 @@ interface GigabitEthernet1/0/36
 interface GigabitEthernet1/0/37
 !
 interface GigabitEthernet1/0/38
-!         
+!
 interface GigabitEthernet1/0/39
 !
 interface GigabitEthernet1/0/40
@@ -295,7 +312,7 @@ interface GigabitEthernet1/0/48
  description "upstream to border router"
  no switchport
  ip address 172.16.0.2 255.255.255.252
-!         
+!
 interface GigabitEthernet1/1/1
 !
 interface GigabitEthernet1/1/2
@@ -318,7 +335,6 @@ interface Vlan1
 interface Vlan70
  description SVI_UCZNIOWIE
  ip address 10.0.70.1 255.255.255.0
- ip helper-address 172.16.0.1
 !
 interface Vlan72
  ip address 10.0.72.1 255.255.255.0
@@ -327,12 +343,13 @@ interface Vlan72
 interface Vlan74
  description SVI_NAUCZYCIELE
  ip address 10.0.74.1 255.255.255.0
- ip helper-address 172.16.0.1
 !
 interface Vlan76
  description SVI_TP
  ip address 10.0.76.1 255.255.255.0
- ip helper-address 172.16.0.1
+!
+interface Vlan78
+ ip address 10.0.78.1 255.255.255.0
 !
 ip forward-protocol nd
 ip http server
@@ -342,7 +359,7 @@ ip ssh version 2
 !
 !
 !
-!         
+!
 !
 !
 control-plane

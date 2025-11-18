@@ -796,7 +796,65 @@ PID   USER     TIME   COMMAND
 running `ps aux` shows that the whole environment is based on busybox which is also common and it minimalizes the memory usage.
 Of course you can see SSH process running under `sshd` and similarly `syslogd`.
 
-Of course this won't be needed for the tasks that I have related to the school network but I wouldn't be myself if I didn't play around a bit in the Linux shell when I have a chance, would I?
+Of course this won't be needed for the tasks that I have related to the school network but I wouldn't be myself if I didn't play around a bit in the Linux shell when I have a chance, would I?    
+
+November 18th   
+
+So a lot more new things today since I spent like 4 hours in the computer classroom with the switch.   
+I'm not gonna even try to write everything since this quickly gets pretty tiring but I'll write the most important things.   
+
+The first issue that persisted is the APs not being able to join the WLC domain.
+They get an IP address from DHCP and are pingable but for some reason they would not join the WLC domain.
+The cause was unknown until today, since I turned on more debugging options and I finally got the most likely answer to the problem.
+Just take a look at this syslog message:   
+```IOS-XE
+Sep 18 10:54:31.593: *%DTLS-3-HANDSHAKE_FAILURE: 1 wcm:  Failed to complete DTLS handshake with peer 10.1.78.5  for AP 0000.0000.0000Reason: sslv3 alert bad certificate
+```
+It's actually hard for me to believe taht such a coincidence occured, however this is not an opinion but a fact, which is confirmed by IOS-XE itself.   
+
+Of course the guy didn't believe me that this might be the cause, because "in informatics nothing breaks on its own" so yeah.  
+
+I will create a new Self-signed certificate and hope it works. 
+However if the APs are configured to accept only CA-provided certificates like only the ones made by Cisco, then the situation is very bad.   
+
+But the worst thing is the insanity of the network that I got introduced to today.   
+
+Basically I'm supposed to connect the 3850 to a mikrotik rb2011. 
+Seemed alright, I told him that I would just create a simple point-to-point link between the MikroTik RB2011 and Catalyst 3850.   
+But guess what? 
+Im not supposed to touch the MikroTik's config.   
+How am I supposed to do anything if I can't change it's config?   
+
+Supposedly it's because there is a "stable config" on it. (There is no stable config but rather a 13 year old one.)  
+Did I mention that no one knows the password to it?   
+
+He wants me to "do everything on the switch so the router configuration is as simple as possible" but I don't think he realizes what kind of network I have to deal with.   
+
+The SVIs for Students, Teachers networks etc. are supposed to be on the 3850 along with the WLC.  
+The 3850 is supposed to be connected to an upstream router via a routed link (`no switchport`).
+So the MikroTik RB2011 must have proper routes defined to have even any idea where the Students etc. networks are and via which device they are available.  
+
+So if I send a ping from the Students network, it will go to the gateway, the SVI on the 3850, then it will get routed to the MikroTik, then it will get NATted and sent to ISPs modem.  
+But will it return?
+Of course not, cause how could it? 
+The ICMP reply gets back to ISPs modem, gets to the MikroTik and just gets dropped.  
+
+**Because the MikroTik has no idea where the Students network is**.   
+
+You see the situation?  
+I mean this is for now simply impossible to do, cause if I cannot access the MikroTik, then it will never have any way to get to know where the Students network is.   
+
+Could I plug the 3850 straight into the ISP's modem?
+Yeah I could but it still won't work, not without NAT on 3850, which is not supported.
+
+The ISPs modem knows devices in the only network it is attached to on the LAN side, which is 192.168.1.0/24. 
+It has no idea how to reach 10.1.78.0/24 so it will just drop every returning packet designated to 10.1.78.0/24.   
+
+Cause this is routing and not L2 switching where the switches learn MAC addresses.   
+
+This whole thing is a giant mess and I don't have any idea what to do apart from renewing the certificates.  
+He just needs to understand that what he is asking for is not possible in this environment.
+
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
