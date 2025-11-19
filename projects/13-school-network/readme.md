@@ -853,7 +853,23 @@ It has no idea how to reach 10.1.78.0/24 so it will just drop every returning pa
 Cause this is routing and not L2 switching where the switches learn MAC addresses.   
 
 This whole thing is a giant mess and I don't have any idea what to do apart from renewing the certificates.  
-He just needs to understand that what he is asking for is not possible in this environment.
+He just needs to understand that what he is asking for is not possible in this environment.   
+
+This would take literally two commands like this:
+```RouterOS
+ip address/
+add address=172.16.1.1/30 interface=ether2
+ip route/
+add dst-address=10.1.0.0/16 gateway=172.16.1.2
+```
+
+Tomorrow i'll try to change the region of the controller since the APs are `-E` type which stands for Europe, but the controller showed some errors about invalid region so I will run these commmands:  
+```IOS-XE
+conf t
+ap dot11 24ghz shutdown
+ap dot11 5ghz shutdown
+ap country pl
+```
 
 ## Contact
 
