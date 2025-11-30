@@ -871,6 +871,21 @@ ap dot11 5ghz shutdown
 ap country pl
 ```
 
+Nov 20th   
+
+So basically it seems that the APs are worthless since their MIC certificates expired.  
+I did more debugging in order to come to that conclusion. 
+I did every single thing that I could do and this is the only possible cause of the APs not joining the WLC domain.
+
+So I think the main focus now should be to swap out the 14-year old Cisco 2600-series APs for something new.
+After all who would have thought that 14 year old APs could have issues?   
+
+Of course it's hard to believe me since "everything worked for so long".
+yeah it worked because no one ever touched it until the PSUs got fried and the whole controller went down for the first time in a very long time.   
+The APs could have been running for a long time with expired MICs because when the MICs expire when the CAPWAP tunnels are already established, it does not drop them. 
+Instead it will return an error along with the next attempt of establishing a TLS Handshake between the WLC and AP.   
+
+
 ## Contact
 
 [![Telegram](https://img.shields.io/badge/telegram-2B59FF?style=for-the-badge&logo=telegram&logoColor=ffffff&logoSize=auto)](https://t.me/Andrtexh)
