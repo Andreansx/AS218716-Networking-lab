@@ -70,6 +70,7 @@ interface GigabitEthernet1/0/3
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -80,6 +81,7 @@ interface GigabitEthernet1/0/4
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -90,6 +92,7 @@ interface GigabitEthernet1/0/5
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -100,6 +103,7 @@ interface GigabitEthernet1/0/6
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -110,6 +114,7 @@ interface GigabitEthernet1/0/7
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -120,6 +125,7 @@ interface GigabitEthernet1/0/8
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -130,6 +136,7 @@ interface GigabitEthernet1/0/9
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -140,6 +147,7 @@ interface GigabitEthernet1/0/10
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -150,6 +158,7 @@ interface GigabitEthernet1/0/11
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -160,6 +169,7 @@ interface GigabitEthernet1/0/12
  switchport access vlan 10
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
  spanning-tree bpduguard enable
@@ -170,6 +180,7 @@ interface GigabitEthernet1/0/13
  switchport access vlan 20
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
 !
@@ -179,6 +190,7 @@ interface GigabitEthernet1/0/14
  switchport access vlan 20
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
 !
@@ -188,6 +200,7 @@ interface GigabitEthernet1/0/15
  switchport access vlan 20
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
 !
@@ -197,6 +210,7 @@ interface GigabitEthernet1/0/16
  switchport access vlan 20
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
 !
@@ -206,6 +220,7 @@ interface GigabitEthernet1/0/17
  switchport access vlan 20
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
 !
@@ -215,6 +230,7 @@ interface GigabitEthernet1/0/18
  switchport access vlan 20
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
 !
@@ -224,6 +240,7 @@ interface GigabitEthernet1/0/19
  switchport access vlan 20
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
 !
@@ -233,6 +250,7 @@ interface GigabitEthernet1/0/20
  switchport access vlan 20
  switchport mode access
  switchport port-security
+ switchport port-security mac-address sticky 
  switchport port-security violation restrict 
  spanning-tree portfast
 !
