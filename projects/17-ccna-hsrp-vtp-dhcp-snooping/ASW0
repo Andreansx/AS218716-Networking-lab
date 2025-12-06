@@ -1,0 +1,292 @@
+!
+version 16.3.2
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname ASW0
+!
+!
+enable secret 9 $9$J19FIAftPZf7c3$uXFRwi2PFdyw4nFlnhy3DRveqEm.hJFnXOABHyl9fEM
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login main local 
+!
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username coreadmin0 secret 9 $9$J19FIAftPZf7c3$uXFRwi2PFdyw4nFlnhy3DRveqEm.hJFnXOABHyl9fEM
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip dhcp snooping vlan 10,20
+no ip dhcp snooping information option
+ip dhcp snooping
+!
+ip ssh version 2
+ip domain-name lab.local
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet1/0/1
+ ip dhcp snooping trust
+ switchport trunk allowed vlan 10,20,30
+ switchport mode trunk
+!
+interface GigabitEthernet1/0/2
+ description "trunks to upstream switches"
+ ip dhcp snooping trust
+ switchport trunk allowed vlan 10,20,30
+ switchport mode trunk
+!
+interface GigabitEthernet1/0/3
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/4
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/5
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/6
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/7
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/8
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/9
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/10
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/11
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/12
+ description "VLAN 10 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 10
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet1/0/13
+ description "VLAN 20 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/14
+ description "VLAN 20 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/15
+ description "VLAN 20 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/16
+ description "VLAN 20 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/17
+ description "VLAN 20 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/18
+ description "VLAN 20 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/19
+ description "VLAN 20 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/20
+ description "VLAN 20 Access"
+ ip dhcp snooping limit rate 20
+ switchport access vlan 20
+ switchport mode access
+ switchport port-security
+ switchport port-security violation restrict 
+ spanning-tree portfast
+!
+interface GigabitEthernet1/0/21
+ switchport mode trunk
+!
+interface GigabitEthernet1/0/22
+!
+interface GigabitEthernet1/0/23
+!
+interface GigabitEthernet1/0/24
+!
+interface GigabitEthernet1/1/1
+!
+interface GigabitEthernet1/1/2
+!
+interface GigabitEthernet1/1/3
+!
+interface GigabitEthernet1/1/4
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+ip access-list standard SSHACL
+ permit 10.0.30.0 0.0.0.255
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+ login authentication main
+!
+line aux 0
+!
+line vty 0 4
+ access-class SSHACL in
+ logging synchronous
+ login authentication main
+ transport input ssh
+line vty 5 15
+ access-class SSHACL in
+ logging synchronous
+ login authentication main
+ transport input ssh
+!
+!
+!
+!
+end
