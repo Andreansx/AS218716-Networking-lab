@@ -885,6 +885,45 @@ yeah it worked because no one ever touched it until the PSUs got fried and the w
 The APs could have been running for a long time with expired MICs because when the MICs expire when the CAPWAP tunnels are already established, it does not drop them. 
 Instead it will return an error along with the next attempt of establishing a TLS Handshake between the WLC and AP.   
 
+Dec 10th   
+
+All right so basically the IT guy got some new equipment including a switch, a router and twenty access points all from Tp-link.   
+Why not UniFi?   
+"Because if you get a UniFi access point then the switch also needs to be from UniFi"   
+But it's all right with Tp-links I guess.   
+
+I mean why do I even bother.   
+
+I haven't really seen how it actually looks but supposedly one of my classmates somewhat configured those devices.  
+
+I'm assuming that the Tp-link router is plugged into the MikroTik RB2011.
+Which would explain why the "brand new access points are only providing 100mbps internet connection".
+
+Also now it's kind of a Triple NAT ( or even Quadruple depending on the usage of CGNAT )   
+First on the ISPs modem, then the RB2011 and then the Tp-link router.  
+
+That guy asked me about the names of VLANs that I set up on the 3850-48. 
+Don't know what would they use the names for but I told him how the VLANs 70,72 etc were used.   
+
+Keep in mind that those VLANs used an addressation in the format `10.1.x.0` where `x` is the VID.  
+
+So today I was pretty shocked to see that the IP addresses of the projectors are now `192.168.78.0/24` instead of `10.1.78.0/24`. 
+I hope I'm wrong but I'm guessing that he thinks that the VID has some relevance on the protocol level to the third octet in the IPv4 address.   
+
+Also he supposedly plugged that 3850-48 into one of the "tagged" ports on the new Tp-link switch, then he plugged a PC into a random port on the 3850-48 and concluded that it does not work and I messed up the configuration.   
+
+This is not even elite ball networking knowledge.  
+The "last" port on the 3850-24 (`g1/0/48`) is a L3 interface which expects a IP address from the `172.16.1.0/30` network on the other end.
+And he plugged a L2 access port from the `192.168.78.0/24` network into this routed port and scolds my configuration cause it doesn't work.   
+
+Also I said a million times that the 3850-48 is configured as a L3 switch so the SVIs are on it and it performs InterVLAN Routing.   
+But I guess my 4 hours of explaining how IP Routing works didn't really do anything.  
+
+In full honesty I really wanted this to be like a super professional case study etc. but I think I'm not the only one who might think that this situation is more of a comedy.   
+
+I of course admit that I complain a lot about everything that happens here but this is just really getting on my nerves.  
+
+If it works without any more of my intervention then that's even better, cause for example my entire day of explaining, why we should use SVIs on the 3850-48 as gateways for the VLANs instead of ROAS, did actually matter next to nothing if someone does not understand the difference between L2 and L3.
 
 ## Contact
 

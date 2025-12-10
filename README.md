@@ -14,13 +14,6 @@ Currently I'm mainly focused on turning the lab into a datacenter-styled network
 
 </div>
 
-> [!CAUTION]
-> There has been a big issue with the last network configuration especially on PVE. Contact with web GUI was completly cut off and even OSPF backbone went down. 
-> All because of a massive broadcast storm and loops that occured between the CRS326 and the Proxmox VE. 
-Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) as it may be really relevant in case some other things might have stopped working. 
-> I now used the correct approach to do what I intended but without the risk of a gigantic broadcast storm.  
-> (It turned out that everything was caused by a L1 Loop)
-
 ## Table of Contents
 1.  [Docs to read](#docs-to-read)
 2.  [How This Repository Is Organized](#how-this-repository-is-organized)
@@ -33,6 +26,8 @@ Please read [OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop) a
 Here I put things that I think are the most interesting and worth reading.   
 
 These are projects, case studies and troubleshooting logs.    
+
+*   **[CCNA Lab with HSRP, VTP, L2 Security](./projects/17-ccna-hsrp-vtp-dhcp-snooping/readme.md)**    
 
 *   **[CCNA Lab with OSPF, HSRP on subinterfaces](./projects/16-ccna-ospf-hsrp/readme.md)**   
 
