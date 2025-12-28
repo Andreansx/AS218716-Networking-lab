@@ -559,6 +559,13 @@ And here is the planned network diagram.
 
 ![diagram2](./diagram2.png)    
 
+
+> [!NOTE]    
+> Notice I wrote WPA3 there.
+> I just want to add that this is not even remotely possible as the 2600 series APs from Cisco do not have support for WPA3.
+> They don't even support WPA2 i think.
+> Just WEP and WPA.   
+
 Keep in mind that I assume that we will get a second PSU for the 3850s. 
 If we don't get another PSU then we will have to use only the 3850-24 both as a L3 switch and the WLC.   
 
