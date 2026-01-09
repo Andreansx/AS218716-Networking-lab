@@ -35,9 +35,9 @@ These are projects, case studies and troubleshooting logs.
 
 *   **[CCNA Lab with OSPF, HSRP on subinterfaces](./projects/16-ccna-ospf-hsrp/readme.md)**   
 
-*   **[Comparative analysis of the purchase of a Dell EMC S4048-ON for the lab instead of other devies](./projects/14-dell-s4048-on-comparative-analysis)**    
+*   **[Comparative analysis of the purchase of a Dell EMC S4048-ON for the lab instead of other devies](./projects/14-dell-s4048-on-comparative-analysis)** - I was focused on CCNA so I kind of forgot about this but I will get back to it.
 
-*   **[School Network fried by lightning, WiFi fixing, Cisco WLC](./projects/13-school-network/readme.md)** - Very hot topic right now, since my school does not have WiFi available for now. They basically asked me to fix their wifi. I will write here about what things I uncover since it is actually far more complicated than just WiFi.
+*   **[School Network fried by lightning, WiFi fixing, Cisco WLC](./projects/13-school-network/readme.md)** - I think the longest documentation I wrote for now. Lot of my messing with a cisco catalyst 3850, APs MIC certificates expiring, getting kind of blamed for the network not working. I think this has ended because the school got TP-Link Omada.
 
 *   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation/readme.md)** - Plus DHCP Nightmare
 

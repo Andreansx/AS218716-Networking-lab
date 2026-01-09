@@ -928,7 +928,7 @@ But I guess my 4 hours of explaining how IP Routing works didn't really do anyth
 
 In full honesty I really wanted this to be like a super professional case study etc. but I think I'm not the only one who might think that this situation is more of a comedy.   
 
-I of course admit that I complain a lot about everything that happens here but this is just really getting on my nerves.  
+Of course I admit that I complain a lot about everything that happens here but this is just really getting on my nerves.  
 
 If it works without any more of my intervention then that's even better, cause for example my entire day of explaining, why we should use SVIs on the 3850-48 as gateways for the VLANs instead of ROAS, did actually matter next to nothing if someone does not understand the difference between L2 and L3.
 
