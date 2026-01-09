@@ -4,6 +4,10 @@ Here I document everything about my networking lab which serves as a practical g
 
 Currently I'm mainly focused on turning the lab into a datacenter-styled network, particularly I want to create a ultrafast switching fabric in a Clos architecture using my Dell EMC S4048-ON as the spine switch, along with Juniper vQFXs as leaf switches, all connected with eBGP.
 
+> [!NOTE]   
+> I passed CCNA on 8th of January recently so I'll take a break for a while and then I'm fully focusing on L3-only CLOS and EVPN-VXLAN between vSRX3.0 VMs.   
+
+
 <div align=“center”>
 
 ![MikroTik](https://img.shields.io/badge/routeros-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white&logoSize=auto)

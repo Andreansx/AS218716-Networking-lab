@@ -16,6 +16,75 @@ After all this hardware isn't the typical consumer-grade network stuff but rathe
 
 But it became clear that it wasn't the fault of the T620 when I plugged it into a wifi router from my ISP and it automatically connected to Tailscale which made it obvious that it must have acquired an IP address from the DHCP running on the wifi router.
 
+```rsc
+2025-12-27 20:45:40 dhcp,debug,packet vlan40-dhcp-relay received discover with id 3901562944 from 0.0.0.0 
+2025-12-27 20:45:40 dhcp,debug,packet     secs = 1 
+2025-12-27 20:45:40 dhcp,debug,packet     ciaddr = 0.0.0.0 
+2025-12-27 20:45:40 dhcp,debug,packet     chaddr = 00:8C:FA:D5:C2:B9 
+2025-12-27 20:45:40 dhcp,debug,packet     Host-Name = "t620plus" 
+2025-12-27 20:45:40 dhcp,debug,packet     Address-Request = 10.1.4.197 
+2025-12-27 20:45:40 dhcp,debug,packet     Msg-Type = discover 
+2025-12-27 20:45:40 dhcp,debug,packet     Parameter-List = Subnet-Mask,Unknown(2),Domain-Server,Host-Name,Domain-Name,Interface-MTU,Broadcast-Address,Classless-Route,Router,Static-Route,Unknown(40),Unknown(41),NTP-Server,Domain-Search,MS-Classless-Route,Auto-Proxy-Config,Unknown(17) 
+2025-12-27 20:45:40 dhcp,debug,packet     Max-DHCP-Message-Size = 576 
+2025-12-27 20:45:40 dhcp,debug,packet     Client-Id = 01-00-8C-FA-D5-C2-B9 
+2025-12-27 20:45:40 dhcp,debug,packet vlan40-dhcp-relay sending discover with id 3901562944 to 172.16.0.1 
+2025-12-27 20:45:40 dhcp,debug,packet     hops = 1 
+2025-12-27 20:45:40 dhcp,debug,packet     secs = 1 
+2025-12-27 20:45:40 dhcp,debug,packet     ciaddr = 0.0.0.0 
+2025-12-27 20:45:40 dhcp,debug,packet     giaddr = 10.1.4.1 
+2025-12-27 20:45:40 dhcp,debug,packet     chaddr = 00:8C:FA:D5:C2:B9 
+2025-12-27 20:45:40 dhcp,debug,packet     Host-Name = "t620plus" 
+2025-12-27 20:45:40 dhcp,debug,packet     Address-Request = 10.1.4.197 
+2025-12-27 20:45:40 dhcp,debug,packet     Msg-Type = discover 
+2025-12-27 20:45:40 dhcp,debug,packet     Parameter-List = Subnet-Mask,Unknown(2),Domain-Server,Host-Name,Domain-Name,Interface-MTU,Broadcast-Address,Classless-Route,Router,Static-Route,Unknown(40),Unknown(41),NTP-Server,Domain-Search,MS-Classless-Route,Auto-Proxy-Config,Unknown(17) 
+2025-12-27 20:45:40 dhcp,debug,packet     Max-DHCP-Message-Size = 576 
+2025-12-27 20:45:40 dhcp,debug,packet     Client-Id = 01-00-8C-FA-D5-C2-B9 
+2025-12-27 20:45:40 dhcp,debug dhcp-vlan40 received discover id 3901562944 from 0.0.0.0 '1:0:8c:fa:d5:c2:b9' 
+2025-12-27 20:45:40 dhcp,debug,packet     secs = 1 
+2025-12-27 20:45:40 dhcp,debug,packet     ciaddr = 0.0.0.0 
+2025-12-27 20:45:40 dhcp,debug,packet     chaddr = 00:8C:FA:D5:C2:B9 
+2025-12-27 20:45:40 dhcp,debug,packet     Host-Name = "t620plus" 
+2025-12-27 20:45:40 dhcp,debug,packet     Address-Request = 10.1.4.197 
+2025-12-27 20:45:40 dhcp,debug,packet     Msg-Type = discover 
+2025-12-27 20:45:40 dhcp,debug,packet     Parameter-List = Subnet-Mask,Unknown(2),Domain-Server,Host-Name,Domain-Name,Interface-MTU,Broadcast-Address,Classless-Route,Router,Static-Route,Unknown(40),Unknown(41),NTP-Server,Domain-Search,MS-Classless-Route,Auto-Proxy-Config,Unknown(17) 
+2025-12-27 20:45:40 dhcp,debug,packet     Max-DHCP-Message-Size = 576 
+2025-12-27 20:45:40 dhcp,debug,packet     Client-Id = 01-00-8C-FA-D5-C2-B9 
+2025-12-27 20:45:40 dhcp,debug lease found, offered, offer 
+2025-12-27 20:45:40 dhcp,debug dhcp-vlan40 on vlan40-vms-cts sending offer with id 3901562944 from 10.1.4.1:67 (D4:01:C3:75:18:94) to 10.1.4.197:68 (00:8C:FA:D5:C2:B9) 
+2025-12-27 20:45:40 dhcp,debug,packet     ciaddr = 0.0.0.0 
+2025-12-27 20:45:40 dhcp,debug,packet     yiaddr = 10.1.4.197 
+2025-12-27 20:45:40 dhcp,debug,packet     siaddr = 10.1.4.1 
+2025-12-27 20:45:40 dhcp,debug,packet     chaddr = 00:8C:FA:D5:C2:B9 
+2025-12-27 20:45:40 dhcp,debug,packet     Subnet-Mask = 255.255.255.0 
+2025-12-27 20:45:40 dhcp,debug,packet     Router = 10.1.4.1 
+2025-12-27 20:45:40 dhcp,debug,packet     Domain-Server = 1.1.1.1 
+2025-12-27 20:45:40 dhcp,debug,packet     Address-Time = 864000 
+2025-12-27 20:45:40 dhcp,debug,packet     Msg-Type = offer 
+2025-12-27 20:45:40 dhcp,debug,packet     Server-Id = 10.1.4.1 
+2025-12-27 20:45:43 dhcp,debug,packet vlan40-dhcp-relay received discover with id 2779597799 from 0.0.0.0 
+2025-12-27 20:45:43 dhcp,debug,packet     secs = 2 
+2025-12-27 20:45:43 dhcp,debug,packet     ciaddr = 0.0.0.0 
+2025-12-27 20:45:43 dhcp,debug,packet     chaddr = 00:8C:FA:D5:C2:B9 
+2025-12-27 20:45:43 dhcp,debug,packet     Host-Name = "t620plus" 
+2025-12-27 20:45:43 dhcp,debug,packet     Address-Request = 10.1.4.197 
+2025-12-27 20:45:43 dhcp,debug,packet     Msg-Type = discover 
+2025-12-27 20:45:43 dhcp,debug,packet     Parameter-List = Subnet-Mask,Unknown(2),Domain-Server,Host-Name,Domain-Name,Interface-MTU,Broadcast-Address,Classless-Route,Router,Static-Route,Unknown(40),Unknown(41),NTP-Server,Domain-Search,MS-Classless-Route,Auto-Proxy-Config,Unknown(17) 
+2025-12-27 20:45:43 dhcp,debug,packet     Max-DHCP-Message-Size = 576 
+2025-12-27 20:45:43 dhcp,debug,packet     Client-Id = 01-00-8C-FA-D5-C2-B9 
+2025-12-27 20:45:43 dhcp,debug,packet vlan40-dhcp-relay sending discover with id 2779597799 to 172.16.0.1 
+2025-12-27 20:45:43 dhcp,debug,packet     hops = 1 
+2025-12-27 20:45:43 dhcp,debug,packet     secs = 2 
+2025-12-27 20:45:43 dhcp,debug,packet     ciaddr = 0.0.0.0 
+2025-12-27 20:45:43 dhcp,debug,packet     giaddr = 10.1.4.1 
+2025-12-27 20:45:43 dhcp,debug,packet     chaddr = 00:8C:FA:D5:C2:B9 
+2025-12-27 20:45:43 dhcp,debug,packet     Host-Name = "t620plus" 
+2025-12-27 20:45:43 dhcp,debug,packet     Address-Request = 10.1.4.197 
+2025-12-27 20:45:43 dhcp,debug,packet     Msg-Type = discover 
+2025-12-27 20:45:43 dhcp,debug,packet     Parameter-List = Subnet-Mask,Unknown(2),Domain-Server,Host-Name,Domain-Name,Interface-MTU,Broadcast-Address,Classless-Route,Router,Static-Route,Unknown(40),Unknown(41),NTP-Server,Domain-Search,MS-Classless-Route,Auto-Proxy-Config,Unknown(17) 
+2025-12-27 20:45:43 dhcp,debug,packet     Max-DHCP-Message-Size = 576 
+2025-12-27 20:45:43 dhcp,debug,packet     Client-Id = 01-00-8C-FA-D5-C2-B9
+```
+
 
 ```bash
 sudo journalctl -b -5 | grep -i dhcp
