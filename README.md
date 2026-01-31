@@ -31,6 +31,9 @@ Here I put things that I think are the most interesting and worth reading.
 
 These are projects, case studies and troubleshooting logs.    
 
+*   **[Out-of-band Management](./projects/19-oob-mgmt)**    
+
+
 *   **[CCNA Lab with HSRP, VTP, L2 Security](./projects/17-ccna-hsrp-vtp-dhcp-snooping/readme.md)**    
 
 *   **[CCNA Lab with OSPF, HSRP on subinterfaces](./projects/16-ccna-ospf-hsrp/readme.md)**   
