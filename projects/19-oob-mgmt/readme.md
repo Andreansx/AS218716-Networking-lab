@@ -16,3 +16,14 @@ That kind of worked but this is nowhere near real Out-of-Band Management which i
 I put together a diagram which gives an overview on how I want the OOB Management to be.  
 
 ![oob.png](./oob.png)   
+
+The only issue that i could point out for now is that there's now a single point of failure being the availability of the R710.   
+If Proxmox doesn't come up online then the OOB Mgmt doesn't work at all. 
+Also, the R710 does not have a hardware acceleration for L2 switching which in short means that it doesn't work well as a switch because every frame needs to go through the CPU.   
+
+I don't think that it's a big deal for the Management network but if I used a dedicated switch like the FLS648, there would be absolutely no problem with switching at line-speed in the management network.   
+
+The thing is that I can actually leave the configuration which bridges all RJ45 1GbE ports in the R710 NIC and if I want to change something then I can just plug the FLS648 into one of those ports and then plug the rest of the management interfaces to the FLS648 as it has the most basic configuration possible.   
+
+
+
