@@ -25,5 +25,43 @@ I don't think that it's a big deal for the Management network but if I used a de
 
 The thing is that I can actually leave the configuration which bridges all RJ45 1GbE ports in the R710 NIC and if I want to change something then I can just plug the FLS648 into one of those ports and then plug the rest of the management interfaces to the FLS648 as it has the most basic configuration possible.   
 
+### Setting up management interfaces
 
+I choose the 10.1.99.0/24 subnet for the management network.   
 
+On the MikroTiks the `ether1` interfaces will be connected to the management network.   
+
+Also I need to place the `ether1` interfaces in a separate VRF to avoid traffic going through the management  network.   
+
+First Im doing this on the CRS326:   
+
+The `ether1` interface is currently in the main bridge so I need to remove it from the bridge and make it routed port in a separate VRF.   
+
+Via Serial connection first I remove the port from the bridge, the ip address on the vlan90 interface and the vlan interface itself:   
+```rsc 
+[admin@leaf-crs326] > interface/bridge/port/remove [find interface=ether1]
+[admin@leaf-crs326] > ip address/remove [find interface=vlan90-mgmt]
+[admin@leaf-crs326] > interface/vlan/remove [find interface=vlan90-mgmt]
+```
+Then I create a new VRF with `ether1` interface added and assign an IP address directly to the `ether1` interface.  
+```rsc
+[admin@leaf-crs326] > ip vrf/add name=vrf-mgmt interfaces=ether1
+[admin@leaf-crs326] > ip address/add interface=ether1 address=10.1.99.5/24
+```
+Then I remove the old `CRS326-MGMT` address list and add a new `MGMT` address list:   
+```rsc
+[admin@leaf-crs326] > ip firewall/address-list/remove [find list=CRS326-MGMT]
+[admin@leaf-crs326] > ip firewall/address-list/add address=10.1.99.0/24 list=MGMT
+```
+Then I swap the `CRS326-MGMT` list to `MGMT` in the firewall filter rules:   
+```rsc
+[admin@leaf-crs326] > ip firewall/filter/set [find dst-address-list=CRS326-MGMT] dst-address-list=MGMT 
+```
+
+Now I'll just plug the CRS326 `ether1` interface to the FLS648 and then I will be able to SSH into the CRS326 from the Out-of-Band network.  
+
+I also added a default gateway for the management network. The CCR2004 will be the gateway for the OOB Management network:   
+
+```rsc
+[admin@leaf-crs326] > ip route/add dst-address=0.0.0.0/0 gateway=10.1.99.1 routing-table=vrf-mgmt 
+```
