@@ -371,8 +371,11 @@ em3                     up    up
 ```
 And as you can see the `em0` interface really got an IP from the DHCP Server running on the CCR2004.   
 Ping of course goes through to the gateway:   
-![vqfx-ping](./vqfx-ping.png)
+
+![vqfx-ping](./vqfx-ping.png)   
+
 And I was able to SSH into the vQFX from my laptop:   
+
 ![vqfx-ssh](./vqfx-ssh.png)   
 
 So what's left is to connect the Dell S4048-ON to the OOB Management network along with the other vQFXes and vSRXes.  
