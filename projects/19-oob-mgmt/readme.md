@@ -1,5 +1,7 @@
 # Out-of-Band Management setup 
 
+## Connecting MikroTiks, Proxmox VE and a vQFX to the Out-of-Band management network.
+
 Kind of took a bit of a break from networking for a while after I passed CCNA but now I would like to implement real OOB Management in my network.   
 
 ~~To complete that I'm gonna use the old Brocade FLS648 switch, Open vSwitch in Proxmox and VRFs to separate the Management interfaces in my devices.~~  
@@ -327,4 +329,50 @@ Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
   DAb 0.0.0.0/0        172.16.255.0         main                 20
 ```
 
+Since I already added the Proxmox host to the OOB Management network I thought that I would also connect a vQFX to this network.   
+The `OVS_OOB` already is connected to the OOB network so I just need to connect the `em0` management interface on the vQFX to the `OVS_OOB`.   
 
+
+In the Proxmox web GUI I added the `net0` vNIC (`em0` management in JunOS) to the `OVS_OOB`:   
+
+![vqfx-net0](./vqfx-net0.png)   
+
+Then in the xterm.js console for the vQFX-RE I set the `em0` interface to request an address from DHCP:   
+```junos 
+{master:0}[edit]
+root@vqfx-re# set interfaces em0 unit 0 family inet dhcp      
+
+{master:0}[edit]
+root@vqfx-re# commit
+```
+Then after a while I checked to see if the `em0` interface got an IP from DHCP:   
+```junos
+{master:0}
+root@vqfx-re> show interfaces terse 
+Interface               Admin Link Proto    Local                 Remote
+...
+xe-0/0/11               up    up
+xe-0/0/11.0             up    up   inet    
+bme0                    up    up
+bme0.0                  up    up   inet     128.0.0.1/2     
+                                            128.0.0.4/2     
+                                            128.0.0.16/2    
+                                            128.0.0.63/2    
+cbp0                    up    up
+dsc                     up    up
+em0                     up    up
+em0.0                   up    up   inet     10.1.99.197/24  
+em1                     up    up
+em1.0                   up    up   inet     169.254.0.2/24  
+em2                     up    up
+em2.32768               up    up   inet     192.168.1.2/24  
+em3                     up    up
+...
+```
+And as you can see the `em0` interface really got an IP from the DHCP Server running on the CCR2004.   
+Ping of course goes through to the gateway:   
+![vqfx-ping](./vqfx-ping.png)
+And I was able to SSH into the vQFX from my laptop:   
+![vqfx-ssh](./vqfx-ssh.png)   
+
+So what's left is to connect the Dell S4048-ON to the OOB Management network along with the other vQFXes and vSRXes.  
