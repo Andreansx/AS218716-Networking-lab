@@ -265,3 +265,66 @@ For now I will just drop input management traffic from other networks than the m
 ```
 
 This will be changed when I change the architecture to a Spine-Leaf topology where the CRS326 will be just a Leaf and won't play such a crucial role as it is now.
+
+I also wanted to make Proxmox management Out-of-Band too.   
+
+I plugged the eno1 interface and the iDRAC port on the Dell R710 to the FLS648.  
+
+In the Proxmox network config I added all eno1-eno4 interfaces to the `OVS_OOB` Open vSwitch and assigned it a `10.1.99.2/24` address.   
+
+I did it through Proxmox web GUI:   
+![pve](./pve.png)   
+
+In the config file it looks like this:
+```
+auto eno1
+iface eno1 inet manual
+        ovs_type OVSPort
+        ovs_bridge OVS_OOB
+
+auto eno2
+iface eno2 inet manual
+        ovs_type OVSPort
+        ovs_bridge OVS_OOB
+
+auto eno3
+iface eno3 inet manual
+        ovs_type OVSPort
+        ovs_bridge OVS_OOB
+
+auto eno4
+iface eno4 inet manual
+        ovs_type OVSPort
+        ovs_bridge OVS_OOB
+
+auto OVS_OOB
+iface OVS_OOB inet manual
+        address 10.1.99.2/24
+        gateway 10.1.99.1
+        ovs_type OVSBridge
+        ovs_ports eno1 eno2 eno3 eno4
+```
+
+A thing to note here is that I am now unable to access my Jellyfin VM from the management network.   
+That is because the management is completely separated from the rest of the network using a VRF.   
+However I still wanted to access the Jellyfin VM from my laptop and I know that I shouldn't and I should just place my laptop in the Users network but I don't have a SFP RJ45 transceiver right now so I will leak a route into the `vrf-mgmt` and create a route pointing to the management network.    
+On the CCR2004 I first added a route which leaks a next-hop (`172.16.255.1`) from the main routing table into the `vrf-mgmt`.   
+```rsc
+[aether@border-leaf-ccr2004] > ip route/add dst-address=10.1.0.0/16 gateway=172.16.255.1@main routing-table=vrf-mgmt
+```
+The `172.16.255.1` is the IP of the CRS326 on one of the eBGP sessions while the `@main` tells RouterOS to look up this next-hop in the `main` routing table and the `routing-table=vrf-mgmt` installs this route in the `vrf-mgmt` VRF.   
+Netx I needed to add a route which tells the `main` routing table where through to reach the traffic destined to the Management network (Because the router also needs to know where to point the traffic coming back from the Jellyfin VM)   
+```rsc
+[aether@border-leaf-ccr2004] > ip route/add dst-address=10.1.99.0/24 gateway=ether1@vrf-mgmt routing-table=main
+```
+I didn't need to add any route on the CRS326 because the default route installed from eBGP session will take care of the traffic returning form the Jellyfin VM to the management network:   
+```rsc
+[lynx@leaf-crs326] > ip ro pr
+Flags: D - DYNAMIC; I - INACTIVE, A - ACTIVE; c - CONNECT, s - STATIC, b - BGP
+Columns: DST-ADDRESS, GATEWAY, ROUTING-TABLE, DISTANCE
+#     DST-ADDRESS      GATEWAY              ROUTING-TABLE  DISTANCE
+  D b 0.0.0.0/0        172.16.255.2         main                 20
+  DAb 0.0.0.0/0        172.16.255.0         main                 20
+```
+
+
