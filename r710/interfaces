@@ -12,24 +12,58 @@
 auto lo
 iface lo inet loopback
 
+auto eno1
+iface eno1 inet manual
+	ovs_type OVSPort
+	ovs_bridge OVS_OOB
+
+auto eno2
+iface eno2 inet manual
+	ovs_type OVSPort
+	ovs_bridge OVS_OOB
+
+auto eno3
+iface eno3 inet manual
+	ovs_type OVSPort
+	ovs_bridge OVS_OOB
+
+auto eno4
+iface eno4 inet manual
+	ovs_type OVSPort
+	ovs_bridge OVS_OOB
+
+auto enp6s0
 iface enp6s0 inet manual
 
-iface eno1 inet manual
+iface enp7s0f0 inet manual
 
-iface eno2 inet manual
-
-iface eno3 inet manual
-
-iface eno4 inet manual
+iface enp7s0f1 inet manual
 
 auto vmbr0
-iface vmbr0 inet static
-	address 10.100.10.18/28
-	gateway 10.100.10.17
+iface vmbr0 inet manual
 	bridge-ports enp6s0
 	bridge-stp off
 	bridge-fd 0
 	bridge-vlan-aware yes
-	bridge-vids 2-4094
+	bridge-vids 20 30 40 50 106
+
+auto vmbr1
+iface vmbr1 inet manual
+	bridge-ports enp7s0f0 enp7s0f1
+	bridge-stp off
+	bridge-fd 0
+
+auto vqfxlink0
+iface vqfxlink0 inet manual
+	bridge-ports none
+	bridge-stp off
+	bridge-fd 0
+
+auto OVS_OOB
+iface OVS_OOB inet manual
+	address 10.1.99.2/24
+	gateway 10.1.99.1
+	ovs_type OVSBridge
+	ovs_ports eno1 eno2 eno3 eno4
 
 source /etc/network/interfaces.d/*
