@@ -185,4 +185,36 @@ PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
 rtt min/avg/max/mdev = 8.189/8.458/8.727/0.269 ms
 ```
 
+## Firewall 
 
+I'll redo the whole firewall configuration on the CCR2004 accordingly to the Zero-Trust policy.   
+As always, first I add two rules to allow returning traffic, both for forwarding and input chains.
+```rsc
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=input connection-state=established,related 
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=forward  connection-state=established,related
+```
+Then rules for allowing ICMP, BGP sessions, SSH etc.  
+```rsc
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=input protocol=icmp               
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=forward  protocol=icmp 
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=input protocol=tcp dst-port=179
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=input protocol=tcp dst-port=22 in-interface=ether1
+```
+I'll allow everything going out of the WAN interface.
+```rsc
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=forward out-interface=sfp-sfpplus12
+```
+I'm going to also allow traffic destined for the Jellyfin VM from the WAN interface because of port forwarding.
+```rsc
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=forward dst-address=10.1.4.51 dst-port=8096 in-interface=sfp-sfpplus12 protocol=tcp
+```
+And also from the Management network.
+```rsc
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=forward dst-address=10.1.4.51 dst-port=8096 src-address-list=MGMT protocol=tcp
+```
+Note that I'm not adding rules for allowing for example `NET30-USERS` to access the Jellyfin VM.
+That's because the traffic from `NET30-USERS` to the Jellyfin VM will never go through the CCR2004.   
+It's not done yet but the CCR2004 will only act as a Border Leaf and not as a core router.   
+Most of the traffic will go through the Dell EMC S4048-ON which will act as a Spine in the network.  
+There won't be any firewall on it though. It will just do ultra fast forwarding.
+The firewalls will be on the vSRX3.0 VMs inside the Proxmox host.
