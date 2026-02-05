@@ -198,8 +198,12 @@ Then rules for allowing ICMP, BGP sessions, SSH etc.
 [aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=input protocol=icmp               
 [aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=forward  protocol=icmp 
 [aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=input protocol=tcp dst-port=179
-[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=input protocol=tcp dst-port=22 in-interface=ether1
 ```
+
+~~`[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=input protocol=tcp dst-port=22 in-interface=ether1`~~
+I should have used `in-interface=vrf-mgmt` here.   
+`/ip/firewall/filter> set 5 in-interface=vrf-mgmt`
+
 I'll allow everything going out of the WAN interface.
 ```rsc
 [aether@border-leaf-ccr2004] /ip/firewall/filter> add action=accept chain=forward out-interface=sfp-sfpplus12
@@ -218,3 +222,46 @@ It's not done yet but the CCR2004 will only act as a Border Leaf and not as a co
 Most of the traffic will go through the Dell EMC S4048-ON which will act as a Spine in the network.  
 There won't be any firewall on it though. It will just do ultra fast forwarding.
 The firewalls will be on the vSRX3.0 VMs inside the Proxmox host.
+
+Now I can add the deny-by-default rules:  
+```rsc
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=drop chain=input comment="deny-by-default-input"
+[aether@border-leaf-ccr2004] /ip/firewall/filter> add action=drop chain=forward  comment="deny-by-default-forward"
+```
+
+As you can see I can normally SSH into the CCR2004 from the Management network:
+```zsh
+
+❯ ssh border-leaf-ccr2004
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+  
+
+
+  MMM      MMM       KKK                          TTTTTTTTTTT      KKK
+  MMMM    MMMM       KKK                          TTTTTTTTTTT      KKK
+  MMM MMMM MMM  III  KKK  KKK  RRRRRR     OOOOOO      TTT     III  KKK  KKK
+  MMM  MM  MMM  III  KKKKK     RRR  RRR  OOO  OOO     TTT     III  KKKKK
+  MMM      MMM  III  KKK KKK   RRRRRR    OOO  OOO     TTT     III  KKK KKK
+  MMM      MMM  III  KKK  KKK  RRR  RRR   OOOOOO      TTT     III  KKK  KKK
+
+  MikroTik RouterOS 7.19.4 (c) 1999-2025       https://www.mikrotik.com/
+
+
+Press F1 for help
+
+
+[aether@border-leaf-ccr2004] > quit
+interrupted
+Connection to 10.1.99.1 closed.
+```
+
+Now time to fix the firewall on the CRS326 via Serial connection because now I am cut off from the CRS326 management via SSH.   
+For now I will just drop input management traffic from other networks than the management network.
+```rsc
+[admin@leaf-crs326] /ip/firewall/filter> add action=drop chain=input protocol=tcp dst-port=22 in-interface=!vrf-mgmt
+[lynx@leaf-crs326] > ip service/set ssh address=10.1.99.0/24 vrf=vrf-mgmt 
+```
+
+This will be changed when I change the architecture to a Spine-Leaf topology where the CRS326 will be just a Leaf and won't play such a crucial role as it is now.

@@ -1,4 +1,4 @@
-# 2025-11-08 00:15:30 by RouterOS 7.19.4
+# 2026-02-05 18:03:08 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -20,6 +20,8 @@ add name=ZONE_TO_AS65000
 add name=LINK_USERS_NET
 /interface wireless security-profiles
 set [ find default=yes ] supplicant-identity=MikroTik
+/ip vrf
+add interfaces=ether1 name=vrf-mgmt
 /port
 set 0 name=serial0
 /routing ospf instance
@@ -27,7 +29,6 @@ add disabled=yes name=backbonev2 router-id=172.16.0.2
 /routing ospf area
 add disabled=yes instance=backbonev2 name=backbone0v2
 /interface bridge port
-add bridge=main-bridge interface=ether1 trusted=yes
 add bridge=main-bridge interface=qsfpplus1-1
 add bridge=main-bridge interface=qsfpplus1-2
 add bridge=main-bridge interface=qsfpplus1-3
@@ -69,7 +70,6 @@ add bridge=main-bridge tagged=main-bridge,sfp-sfpplus1 vlan-ids=100
 add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=50
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus3 vlan-ids=102
 add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=106
-add bridge=main-bridge tagged=main-bridge,sfp-sfpplus2 vlan-ids=104
 /interface ethernet switch
 set 0 l3-hw-offloading=yes
 /interface list member
@@ -80,7 +80,6 @@ add interface=eBGP_LINK_AS65000_2 list=ZONE_TO_AS65000
 /ip address
 add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
 add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
-add address=10.1.90.2/24 interface=ether1 network=10.1.90.0
 add address=172.16.255.1/31 interface=eBGP_LINK_AS65000_0 network=\
     172.16.255.0
 add address=172.16.0.2 interface=lo network=172.16.0.2
@@ -91,7 +90,7 @@ add address=172.16.255.6/31 interface=eBGP_LINK_AS65002_0 network=\
     172.16.255.6
 add address=172.16.255.5/31 interface=eBGP_LINK_AS65000_2 network=\
     172.16.255.4
-add address=10.1.1.5/30 interface=vlan90-mgmt network=10.1.1.4
+add address=10.1.99.5/24 interface=ether1 network=10.1.99.0
 /ip dhcp-relay
 add dhcp-server=172.16.0.1 disabled=no interface=vlan20-bare-metal \
     local-address-as-src-ip=yes name=vlan20-dhcp-relay
@@ -99,10 +98,11 @@ add dhcp-server=172.16.0.1 disabled=no interface=vlan50-kubernetes \
     local-address-as-src-ip=yes name=kubernetes-dhcp-relay
 add dhcp-server=172.16.0.1 disabled=no interface=vlan40-vms-cts \
     local-address-as-src-ip=yes name=vlan40-dhcp-relay
+/ip dhcp-server network
+add address=10.1.4.0/24
 /ip dns
 set servers=1.1.1.1
 /ip firewall address-list
-add address=10.1.1.4/30 list=CRS326-MGMT
 add address=10.1.4.0/24 list=VMS_NET
 add address=10.1.2.0/27 list=SERVERS_NET
 add address=10.1.3.0/24 list=USERS_NET
@@ -112,24 +112,16 @@ add address=10.1.4.0/24 list=BGP_ADV_NET
 add address=10.1.5.0/27 list=BGP_ADV_NET
 add address=172.16.0.2 list=BGP_ADV_NET
 add address=172.16.255.6/31 list=BGP_ADV_NET
-add address=10.1.1.0/30 list=CCR2004-MGMT
+add address=10.1.99.0/24 list=MGMT
 /ip firewall filter
-add action=drop chain=input port=22,80,8291 protocol=tcp src-address-list=\
-    USERS_NET
-add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
-    protocol=tcp src-address-list=USERS_NET
-add action=reject chain=input port=22,80,8291 protocol=tcp src-address-list=\
-    VMS_NET
-add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
-    protocol=tcp src-address-list=VMS_NET
-add action=drop chain=input port=22,80,8291 protocol=tcp src-address-list=\
-    KUBERNETES_NET
-add action=drop chain=forward dst-address-list=CRS326-MGMT port=22,80,8291 \
-    protocol=tcp src-address-list=KUBERNETES_NET
+add action=drop chain=input dst-port=22 protocol=tcp src-address-list=!MGMT
 /ip route
 add dst-address=10.1.1.0/30 gateway=172.16.255.0
+add dst-address=10.1.3.0/24 gateway=172.16.255.7
+add dst-address=0.0.0.0/0 gateway=10.1.99.1 routing-table=vrf-mgmt
 /ip service
 set ftp disabled=yes
+set ssh address=10.1.99.0/24 vrf=vrf-mgmt
 set www disabled=yes
 set api disabled=yes
 /ipv6 nd
@@ -159,6 +151,8 @@ add area=backbone0v2 disabled=yes networks=172.16.255.4/30
 set time-zone-name=Europe/Warsaw
 /system identity
 set name=leaf-crs326
+/system logging
+add topics=dhcp,debug
 /system routerboard settings
 set enter-setup-on=delete-key
 /system swos
