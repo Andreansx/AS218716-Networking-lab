@@ -44,3 +44,37 @@ So then I just added a default route for the `mgmt_junos` routing instance:
 set routing-instances mgmt_junos routing-options static route 0.0.0.0/0 next-hop 10.1.99.1
 commit
 ```
+
+Next thing to do is enable SSH access.   
+Accordingly to the best practises regarding the hardening of networking devices, I won't allow root access through SSH and instead will create a new user with a super-user class for now.   
+```junos
+set system login user aether class super-user
+```
+And now I want to import a public SSH key into the vJunos Switch but this can be really problematic because junos expects a strict format in which the key is imported.   
+I do all of this through xterm.js console and for me it seems that is cuts of characters or spaces sometimes so I use `load set terminal` because it seems to cause less problems especially when importing SSH keys.   
+```junos
+[edit]
+root# load set terminal                                         
+[Type ^D at a new line to end input]
+```
+It's best to input the key in a following way:   
+
+![ssh](./ssh.png)   
+
+I was stuck for a while here because I quoted only the base64 encoded key while I should have quoted the entire string from the second "ssh-ed25519" to the email address.   
+
+Then I disabled root auth through SSH:   
+```junos
+[edit]
+root# set system services ssh root-login deny
+```
+I also set limits for simultaneous SSH connections and maximum requests for SSH login per minute:   
+```junos
+[edit]
+root# set system services ssh rate-limit 3  
+
+[edit]
+root# set system services ssh connection-limit 2
+```
+
+I set this limit to 2 because I would at most have one SSH from my laptop and another one from my smartphone.
