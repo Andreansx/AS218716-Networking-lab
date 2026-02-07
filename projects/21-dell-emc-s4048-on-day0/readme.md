@@ -1,6 +1,10 @@
 # Basic Day0 config on the Dell EMC S4048-ON  
 
-# Management VRF, SSH setup, SSH public key import, OS9 Linux Shell
+# Management VRF, SSH setup and RSA public key import via SCP, OS9 Linux Shell.
+
+SSH RSA Pubkey Import on OS9:   
+* [via SCP ](##via-scp)   
+* [via USB](##via-usb)
 
 Just wanted to show how I set up a basic config for SSH access on the Dell S4048-ON.   
 
@@ -213,7 +217,7 @@ Now I would like to import my SSH public key.
 There seem to be two ways to do this: via SSH (scp) or via a usb drive.   
 I'm gonna show how to do this in both ways.   
 
-### Via scp
+## Via scp
 
 My Arch Linux system tries to always use SFTP when running SCP but the OS9 doesn't really seem to accept that so I had to make SCP use the older method.   
 
@@ -285,7 +289,25 @@ However when I tried to input the filename in the command itself it didn't work:
 
 Seems weird considering that this is the exact same filename that I entered in the method above.    
 
+But the most important thing is that as you can see this command wasn't ran in the CONFIGURE mode.   
+The `ip ssh pub-key-file` command in CONFIGURE mode seems to be used for something else while the `ip ssh rsa-authentication my-authorized-keys` command in the PRIVILEGED EXEC mode is actual one used for importing SSH public keys.   
 
 But after all the SSH login with RSA keys seems to work:   
 
 ![rsasuccessful](./rsasuccessful.png)    
+
+
+Only thing is that sadly OS9 in this version doesn't support the elliptic curve algorithms like ed25519 so I have to use longer keys (2048 bits) when I could use ed25519 keys with a length of only 256 bits.   
+
+
+I also know that I could have just used the built-in `copy` command but it would require spinning up a TFTP server or something similar and I just wanted something without a lot of setup.   
+Though looking back at this it actually might have been a better idea to go with the HTTP Copy.
+
+
+## via USB
+
+
+First I format my pendrive to FAT32.   
+
+[wip]
+
