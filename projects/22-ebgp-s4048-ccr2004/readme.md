@@ -76,7 +76,7 @@ DellEMCS4048-ON(conf-if-lo-0)#ip ad 172.16.0.0/32
 
 The CCR2004 and S4048-ON are connected through a 10GbE multimode fiber link with original Brocade SFP+ SR transceivers.   
 
-
+![dell](./dell.jpeg)    
 
 Then I set the IP address on the `Tengigabitethernet1/2` interface on the Dell S4048-ON.   
 ```OS9
