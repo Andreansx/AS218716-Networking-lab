@@ -262,10 +262,30 @@ $ mv /flash/Dell_EMC_S4048-ON_aether_rsa.pub \
 I even ran `vi` to delete the comment at the end of the file because I thought that maybe it was causing problems for the parser:   
 ![vi](./vi.png)
 
+Of course it didn't work.   
+I copied the copied the file via SCP once again and I checked with the CLI guide.   
+
+What I found to finally work was this:   
+
+![final](./final.png)    
+
+The command was cut off because of the OS9 cli formatting on Serial connection so here is the full version:   
+
 ```OS9
-DellEMC#$ication my-authorized-keys flash:                    
+DellEMC#$ip ssh rsa-authentication my-authorized-keys flash:                 
 Source file name []: Dell_EMC_S4048-ON_aether_rsa.pub
 RSA keys added to user's list of authorized-keys.
 Delete the file flash: : (yes/no) ? no
 DellEMC#
 ```
+
+However when I tried to input the filename in the command itself it didn't work:   
+
+![keynotvalid](./keynotvalid.png)   
+
+Seems weird considering that this is the exact same filename that I entered in the method above.    
+
+
+But after all the SSH login with RSA keys seems to work:   
+
+![rsasuccessful](./rsasuccessful.png)    
