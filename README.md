@@ -31,6 +31,9 @@ Here I put things that I think are the most interesting and worth reading.
 
 These are projects, case studies and troubleshooting logs.    
 
+*   **[Dell EMC S4048-ON Day0 and SSH pubkey setup](./projects/21-dell-emc-s4048-on-day0/)**
+
+
 *   **[Out-of-band Management](./projects/19-oob-mgmt)**    
 
 
