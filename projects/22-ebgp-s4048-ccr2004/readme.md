@@ -63,7 +63,10 @@ Flags: D - dynamic, X - disabled, I - inactive
 Then I created a new connection. 
 Dell S4048-ON will be `AS4200000000` and will use router id of `172.16.0.0/32`. CCR2004 will be `AS4200000001` and router id `172.16.0.1/32`.   
 ```rsc
-[aether@border-leaf-ccr2004] /routing/bgp/connection> add name=eBGP_CON_AS4200000000 remote.address=172.16.255.1 remote.as=4200000000 local.role=ebgp routing-table=main router-id=172.16.0.1 as=4200000001 output.network=BGP_ADV_NET output.default-originate=if-installed 
+[aether@border-leaf-ccr2004] /routing/bgp/connection> add name=eBGP_CON_AS4200000000 \
+remote.address=172.16.255.1 remote.as=4200000000 local.role=ebgp \
+routing-table=main router-id=172.16.0.1 as=4200000001 output.network=BGP_ADV_NET \
+output.default-originate=if-installed 
 ```
 
 Now I can SSH into the S4048-ON to set up basic eBGP on the link to the CCR2004.   
