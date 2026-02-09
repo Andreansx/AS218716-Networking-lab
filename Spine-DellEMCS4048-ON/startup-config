@@ -1,8 +1,8 @@
 ! Version 9.14(1.14)
-! Last configuration change at Sun Feb  8 18:57:20 2026 by aether
-! Startup-config last updated at Sun Feb  8 18:57:37 2026 by aether
+! Last configuration change at Mon Feb  9 13:15:03 2026 by aether
+! Startup-config last updated at Mon Feb  9 13:19:23 2026 by aether
 !
-boot system stack-unit 1 default system: A:
+boot system stack-unit 1 default system://A
 !
 logging coredump stack-unit  1 
 logging coredump stack-unit  2 
@@ -11,7 +11,7 @@ logging coredump stack-unit  4
 logging coredump stack-unit  5 
 logging coredump stack-unit  6 
 !
-hostname DellEMCS4048-ON
+hostname Spine-DellEMCS4048-ON
 !
 feature vrf
 ! 
@@ -26,225 +26,31 @@ bsd-username aether secret  $1$jY17qHZc$ECSuFuTJNWd9D/rDYOQm0/
 ip vrf management
  interface management
 ! 
+allow unsupported-transceiver
+! 
 stack-unit 1 provision S4048-ON
 ! 
 interface TenGigabitEthernet 1/1
- no ip address
- shutdown
-! 
+ ip address 172.16.255.3/31
+ no shutdown
+!
 interface TenGigabitEthernet 1/2
  ip address 172.16.255.1/31
  no shutdown
-! 
-interface TenGigabitEthernet 1/3
+!
+interface group TenGigabitEthernet 1/3 - 1/13 , TenGigabitEthernet 1/15 - 1/48
  no ip address
  shutdown
-! 
-interface TenGigabitEthernet 1/4
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/5
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/6
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/7
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/8
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/9
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/10
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/11
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/12
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/13
- no ip address
- shutdown
-! 
+!
 interface TenGigabitEthernet 1/14
  no ip address
  switchport
  no shutdown
-! 
-interface TenGigabitEthernet 1/15
+!
+interface group fortyGigE 1/49 - 1/54
  no ip address
  shutdown
-! 
-interface TenGigabitEthernet 1/16
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/17
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/18
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/19
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/20
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/21
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/22
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/23
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/24
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/25
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/26
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/27
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/28
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/29
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/30
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/31
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/32
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/33
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/34
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/35
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/36
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/37
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/38
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/39
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/40
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/41
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/42
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/43
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/44
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/45
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/46
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/47
- no ip address
- shutdown
-! 
-interface TenGigabitEthernet 1/48
- no ip address
- shutdown
-! 
-interface fortyGigE 1/49
- no ip address
- shutdown
-! 
-interface fortyGigE 1/50
- no ip address
- shutdown
-! 
-interface fortyGigE 1/51
- no ip address
- shutdown
-! 
-interface fortyGigE 1/52
- no ip address
- shutdown
-! 
-interface fortyGigE 1/53
- no ip address
- shutdown
-! 
-interface fortyGigE 1/54
- no ip address
- shutdown
-! 
+!
 interface ManagementEthernet 1/1
  ip address 10.1.99.7/24
  no shutdown
@@ -269,7 +75,7 @@ interface Loopback 0
  no shutdown
 ! 
 interface Vlan 1
-! 
+!
 interface Vlan 40
  ip address 10.1.4.1/24
  tagged TenGigabitEthernet 1/14
@@ -278,9 +84,12 @@ interface Vlan 40
 router bgp 4200000000
  bgp router-id 172.16.0.0
  network 10.1.4.0/24
+ maximum-paths ebgp 2
  bgp four-octet-as-support
  neighbor 172.16.255.0 remote-as 4200000001 
  neighbor 172.16.255.0 no shutdown 
+ neighbor 172.16.255.2 remote-as 4200000001 
+ neighbor 172.16.255.2 no shutdown 
 !
 ip access-list standard SSHACL
  seq 5 permit 10.1.99.0/24
