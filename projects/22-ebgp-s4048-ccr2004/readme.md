@@ -147,3 +147,46 @@ Gateway of last resort is 172.16.255.0 to network 0.0.0.0
   B EX 172.16.0.1/32      via 172.16.255.0                                               20/0    00:28:22
   C    172.16.255.0/31    Direct, Te 1/2                                                  0/0    00:45:11
 ```
+
+
+Since I was already doing this, I wanted to enable ECMP for eBGP between S4048-ON and CCR2004.   
+
+I connected a second 10GbE fiber link between those devices   
+
+![dell2](./dell2.jpeg)   
+
+I set up the second link on the S4048-ON:   
+```OS9
+Spine-DellEMCS4048-ON(conf)#interface Tengigabitethernet 1/1
+Spine-DellEMCS4048-ON(conf-if-te-1/1)#no shut
+Spine-DellEMCS4048-ON(conf-if-te-1/1)#ip ad 172.16.255.3/31
+% Warning: Use /31 mask on non point-to-point interface cautiously.
+Spine-DellEMCS4048-ON(conf-if-te-1/1)#exit
+Spine-DellEMCS4048-ON(conf)#router bgp 4200000000
+Spine-DellEMCS4048-ON(conf-router_bgp)#neighbor 172.16.255.2 remote-as 4200000001 
+Spine-DellEMCS4048-ON(conf-router_bgp)#neighbor 172.16.255.2 no shutdown
+Spine-DellEMCS4048-ON(conf-router_bgp)#maximum-paths ebgp 2
+```
+
+And the second eBGP session came up:  
+```OS9
+Spine-DellEMCS4048-ON#sh ip bgp summary     
+BGP router identifier 172.16.0.0, local AS number 4200000000
+BGP local RIB : Routes to be Added 0, Replaced 0, Withdrawn 0 
+3 network entrie(s) using 228 bytes of memory
+5 paths using 540 bytes of memory
+BGP-RIB over all using 545 bytes of memory
+7 BGP path attribute entrie(s) using 1152 bytes of memory
+5 BGP AS-PATH entrie(s) using 50 bytes of memory
+2 neighbor(s) using 16384 bytes of memory
+
+Neighbor        AS            MsgRcvd  MsgSent     TblVer  InQ  OutQ Up/Down  State/Pfx
+172.16.255.0    4200000001         55       54          0    0     0 00:11:34 2        
+172.16.255.2    4200000001         21       23          0    0     0 00:11:34 2
+```
+
+Then I got into configuration of ECMP for those eBGP sessions on the CCR2004.   
+Of course the ECMP didn't want to work and that is because I forgot that it's not supported for eBGP on ROS 7.19.4.   
+I had this problem once, you can read about it in the [eBGP-implementation](../12-eBGP-implementation/readme.md) project.   
+```
+```
