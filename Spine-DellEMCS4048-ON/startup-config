@@ -1,5 +1,6 @@
 ! Version 9.14(1.14)
-! Last configuration change at Sat Nov  1 22:07:06 2025 by default
+! Last configuration change at Sun Feb  8 18:57:20 2026 by aether
+! Startup-config last updated at Sun Feb  8 18:57:37 2026 by aether
 !
 boot system stack-unit 1 default system: A:
 !
@@ -10,280 +11,326 @@ logging coredump stack-unit  4
 logging coredump stack-unit  5 
 logging coredump stack-unit  6 
 !
-hostname DellEMC
+hostname DellEMCS4048-ON
 !
-eula-consent support-assist accept
-!
+feature vrf
+! 
 protocol lldp 
 !
 redundancy auto-synchronize full
 !
-feature vxlan
+username aether secret 5 02abf8a49fadae47794f517ced5d7a2b privilege 15
 !
+bsd-username aether secret  $1$jY17qHZc$ECSuFuTJNWd9D/rDYOQm0/
+! 
+ip vrf management
+ interface management
+! 
 stack-unit 1 provision S4048-ON
-!
+! 
 interface TenGigabitEthernet 1/1
  no ip address
- switchport
- switchport mode private-vlan trunk
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/2
- no ip address
- shutdown
-!
+ ip address 172.16.255.1/31
+ no shutdown
+! 
 interface TenGigabitEthernet 1/3
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/4
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/5
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/6
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/7
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/8
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/9
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/10
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/11
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/12
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/13
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/14
  no ip address
- shutdown
-!
+ switchport
+ no shutdown
+! 
 interface TenGigabitEthernet 1/15
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/16
  no ip address
  shutdown
-!       
+! 
 interface TenGigabitEthernet 1/17
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/18
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/19
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/20
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/21
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/22
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/23
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/24
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/25
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/26
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/27
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/28
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/29
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/30
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/31
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/32
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/33
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/34
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/35
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/36
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/37
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/38
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/39
  no ip address
  shutdown
-!       
+! 
 interface TenGigabitEthernet 1/40
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/41
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/42
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/43
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/44
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/45
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/46
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/47
  no ip address
  shutdown
-!
+! 
 interface TenGigabitEthernet 1/48
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/49
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/50
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/51
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/52
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/53
  no ip address
  shutdown
-!
+! 
 interface fortyGigE 1/54
  no ip address
  shutdown
-!
+! 
 interface ManagementEthernet 1/1
- ip address 10.1.1.1/30
+ ip address 10.1.99.7/24
  no shutdown
-!
+! 
 interface ManagementEthernet 2/1
  no shutdown
-!
+! 
 interface ManagementEthernet 3/1
  no shutdown
-!
+! 
 interface ManagementEthernet 4/1
  no shutdown
-!
+! 
 interface ManagementEthernet 5/1
  no shutdown
-!
+! 
 interface ManagementEthernet 6/1
  no shutdown
-!
+! 
 interface Loopback 0
- no ip address
+ ip address 172.16.0.0/32
+ no shutdown
+! 
+interface Vlan 1
+! 
+interface Vlan 40
+ ip address 10.1.4.1/24
+ tagged TenGigabitEthernet 1/14
  no shutdown
 !
-interface Vlan 1
-!untagged TenGigabitEthernet 1/1
+router bgp 4200000000
+ bgp router-id 172.16.0.0
+ network 10.1.4.0/24
+ bgp four-octet-as-support
+ neighbor 172.16.255.0 remote-as 4200000001 
+ neighbor 172.16.255.0 no shutdown 
 !
-interface Vlan 10
- no ip address
- shutdown
+ip access-list standard SSHACL
+ seq 5 permit 10.1.99.0/24
+!
+management route 0.0.0.0/0 10.1.99.1 
+!
+aaa authentication login default local
+!
+ip ssh server vrf management
+ip ssh authentication-retries 2
+ip ssh connection-rate-limit 5
+no ip ssh password-authentication enable
+ip ssh rsa-authentication enable
+ip ssh server enable
 !
 line console 0
+ logging synchronous level 2 limit 20
 line vty 0
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 1
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 2
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 3
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 4
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 5
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 6
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 7
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 8
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
 line vty 9
-!
+ access-class SSHACL ipv4
+ logging synchronous level 2 limit 20
+! 
 reload-type
  boot-type normal-reload
  config-scr-download enable
-!
+! 
 end

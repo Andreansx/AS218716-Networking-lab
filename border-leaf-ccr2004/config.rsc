@@ -1,4 +1,4 @@
-# 2026-02-05 18:03:02 by RouterOS 7.19.4
+# 2026-02-08 18:50:57 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -6,7 +6,6 @@
 /interface bridge
 add name=bridge0
 /interface vlan
-add interface=sfp-sfpplus1 name=eBGP_LINK_AS65001_0 vlan-id=100
 add interface=sfp-sfpplus2 name=eBGP_LINK_AS65001_1 vlan-id=102
 add interface=sfp-sfpplus3 name=eBGP_LINK_AS65001_2 vlan-id=104
 /interface list
@@ -49,9 +48,9 @@ set discover-interface-list=!ZONE-TO-CRS326-L2 mode=rx-only
 /interface list member
 add interface=sfp-sfpplus12 list=ZONE-WAN
 add interface=bridge0 list=ZONE-LOOPBACK
-add interface=eBGP_LINK_AS65001_0 list=ZONE_BGP_AS65001
+add interface=*18 list=ZONE_BGP_AS65001
 add interface=eBGP_LINK_AS65001_1 list=ZONE_BGP_AS65001
-add interface=eBGP_LINK_AS65001_0 list=ZONE-TO-CRS326-L2
+add interface=*18 list=ZONE-TO-CRS326-L2
 add interface=eBGP_LINK_AS65001_1 list=ZONE-TO-CRS326-L2
 add interface=bridge0 list=ZONE-TO-CRS326-L2
 add interface=ether1 list=ZONE-CCR2004-MGMT
@@ -59,14 +58,13 @@ add interface=eBGP_LINK_AS65001_2 list=ZONE_BGP_AS65001
 add interface=eBGP_LINK_AS65001_2 list=ZONE-TO-CRS326-L2
 /ip address
 add address=10.1.99.1/24 interface=ether1 network=10.1.99.0
-add address=172.16.255.0/31 interface=eBGP_LINK_AS65001_0 network=\
-    172.16.255.0
 add address=172.16.0.1 interface=bridge0 network=172.16.0.1
 add address=172.16.255.2/31 interface=eBGP_LINK_AS65001_1 network=\
     172.16.255.2
 add address=172.16.255.4/31 interface=eBGP_LINK_AS65001_2 network=\
     172.16.255.4
 add address=10.0.0.2/24 interface=sfp-sfpplus12 network=10.0.0.0
+add address=172.16.255.0/31 interface=sfp-sfpplus1 network=172.16.255.0
 /ip dhcp-server lease
 add address=10.1.5.30 mac-address=BC:24:11:80:55:00
 add address=10.1.5.29 mac-address=BC:24:11:80:55:01
@@ -115,10 +113,10 @@ add action=dst-nat chain=dstnat disabled=yes dst-address=10.0.0.2 dst-port=\
 add action=masquerade chain=srcnat out-interface=sfp-sfpplus12
 /ip route
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
-add disabled=no dst-address=10.1.1.4/30 gateway=172.16.255.1
-add disabled=no dst-address=10.1.3.0/24 gateway=172.16.255.1
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1@main routing-table=\
     vrf-mgmt
+add dst-address=10.1.99.0/24 gateway=ether1@vrf-mgmt routing-table=main
+add dst-address=10.1.4.0/24 gateway=172.16.255.1 routing-table=vrf-mgmt
 /ip service
 set ftp disabled=yes
 set ssh address=10.1.99.0/24 vrf=vrf-mgmt
@@ -129,10 +127,6 @@ set api disabled=yes
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
 add as=4201000001 disabled=no keepalive-time=20s local.role=ebgp name=\
-    eBGP_CON_AS65001_0 output.default-originate=if-installed .network=\
-    BGP_ADV_NET remote.address=172.16.255.1 .as=4201000002 router-id=\
-    172.16.0.1 routing-table=main
-add as=4201000001 disabled=no keepalive-time=20s local.role=ebgp name=\
     eBGP_CON_AS65001_1 output.default-originate=if-installed .network=\
     BGP_ADV_NET remote.address=172.16.255.3 .as=4201000002 router-id=\
     172.16.0.1 routing-table=main
@@ -140,6 +134,10 @@ add as=4201000001 disabled=no keepalive-time=20s local.role=ebgp name=\
     eBGP_CON_AS65001_2 output.default-originate=if-installed .network=\
     BGP_ADV_NET remote.address=172.16.255.5 .as=4201000002 router-id=\
     172.16.0.1 routing-table=main
+add as=4200000001 local.role=ebgp name=eBGP_CON_AS4200000000 \
+    output.default-originate=if-installed .network=BGP_ADV_NET \
+    remote.address=172.16.255.1 .as=4200000000 router-id=172.16.0.1 \
+    routing-table=main
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.1/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
