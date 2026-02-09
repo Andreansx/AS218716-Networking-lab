@@ -91,9 +91,9 @@ Here is the simplified diagram which shows what I'm making my network to look li
 
 ## Photos
 
-![devices](./media/devices.JPG)   
+![devices](./media/devices.jpeg)   
 
-![cables](./media/cables.JPG)
+![cables](./media/cables.jpeg)
 
 # Main overview + Plans
 
