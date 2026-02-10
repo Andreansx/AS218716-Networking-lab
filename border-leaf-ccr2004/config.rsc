@@ -1,10 +1,26 @@
-# 2026-02-09 13:48:00 by RouterOS 7.19.4
+# 2026-02-10 14:29:26 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
 # serial number = D4F00DCEEFD0
 /interface bridge
 add name=bridge0
+/interface ethernet
+set [ find default-name=ether1 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus1 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus2 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus3 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus4 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus5 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus6 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus7 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus8 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus9 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus10 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus11 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp-sfpplus12 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp28-1 ] l2mtu=9216 mtu=9216
+set [ find default-name=sfp28-2 ] l2mtu=9216 mtu=9216
 /interface vlan
 add interface=sfp-sfpplus3 name=eBGP_LINK_AS65001_2 vlan-id=104
 /interface list
@@ -99,6 +115,8 @@ add action=drop chain=forward comment=deny-by-default-forward
 /ip firewall mangle
 add action=mark-connection chain=prerouting in-interface=ether1 \
     new-connection-mark=mgmt-to-wan
+add action=change-mss chain=forward new-mss=clamp-to-pmtu out-interface=\
+    sfp-sfpplus12 protocol=tcp tcp-flags=syn tcp-mss=1453-65535
 add action=mark-routing chain=prerouting connection-mark=mgmt-to-wan \
     in-interface=sfp-sfpplus12 new-routing-mark=vrf-mgmt passthrough=no
 /ip firewall nat
@@ -114,6 +132,8 @@ add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1@main routing-table=\
     vrf-mgmt
 add dst-address=10.1.99.0/24 gateway=ether1@vrf-mgmt routing-table=main
+add dst-address=192.168.5.0/24 gateway=172.16.255.3@main routing-table=\
+    vrf-mgmt
 /ip service
 set ftp disabled=yes
 set ssh address=10.1.99.0/24 vrf=vrf-mgmt
