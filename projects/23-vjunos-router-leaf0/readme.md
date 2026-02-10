@@ -4,11 +4,17 @@ For the first time the 10GbE link between the Proxmox host and the Dell EMC S404
 
 The `vmbr0` configuration is now like this:   
 ```
+auto enp6s0
+iface enp6s0 inet manual
+        mtu 9216
+
 auto vmbr0
 iface vmbr0 inet manual
         bridge-ports enp6s0
         bridge-stp off
         bridge-fd 0
+        mtu 9216
+
 ```
 It's not VLAN-aware and has one physical interface bridged.   
 
@@ -47,6 +53,62 @@ And on the border-leaf-ccr2004:
           baseCR 
       tx-flow-control=off rx-flow-control=off bandwidth=unlimited/unlimited switch=switch1 
       sfp-rate-select=high sfp-ignore-rx-los=no sfp-shutdown-temperature=95C 
+```
+
+After booting up the Leaf-vJunosRouter0 I could see that there correctly are two interfaces in the up state:   
+```Junos 
+--- JUNOS 25.4R1.12 Kernel 64-bit  JNPR-15.0-20251024.861cae5_buil
+aether@vJunosRouter0> show interfaces terse 
+Interface               Admin Link Proto    Local                 Remote
+ge-0/0/0                up    up
+ge-0/0/0.0              up    up   inet    
+                                   multiservice
+lc-0/0/0                up    up
+lc-0/0/0.32769          up    up   vpls    
+pfe-0/0/0               up    up
+pfe-0/0/0.16383         up    up   inet    
+                                   inet6   
+pfh-0/0/0               up    up
+pfh-0/0/0.16383         up    up   inet    
+pfh-0/0/0.16384         up    up   inet    
+ge-0/0/1                up    up
+ge-0/0/1.16386          up    up  
+ge-0/0/2                up    down
+ge-0/0/2.16386          up    down
+ge-0/0/3                up    down
+ge-0/0/3.16386          up    down
+...
+```
+
+The `ge-0/0/0` interface corresponds to `net1` vNIC which is connected to the `enp6s0` physical interface. 
+The `ge-0/0/1` interface is `net2` vNIC connected to `vmbr1`.   
+
+I set the correct MTU on the interfaces in Leaf-vJunosRouter0:   
+```Junos
+[edit]
+aether@vJunosRouter0# set interfaces ge-0/0/0 mtu 9216 
+
+[edit]
+aether@vJunosRouter0# set interfaces ge-0/0/1 mtu 9216    
+
+[edit]
+aether@vJunosRouter0# commit 
+commit complete
+```
+
+I will be working now mostly on `ge-0/0/0` as it is the interface connected to Spine-DellEMCS4048-ON.   
+
+I deleted the SVIs and set an IP address on the `Te1/14` interface:   
+```OS9
+
+Spine-DellEMCS4048-ON#conf
+Spine-DellEMCS4048-ON(conf)#no int vl 50
+Spine-DellEMCS4048-ON(conf)#no int vl 40
+Spine-DellEMCS4048-ON(conf)#no int vl 60
+Spine-DellEMCS4048-ON(conf)#interface Tengigabitethernet 1/14
+Spine-DellEMCS4048-ON(conf-if-te-1/14)#no switchport 
+Spine-DellEMCS4048-ON(conf-if-te-1/14)#ip ad 172.16.255.4/31
+% Warning: Use /31 mask on non point-to-point interface cautiously.
 ```
 
 

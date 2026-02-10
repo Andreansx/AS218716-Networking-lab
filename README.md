@@ -31,6 +31,9 @@ Here I put things that I think are the most interesting and worth reading.
 
 These are projects, case studies and troubleshooting logs.    
 
+*   **[vJunosRouter leaf eBGP](./projects/23-vjunos-router-leaf0/)**   
+
+
 *   **[Dell EMC S4048-ON eBGP test run](./projects/22-ebgp-s4048-ccr2004/)**    
 
 
