@@ -1,0 +1,21 @@
+---
+- name: Saving and backing up the Spine-DellEMCS4048-ON0 startup-config
+  hosts: spine-s4048-on0
+  gather_facts: no 
+  connection: network_cli
+  collections:
+    dellemc.os9
+
+  tasks:
+    - name: saving compressed config to startup-config
+      os9_command:
+        commands:
+          - write memory compressed
+
+
+    - name: running `show startup-config`
+      os9_command:
+        commands:
+          - show startup-config
+      register: startup_config
+      
