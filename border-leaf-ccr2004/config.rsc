@@ -1,4 +1,4 @@
-# 2026-02-10 14:29:26 by RouterOS 7.19.4
+# 2026-02-10 23:26:17 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -6,23 +6,21 @@
 /interface bridge
 add name=bridge0
 /interface ethernet
-set [ find default-name=ether1 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus1 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus2 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus3 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus4 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus5 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus6 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus7 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus8 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus9 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus10 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus11 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus12 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp28-1 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp28-2 ] l2mtu=9216 mtu=9216
-/interface vlan
-add interface=sfp-sfpplus3 name=eBGP_LINK_AS65001_2 vlan-id=104
+set [ find default-name=ether1 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus1 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus2 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus3 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus4 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus5 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus6 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus7 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus8 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus9 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus10 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus11 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp-sfpplus12 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp28-1 ] l2mtu=9124 mtu=9000
+set [ find default-name=sfp28-2 ] l2mtu=9124 mtu=9000
 /interface list
 add name=ZONE-CCR2004-MGMT
 add name=ZONE-WAN
@@ -52,10 +50,6 @@ add address-pool=mgmt-pool interface=ether1 lease-time=4w2d name=dhcp-mgmt
 add interfaces=ether1 name=vrf-mgmt
 /port
 set 0 name=serial0
-/routing ospf instance
-add disabled=yes name=backbonev2 router-id=172.16.0.1
-/routing ospf area
-add disabled=yes instance=backbonev2 name=backbone0v2
 /interface bridge port
 add bridge=bridge0 interface=ZONE_BGP_AS65001
 /ip neighbor discovery-settings
@@ -63,19 +57,11 @@ set discover-interface-list=!ZONE-TO-CRS326-L2 mode=rx-only
 /interface list member
 add interface=sfp-sfpplus12 list=ZONE-WAN
 add interface=bridge0 list=ZONE-LOOPBACK
-add interface=*18 list=ZONE_BGP_AS65001
-add interface=*1B list=ZONE_BGP_AS65001
-add interface=*18 list=ZONE-TO-CRS326-L2
-add interface=*1B list=ZONE-TO-CRS326-L2
 add interface=bridge0 list=ZONE-TO-CRS326-L2
 add interface=ether1 list=ZONE-CCR2004-MGMT
-add interface=eBGP_LINK_AS65001_2 list=ZONE_BGP_AS65001
-add interface=eBGP_LINK_AS65001_2 list=ZONE-TO-CRS326-L2
 /ip address
 add address=10.1.99.1/24 interface=ether1 network=10.1.99.0
 add address=172.16.0.1 interface=bridge0 network=172.16.0.1
-add address=172.16.255.4/31 interface=eBGP_LINK_AS65001_2 network=\
-    172.16.255.4
 add address=10.0.0.2/24 interface=sfp-sfpplus12 network=10.0.0.0
 add address=172.16.255.0/31 interface=sfp-sfpplus1 network=172.16.255.0
 add address=172.16.255.2/31 interface=sfp-sfpplus2 network=172.16.255.2
@@ -99,19 +85,22 @@ add address=0.0.0.0/0 list=BGP_ADV_NET
 add address=10.0.0.0/24 list=ISP_ROUTER_NET
 add address=10.1.99.0/24 list=MGMT
 /ip firewall filter
-add action=accept chain=input connection-state=established,related
-add action=accept chain=forward connection-state=established,related
-add action=accept chain=input protocol=icmp
-add action=accept chain=forward protocol=icmp
-add action=accept chain=input dst-port=179 protocol=tcp
-add action=accept chain=input dst-port=22 in-interface=vrf-mgmt protocol=tcp
-add action=accept chain=forward out-interface=sfp-sfpplus12
-add action=accept chain=forward dst-address=10.1.4.51 dst-port=8096 \
-    in-interface=sfp-sfpplus12 protocol=tcp
-add action=accept chain=forward dst-address=10.1.4.51 dst-port=8096 protocol=\
-    tcp src-address-list=MGMT
-add action=drop chain=input comment=deny-by-default-input
-add action=drop chain=forward comment=deny-by-default-forward
+add action=accept chain=input connection-state=established,related disabled=\
+    yes
+add action=accept chain=forward connection-state=established,related \
+    disabled=yes
+add action=accept chain=input disabled=yes protocol=icmp
+add action=accept chain=forward disabled=yes protocol=icmp
+add action=accept chain=input disabled=yes dst-port=179 protocol=tcp
+add action=accept chain=input disabled=yes dst-port=22 in-interface=vrf-mgmt \
+    protocol=tcp
+add action=accept chain=forward disabled=yes out-interface=sfp-sfpplus12
+add action=accept chain=forward disabled=yes dst-address=10.1.4.51 dst-port=\
+    8096 in-interface=sfp-sfpplus12 protocol=tcp
+add action=accept chain=forward disabled=yes dst-address=10.1.4.51 dst-port=\
+    8096 protocol=tcp src-address-list=MGMT
+add action=drop chain=input comment=deny-by-default-input disabled=yes
+add action=drop chain=forward comment=deny-by-default-forward disabled=yes
 /ip firewall mangle
 add action=mark-connection chain=prerouting in-interface=ether1 \
     new-connection-mark=mgmt-to-wan
@@ -132,8 +121,9 @@ add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1
 add disabled=no dst-address=0.0.0.0/0 gateway=10.0.0.1@main routing-table=\
     vrf-mgmt
 add dst-address=10.1.99.0/24 gateway=ether1@vrf-mgmt routing-table=main
-add dst-address=192.168.5.0/24 gateway=172.16.255.3@main routing-table=\
-    vrf-mgmt
+add dst-address=10.1.4.0/24 gateway=172.16.255.1 routing-table=vrf-mgmt
+add dst-address=172.16.255.4/31 gateway=172.16.255.1 routing-table=vrf-mgmt
+add dst-address=172.16.255.4/31 gateway=172.16.255.1 routing-table=main
 /ip service
 set ftp disabled=yes
 set ssh address=10.1.99.0/24 vrf=vrf-mgmt

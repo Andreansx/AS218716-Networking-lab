@@ -1,4 +1,4 @@
-# 2026-02-07 03:48:22 by RouterOS 7.19.4
+# 2026-02-07 12:45:13 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -109,19 +109,9 @@ add interface=eBGP_LINK_AS65000_1 list=ZONE_TO_AS65000
 add interface=sfp-sfpplus5 list=LINK_USERS_NET
 add interface=eBGP_LINK_AS65000_2 list=ZONE_TO_AS65000
 /ip address
-add address=10.1.2.1/27 interface=vlan20-bare-metal network=10.1.2.0
-add address=10.1.4.1/24 interface=vlan40-vms-cts network=10.1.4.0
-add address=172.16.255.1/31 interface=eBGP_LINK_AS65000_0 network=\
-    172.16.255.0
 add address=172.16.0.2 interface=lo network=172.16.0.2
-add address=10.1.5.1/27 interface=vlan50-kubernetes network=10.1.5.0
-add address=172.16.255.3/31 interface=eBGP_LINK_AS65000_1 network=\
-    172.16.255.2
-add address=172.16.255.6/31 interface=eBGP_LINK_AS65002_0 network=\
-    172.16.255.6
-add address=172.16.255.5/31 interface=eBGP_LINK_AS65000_2 network=\
-    172.16.255.4
 add address=10.1.99.5/24 interface=ether1 network=10.1.99.0
+add address=172.16.255.7/31 interface=sfp-sfpplus2 network=172.16.255.6
 /ip dhcp-relay
 # Interface not running
 add dhcp-server=172.16.0.1 disabled=no interface=vlan20-bare-metal \
@@ -137,23 +127,14 @@ add address=10.1.4.0/24
 /ip dns
 set servers=1.1.1.1
 /ip firewall address-list
-add address=10.1.4.0/24 list=VMS_NET
-add address=10.1.2.0/27 list=SERVERS_NET
-add address=10.1.3.0/24 list=USERS_NET
-add address=10.1.5.0/27 list=KUBERNETES_NET
-add address=10.1.2.0/27 list=BGP_ADV_NET
-add address=10.1.4.0/24 list=BGP_ADV_NET
-add address=10.1.5.0/27 list=BGP_ADV_NET
 add address=172.16.0.2 list=BGP_ADV_NET
-add address=172.16.255.6/31 list=BGP_ADV_NET
 add address=10.1.99.0/24 list=MGMT
 /ip firewall filter
 add action=drop chain=input disabled=yes dst-port=22 protocol=tcp \
     src-address-list=!MGMT
 /ip route
-add dst-address=10.1.1.0/30 gateway=172.16.255.0
-add dst-address=10.1.3.0/24 gateway=172.16.255.7
-add dst-address=0.0.0.0/0 gateway=10.1.99.1 routing-table=vrf-mgmt
+add disabled=no dst-address=0.0.0.0/0 gateway=10.1.99.1@vrf-mgmt \
+    routing-table=vrf-mgmt
 /ip service
 set ftp disabled=yes
 set ssh address=10.1.99.0/24 vrf=vrf-mgmt
@@ -162,18 +143,9 @@ set api disabled=yes
 /ipv6 nd
 set [ find default=yes ] advertise-dns=no advertise-mac-address=no
 /routing bgp connection
-add as=4201000002 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_0 \
-    output.network=BGP_ADV_NET remote.address=172.16.255.0 .as=4201000001 \
-    router-id=172.16.0.2
-add as=4201000002 keepalive-time=20s local.role=ebgp name=eBGP_CON_AS65000_1 \
-    output.network=BGP_ADV_NET remote.address=172.16.255.2 .as=4201000001 \
-    router-id=172.16.0.2
-add as=4201000002 disabled=no keepalive-time=20s local.role=ebgp name=\
-    eBGP_CON_AS65000_2 output.network=BGP_ADV_NET remote.address=172.16.255.4 \
-    .as=4201000001 router-id=172.16.0.2
-add as=4201000002 disabled=no keepalive-time=20s local.role=ebgp name=\
-    eBGP_CON_AS65002_0 output.network=BGP_ADV_NET remote.address=172.16.255.7 \
-    .as=4201000001 router-id=172.16.0.2
+add as=4200000002 local.role=ebgp name=eBGP_CON_AS4200000000 output.network=\
+    BGP_ADV_NET remote.address=172.16.255.6 .as=4200000000 router-id=\
+    172.16.0.2 routing-table=main
 /routing ospf interface-template
 add area=backbone0v2 disabled=yes networks=172.16.0.2/32 passive
 add area=backbone0v2 disabled=yes networks=172.16.255.0/30
