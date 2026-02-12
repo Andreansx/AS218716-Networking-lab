@@ -18,4 +18,13 @@
         commands:
           - show startup-config
       register: startup_config
-      
+ 
+    - name: display config
+      debug:
+        var: startup_config.stdout_lines
+
+    - name: saving config on laptop
+      copy: 
+        content: "{{ startup_config.stdout[0] }}"
+        dest: "../../Spine-DellEMCS4048-ON/startup-config"
+      delegate_to: localhost
