@@ -27,6 +27,8 @@ Currently I'm mainly focused on turning the lab into a datacenter-styled network
 
 # Projects
 
+*   **[Spine-DellEMCS4048-ON0 provisioning with Ansible](./Ansible/Provision-Spine-DellEMCS4048-ON0/)**   
+
 
 *   **[Jumbo Frames](./projects/23-jumbo-frames/)**   
 

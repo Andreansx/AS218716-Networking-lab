@@ -19,6 +19,17 @@
         4200000000
       rid:
         172.16.0.0
+      ebgpmaxpaths:
+        4
+    neighbors:
+      - ip: 172.16.255.0 
+        as: 4200000001
+      - ip: 172.16.255.2
+        as: 4200000001 
+      - ip: 172.16.255.5
+        as: 4201000000
+      - ip: 172.16.255.7 
+        as: 4200000002
 
   tasks:
     - name: generating config from template
