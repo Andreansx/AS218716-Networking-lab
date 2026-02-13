@@ -1,0 +1,33 @@
+---
+- name: Provisioning Leaf-vJunosRouter0 with eBGP config 
+  hosts: Leaf-vJunosRouter0
+  connection: netconf 
+  gather_facts: no 
+  collections:
+    junipernetworks.junos 
+  
+  vars:
+    bgp_interfaces:
+      - name: ge-0/0/0 
+        address: 172.16.255.5/31
+    bgp:
+      rid: 172.16.1.0 
+      system_as: 4201000000
+      neighbors:
+        - ip: 172.16.255.4
+          remote-as: 4200000000
+
+  tasks:
+    - name: Setting up the uplink interface
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set interfaces {{ item.name }} unit 0 family inet address {{ item.address }}"
+        comment: "Applied address {{ item.address }} to interface {{ item.name }}"
+      register: result_task1
+      loop: "{{ bgp_interfaces }}"
+
+    - name: Configuring eBGP 
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set routing-options autonomous-system {{ bgp.system_as }}"  
+        comment: "Assigned an ASN of {{ bgp.system_as }}"

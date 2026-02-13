@@ -27,6 +27,9 @@ Currently I'm mainly focused on turning the lab into a datacenter-styled network
 
 # Projects
 
+*   **[Leaf-vJunosRouter0 eBGP provisioning with Ansible](./projects/24-leaf-vjunosrouter0-ebgp-ansible/)**    
+
+
 *   **[Spine-DellEMCS4048-ON0 provisioning with Ansible](./Ansible/Provision-Spine-DellEMCS4048-ON0/)**   
 
 

@@ -17,6 +17,9 @@
       - name: 1/4 
         desc: link to AS4200000002 
         address: 172.16.255.6/31
+      - name: 1/14
+        desc: link to AS4201000000 
+        address: 172.16.255.4/31
     bgp:
       system_as:
         4200000000
