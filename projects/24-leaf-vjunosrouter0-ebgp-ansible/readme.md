@@ -15,6 +15,8 @@ Spine-DellEMCS4048-ON0 RID is `172.16.0.0` and Leaf-vJunosRouter0 is gonna be `1
 
 So this time I won't show how I'm entering commands in Junos one by one and instead I will show what I'm adding to the Ansible playbook.   
 
+It's important to note that even though I'm using the `junos_config` module with the `set` commands, Ansible won't create any duplicates of the commands unlike for example with `dellemc.os9.os9_command`.  
+
 The beginning is the same as the last time:   
 ```yaml
 ---
@@ -28,18 +30,19 @@ The beginning is the same as the last time:
 
 I'll also use variables instead of hardcoding everything.   
 ```yaml
-  
   vars:
     bgp_interfaces:
       - name: ge-0/0/0 
         address: 172.16.255.5/31
-        desc: eBGP link 0 to Spine-DellEMCS4048-ON0
     bgp:
+      groupname: EBGP-SPINE
+      type: external
       rid: 172.16.1.0 
       system_as: 4201000000
-      neighbors:
-        - ip: 172.16.255.4
-          remote-as: 4200000000
+    neighbors:
+      - ip: 172.16.255.4
+        as: 4200000000
+
 ```
 
 The first task is going to be setting up the uplink interface to Spine-DellEMCS4048-ON0 on the Leaf-vJunosRouter0.   
@@ -72,5 +75,76 @@ Then the next task is to add an ASN to the Leaf-vJunosRouter0.
       junipernetworks.junos.junos_config:
         lines:
           - "set routing-options autonomous-system {{ bgp.system_as }}"  
-        comment: "Assigned an ASN of {{ bgp.system_as }}"
+          - "set routing-options router-id {{ bgp.rid }}"
+
+        comment: "Assigned an ASN of {{ bgp.system_as }} and a RID of {{ bgp.rid }}"
 ```
+
+This is super simple, there isn't any loop etc.  
+
+Next I added a task for setting adding the eBGP neighbors to the `bgp group`.   
+```yaml
+    - name: Configuring eBGP neighbors
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set protocols bgp group {{ bgp.groupname }} neighbor {{ item.ip }} peer-as {{ item.as }}"
+      loop: "{{ neighbors }}"
+```
+Again I used a loop. 
+This time the loop iterates through the elements in the `neighbors` list.   
+The value of `{{ bgp.groupname }}` does not change.
+However the values of `{{ item.ip }}` and `{{ item.as }}` of course do change.   
+I mean not in this exact case because I have defined only a single neighbor.   
+But if I wanted to connect this Leaf-vJunosRouter0 to a second Spine switch, then the only thing I would have to do is add a new neighbor to the `neighbors` list (and config the interface of course).   
+
+At this point I again ran the playbook to see if the code works and I actually got an error:   
+```
+!
+failed: [Leaf-vJunosRouter0] (item={'ip': '172.16.255.4', 'as': 4200000000}) => {"ansible_loop_var": "item", "changed": false, "item": {"as": 4200000000, "ip": "172.16.255.4"}, "msg": "Task failed: b'error: Peer (172.16.255.4) may not be configured multiple times in the same instance\\nerror: configuration check-out failed'"}
+!
+```
+This is most likely because I already configured the `172.16.255.4` neighbor in a different `bgp group` and in JunOS a neighbor can belong to only a single BGP Group at a time.   
+
+So I SSHed into the Leaf-vJunosRouter0 and manually deleted the old BGP Group.   
+```
+protocols {                             
+    router-advertisement {
+        interface fxp0.0 {
+            managed-configuration;
+        }
+    }
+    bgp {
+        group EBGP0 {
+            type external;
+            neighbor 172.16.255.4 {
+                export ROUTE0;
+                peer-as 4200000000;
+            }
+        }
+    }
+}
+
+aether@vJunosRouter0> configure 
+Entering configuration mode
+
+[edit]
+aether@vJunosRouter0# delete protocols bgp group EBGP0 
+
+[edit]
+aether@vJunosRouter0# commit   
+commit complete
+```
+Then I run the playbook again and this time it worked:   
+```
+ok: [Leaf-vJunosRouter0] => (item={'name': 'ge-0/0/0', 'address': '172.16.255.5/31'})
+
+TASK [Configuring eBGP] ******************************************************************
+changed: [Leaf-vJunosRouter0]
+
+TASK [Configuring eBGP neighbors] ********************************************************
+changed: [Leaf-vJunosRouter0] => (item={'ip': '172.16.255.4', 'as': 4200000000})
+
+PLAY RECAP *******************************************************************************
+Leaf-vJunosRouter0         : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+

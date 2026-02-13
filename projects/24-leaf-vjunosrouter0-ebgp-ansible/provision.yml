@@ -11,11 +11,13 @@
       - name: ge-0/0/0 
         address: 172.16.255.5/31
     bgp:
+      groupname: EBGP-SPINE
+      type: external
       rid: 172.16.1.0 
       system_as: 4201000000
-      neighbors:
-        - ip: 172.16.255.4
-          remote-as: 4200000000
+    neighbors:
+      - ip: 172.16.255.4
+        as: 4200000000
 
   tasks:
     - name: Setting up the uplink interface
@@ -30,4 +32,13 @@
       junipernetworks.junos.junos_config:
         lines:
           - "set routing-options autonomous-system {{ bgp.system_as }}"  
-        comment: "Assigned an ASN of {{ bgp.system_as }}"
+          - "set protocols bgp group {{ bgp.groupname }} type {{ bgp.type }}"
+          - "set routing-options router-id {{ bgp.rid }}"
+        comment: "Assigned an ASN of {{ bgp.system_as }} and a RID of {{ bgp.rid }}"
+
+    - name: Configuring eBGP neighbors
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set protocols bgp group {{ bgp.groupname }} neighbor {{ item.ip }} peer-as {{ item.as }}"
+      loop: "{{ neighbors }}"
+
