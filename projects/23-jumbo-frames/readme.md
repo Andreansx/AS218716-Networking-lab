@@ -2,6 +2,8 @@
 
 I wanted to set up a vJunos Router 25.4R1 as a leaf in my network but before that I would like to make the entire network use Jumbo Frames because almost the whole network runs on 10Gbps links so it's a good practice to set up MTU 9000.   
 
+> [!NOTE]
+> Check below for [Ansible](##ansible-implementation) config!
 
 The `vmbr0` configuration is now like this:   
 ```
@@ -155,5 +157,91 @@ So L2 MTU 9014 and L3 MTU 9000 is perfect for this use case because there will b
 As I said, If I wanted to use VLAN tagging, then I would have to set the L2 MTU on Leaf-vJunosRouter0 to 9018 bytes for 802.1Q encapsulation or 9022 for QinQ but the `inet` would be still 9000 bytes. 
 
 ## Ansible implementation
+
+I'll explain what I did in the [mtu.yml](./mtu.yml) file.   
+
+```yaml 
+--- 
+- name: Configuring L3 MTU 9000/ L2 MTU 9014 on Leaf-vJunosRouter0
+  hosts: Leaf-vJunosRouter0
+  gather_facts: no 
+  collections:
+    - junipernetworks.junos
+```
+This defines the hosts to which Ansible will connect.
+Ansible will use NETCONF instead of SSH as defined in the [hosts.yml](./hosts.yml) file:  
+```yaml
+all:
+  children:
+    juniper_routers:
+      hosts:
+        Leaf-vJunosRouter0:
+          ansible_host: 10.1.99.6
+          ansible_connection: netconf
+          ansible_network_os: junipernetworks.junos.junos
+          ansible_user: aether
+          ansible_ssh_private_key_file: /home/yeendrea/.ssh/vJunosRouter_aether_ed25519
+          ansible_port: 830
+```
+For example, when I was messing around with Ansible and Dell EMC OS9, then the `ansible_connection` was set to `network_cli` which uses SSH.  
+But JunOS is a lot newer and supports NETCONF which by default works on port 830.  
+
+At first I did this without variables but I figured out how do they work so as of now, the variables are like this:
+```yaml
+vars:
+    jumbo_interfaces:
+      - ge-0/0/0
+      - ge-0/0/1
+    l2mtu: 
+      9014
+    l3mtu:
+      9000
+```
+
+The `jumbo_interfaces` is an array while the `l2mtu` and `l3mtu` are simple numeric values.   
+
+The first task is the most complicated i guess:   
+```yaml
+tasks:
+    - name: Set L2MTU to 9014 and L3MTU to 9000
+      junipernetworks.junos.junos_config: 
+        lines:
+          - "set interfaces {{ item }} mtu {{ l2mtu }}"
+          - "set interfaces {{ item }} unit 0 family inet mtu {{ l3mtu }}"
+        comment: "setting l2mtu={{ l2mtu }} and l3mtu={{ l3mtu }} on {{ item }}"
+      register: result
+      loop: "{{ jumbo_interfaces }}"
+```
+
+Since I put the two commands together as an array under the `lines` section, Ansible will enter them with a single commit.
+That way either everything is correct, or nothing goes through accordingly to the atomic commits principle.   
+
+The `loop: "{{ jumbo_interfaces }}"` part works like a typical for loop, it iterates through all the values in the `jumbo_interfaces` array. 
+The `{{ item }}` represents a value of the element in the `jumbo_interfaces` array as it iterates through them.   
+
+So if the jumbo_interfaces array is like this:   
+```yaml
+jumbo_interfaces:
+      - ge-0/0/0
+      - ge-0/0/1
+```
+then on the first iteration of the loop, the `{{ item }}` element will have a value of the first element of the `jumbo_interfaces` array, and that is `ge-0/0/0`.  
+
+On the second iteration it will have a value of `ge-0/0/1` and so on..  
+
+In the `[...] mtu {{ l2mtu }}` and `[...] inet mtu {{ l3mtu }}` parts, the values of `{{ l2mtu }}` and `{{ l3mtu }}` do not change.  
+They simply represent the static numeric value of `{{ l2mtu }}` and `{{ l3mtu }}` respectfully.   
+
+The `comment: "setting l2mtu={{ l2mtu }} and l3mtu={{ l3mtu }} on {{ item }}"` part works the same way.   
+
+```yaml
+    - name: display result 
+      debug:
+        msg: "updated L2 and L3 MTU"
+      when: result.changed
+```
+This part outputs `"updated L2 and L3 MTU"` when the registered `result` changes.    
+
+
 
 ![ansible](./ansible.png)   
