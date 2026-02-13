@@ -5,14 +5,19 @@
   collections:
     - junipernetworks.junos
 
+  vars:
+    jumbo_interfaces:
+      - ge-0/0/0
+      - ge-0/0/1
   tasks:
     - name: Set L2MTU to 9014 and L3MTU to 9000
       junipernetworks.junos.junos_config: 
         lines:
-          - set interfaces ge-0/0/0 mtu 9014
-          - set interfaces ge-0/0/0 unit 0 family inet mtu 9000
-        comment: setting l2mtu=9014 and l3mtu=9000
+          - "set interfaces {{ item }} mtu 9014"
+          - "set interfaces {{ item }} unit 0 family inet mtu 9000"
+        comment: "setting l2mtu=9014 and l3mtu=9000 on {{ item }}"
       register: result
+      loop: "{{ jumbo_interfaces }}"
 
     - name: display result 
       debug:
