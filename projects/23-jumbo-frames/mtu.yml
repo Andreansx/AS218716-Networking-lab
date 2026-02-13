@@ -4,3 +4,21 @@
   gather_facts: no 
   collections:
     - junipernetworks.junos
+
+  tasks:
+    - name: Set L2MTU to 9014
+      junipernetworks.junos.junos_config: 
+        lines:
+          - set interfaces ge-0/0/0 mtu 9014
+        comment: setting l2mtu to 9014
+      register: result_l2mtu
+
+
+    - name: Set L3MTU to 9000
+      junipernetworks.junos.junos_config:
+        lines:
+          - set interfaces ge-0/0/0 unit 0 family inet mtu 9000
+        comment: setting l3mtu to 9000
+      register: result_l3mtu 
+
+
