@@ -3,3 +3,6 @@
 *.rsc linguist-detectable=true
 config linguist-detectable=true
 config linguist-language=Config
+*.conf linguist-detectable=True
+*.conf linguist-language=Tcl
+
