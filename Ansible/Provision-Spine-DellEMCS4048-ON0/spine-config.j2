@@ -1,7 +1,17 @@
 {% for interface in interfaces %}
-interface Tengiganbitethernet {{ interface.name }}
+interface Tengigabitethernet {{ interface.name }}
   description {{ interface.desc }}
   ip address {{ interface.address }}
   no shutdown
   mtu 9216
+{% endfor %}
+
+
+router bgp {{ bgp.system_as }}
+  bgp router-id {{ bgp.rid }}
+  maximum-paths ebgp {{ bgp.ebgpmaxpaths }}
+  redistribute imported-bgp
+  {% for neighbor in neighbors %}
+  neighbor {{ neighbor.ip }} remote-as {{ neighbor.as }}
+  neighbor {{ neighbor.ip }} no shutdown
 {% endfor %}

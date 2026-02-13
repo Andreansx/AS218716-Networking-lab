@@ -6,6 +6,27 @@
   collections:
     dellemc.os9
 
-  tasks:
-    - name: configuring Tengigabitethernet interfaces
+  vars:
+    interfaces:
+      - name: 1/1
+        desc: link to AS4200000001
+        address: 172.16.255.3/31
+      - name: 1/2
+        desc: link to AS4200000001
+        address: 172.16.255.1/31
+    bgp:
+      system_as:
+        4200000000
+      rid:
+        172.16.0.0
 
+  tasks:
+    - name: generating config from template
+      ansible.builtin.template:
+        src: spine-config.j2
+        dest: ./generatedconfig.txt 
+
+    - name: pushing config to Spine-DellEMCS4048-ON
+      dellemc.os9.os9_config:
+        src: ./generatedconfig.txt
+        save: yes

@@ -1,16 +1,16 @@
 # Datacenter networking lab
 
-Here I document everything about my networking lab which serves as a practical ground for learing modern datacenter technologies.     
+Here I document everything about my networking lab which serves as a practical ground for learning modern datacenter technologies.     
 
 Currently I'm mainly focused on turning the lab into a datacenter-styled network, particularly I want to create a ultrafast switching fabric in a Clos architecture using my Dell EMC S4048-ON as the spine switch, along with Juniper vQFXs as leaf switches, all connected with eBGP.
 
 > [!NOTE]   
-> I passed CCNA on 8th of January recently so I'll take a break for a while and then I'm fully focusing on L3-only CLOS and EVPN-VXLAN between vSRX3.0 VMs.   
-
+> I passed CCNA on 8th of January. 
+> Now I'm finally getting into Ansible and automation of Junos devices.
 
 <div align=“center”>
 
-![MikroTik](https://img.shields.io/badge/routeros-2B0948?style=for-the-badge&logo=mikrotik&logoColor=white&logoSize=auto)
+![ansible](https://img.shields.io/badge/ansible-2B0948?style=for-the-badge&logo=ansible&logoColor=white&logoSize=auto)
 ![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white&logoSize=auto)
 ![broadcom](https://img.shields.io/badge/StrataXGS,%20TCAM-7D3742?style=for-the-badge&logo=broadcom&logoColor=white&logoSize=auto)
 ![dell](https://img.shields.io/badge/EMC%20OS9-A54E3E?style=for-the-badge&logo=dell&logoColor=white&logoSize=auto)
@@ -19,17 +19,14 @@ Currently I'm mainly focused on turning the lab into a datacenter-styled network
 </div>
 
 ## Table of Contents
-1.  [Docs to read](#docs-to-read)
+1.  [Projects](#projects)
 2.  [How This Repository Is Organized](#how-this-repository-is-organized)
 3.  [Lab Architecture](#lab-architecture)
 4.  [Hardware](#hardware)
 5.  [Contact](#contact)
 
-# Docs to read
+# Projects
 
-Here I put things that I think are the most interesting and worth reading.   
-
-These are projects, case studies and troubleshooting logs.    
 
 *   **[Jumbo Frames](./projects/23-jumbo-frames/)**   
 
