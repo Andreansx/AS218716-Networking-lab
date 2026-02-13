@@ -6,30 +6,16 @@
     - junipernetworks.junos
 
   tasks:
-    - name: Set L2MTU to 9014
+    - name: Set L2MTU to 9014 and L3MTU to 9000
       junipernetworks.junos.junos_config: 
         lines:
           - set interfaces ge-0/0/0 mtu 9014
-        comment: setting l2mtu to 9014
-      register: result_l2mtu
-
-
-    - name: Set L3MTU to 9000
-      junipernetworks.junos.junos_config:
-        lines:
           - set interfaces ge-0/0/0 unit 0 family inet mtu 9000
-        comment: setting l3mtu to 9000
-      register: result_l3mtu 
+        comment: setting l2mtu=9014 and l3mtu=9000
+      register: result
 
-    - name: display result_l2mtu 
+    - name: display result 
       debug:
-        msg: "updated L2MTU"
-      when: result_l2mtu.changed
-
-    - name: display result_l3mtu 
-      debug:
-        msg: "updated L3MTU"
-      when: result_l3mtu.changed
-
-
+        msg: "updated L2 and L3 MTU"
+      when: result.changed
 
