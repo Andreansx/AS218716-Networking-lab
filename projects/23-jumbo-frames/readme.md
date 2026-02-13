@@ -152,4 +152,8 @@ If I didn't set this second MTU, the vJunos Router would in fact accept a 9014 b
 The IP packets it would send would just be too small.   
 
 So L2 MTU 9014 and L3 MTU 9000 is perfect for this use case because there will be a point-to-point routed link between the Spine-DellEMCS4048-ON and Leaf-vJunosRouter0.  
-As I said, If I wanted to use VLAN tagging, then I would have to set the L2 MTU on Leaf-vJunosRouter0 to 9018 bytes for 802.1Q encapsulation or 9022 for QinQ but the `inet` would be still 9000 bytes.  
+As I said, If I wanted to use VLAN tagging, then I would have to set the L2 MTU on Leaf-vJunosRouter0 to 9018 bytes for 802.1Q encapsulation or 9022 for QinQ but the `inet` would be still 9000 bytes. 
+
+## Ansible implementation
+
+![ansible](./ansible.png)   

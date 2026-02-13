@@ -21,4 +21,15 @@
         comment: setting l3mtu to 9000
       register: result_l3mtu 
 
+    - name: display result_l2mtu 
+      debug:
+        msg: "updated L2MTU"
+      when: result_l2mtu.changed
+
+    - name: display result_l3mtu 
+      debug:
+        msg: "updated L3MTU"
+      when: result_l3mtu.changed
+
+
 
