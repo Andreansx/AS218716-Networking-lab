@@ -1,0 +1,11 @@
+---
+- name: Provisioning Spine-DellEMCS4048-ON with latest config
+  hosts: spine-s4048-on0
+  connection: network_cli
+  gather_facts: no
+  collections:
+    dellemc.os9
+
+  tasks:
+    - name: configuring Tengigabitethernet interfaces
+

@@ -1,0 +1,6 @@
+--- 
+- name: Configuring L3 MTU 9000/ L2 MTU 9014 on Leaf-vJunosRouter0
+  hosts: Leaf-vJunosRouter0
+  gather_facts: no 
+  collections:
+    - junipernetworks.junos

@@ -1,0 +1,7 @@
+{% for interface in interfaces %}
+interface Tengiganbitethernet {{ interface.name }}
+  description {{ interface.desc }}
+  ip address {{ interface.address }}
+  no shutdown
+  mtu 9216
+{% endfor %}
