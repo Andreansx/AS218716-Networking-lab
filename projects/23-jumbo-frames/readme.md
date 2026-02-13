@@ -245,3 +245,21 @@ This part outputs `"updated L2 and L3 MTU"` when the registered `result` changes
 
 
 ![ansible](./ansible.png)   
+
+The playbook is run using `ansible-playbook -i ./hosts.yml ./mtu.yml`   
+
+Also it's a good practice to run it in a Python venv.   
+I do this on Arch Linux so this is actually almost necessary.   
+
+```zsh
+python -m venv venv
+source ./venv/bin/activate
+```
+
+And then you can install three necessary packages:   
+```zsh
+pip install ansible
+pip install ansible-pylibssh
+pip install ncclient
+```
+The last one is the NETCONF client that Ansible uses
