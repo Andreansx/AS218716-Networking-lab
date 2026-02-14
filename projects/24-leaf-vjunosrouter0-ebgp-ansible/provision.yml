@@ -15,16 +15,24 @@
       - name: ge-0/0/2
         address: 10.1.5.1/24
       - name: lo0
-        address: 172.16.1.0/32
+        address: 172.16.0.6/32
     bgp:
       groupname: EBGP-SPINE
       type: external
-      rid: 172.16.1.0 
+      rid: 172.16.0.6 
       system_as: 4201000000
-      networks:
-        - 10.1.4.0/24
-        - 10.1.5.0/24
+      export_networks:
+        - address: 10.1.4.0/24
+          type: exact
+        - address: 10.1.5.0/24
+          type: exact
       export_policy_name: SEND-TO-SPINE
+      import_policy_name: RECEIVE-FROM-SPINE
+      import_networks:
+        - address: 172.16.0.0/24
+          type: orlonger
+        - address: 0.0.0.0/0 
+          type: exact
     neighbors:
       - ip: 172.16.255.4
         as: 4200000000
@@ -56,21 +64,40 @@
     - name: Configuring BGP export policies
       junipernetworks.junos.junos_config:
         lines:
-          - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS from route-filter {{ item }} exact"
+          - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS from route-filter {{ item.address }} {{ item.type }}"
         comment: "Added network {{ item }} to {{ bgp.export_policy_name }}"
-      loop: "{{ bgp.networks }}"
+      loop: "{{ bgp.export_networks }}"
 
     - name: Addding actions for the export policy
       junipernetworks.junos.junos_config:
         lines:
           - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS then accept"
-        comment: "Set action accept for {{ bgp.export_policy_name }}"
+        comment: "Set action accept for {{ bgp.export_policy_name }} BGP export policy"
 
     - name: Applying export policy to BGP group 
       junipernetworks.junos.junos_config:
         lines:
           - "set protocols bgp group {{ bgp.groupname }} export {{ bgp.export_policy_name }}"
         comment: "Applied {{ bgp.export_policy_name }} to {{ bgp.groupname }} BGP group"
+
+    - name: Configuring BGP import policy 
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set policy-options policy-statement {{ bgp.import_policy_name }} term NETWORKS from route-filter {{ item.address }} {{ item.type }}"
+        comment: "Added {{ item.address }} network with {{ item.type }} type to {{ bgp.import_policy_name }} import policy"
+      loop: "{{ bgp.import_networks }}"
+
+    - name: Adding action to the import policy
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set policy-options policy-statement {{ bgp.import_policy_name }} term NETWORKS then accept"
+        comment: "Set action accept for {{ bgp.import_policy_name }} BGP import policy"
+
+    - name: Applying import policy to BGP group
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set protocols bgp group {{ bgp.groupname }} import {{ bgp.import_policy_name }}"
+
 
 
 

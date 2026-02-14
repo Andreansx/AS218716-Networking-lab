@@ -43,7 +43,7 @@ I'll also use variables instead of hardcoding everything.
       type: external
       rid: 172.16.1.0 
       system_as: 4201000000
-      networks:
+      export_networks:
         - 10.1.4.0/24
         - 10.1.5.0/24
       export_policy_name: SEND-TO-SPINE
@@ -173,7 +173,7 @@ Next I wanted to add networks to the export policy so I wrote something like thi
           - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS from route-filter {{ item }} exact"
           - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS then accept"
         comment: "Created export policy for {{ bgp.export_policy_name }}"
-      loop: "{{ bgp.networks }}"
+      loop: "{{ bgp.export_networks}}"
 ```
 
 And this would theoretically work as Junos doesn't have an issue with duplicated commands but finally I split this into two different tasks.  
@@ -227,7 +227,7 @@ However the Spine-DellEMCS4048-ON0 won't receive any routes from Leaf-vJunosRout
 This task applies the `{{ bgp.export_policy_name }}` to `{{ bgp.groupname }}` so in the current setup it applies the `SEND-TO-SPINE` policy to `EBGP-SPINE` BGP Group.   
 
 As you can see after running the playbook, the Spine-DellEMCS4048-ON0 successfully received the routes from Leaf-vJunosRouter0.   
-Of course the route to `10.1.4.0/24` didn't come up in the Spine-DellEMCS4048-ON0 RIB because as I mentioned earlier, JunOS won't advertise a network if the network isn't installed in it's own RIB.   
+Of course the route to `10.1.4.0/24` didn't come up in the Spine-DellEMCS4048-ON0 RIB because as I mentioned earlier, JunOS won't advertise a network if the network isn't installed in its own RIB.   
 
 ![dellroutes](./dellroutes.png)   
 
@@ -254,5 +254,84 @@ And the Spine-DellEMCS4048-ON0 successfully received routes to both `10.1.4.0/24
 
 ![dellroutes1](./dellroutes1.png)   
 
+Now I would like to set an import policy on the Leaf-vJunosRouter0.   
+What's interesting is that junos behaves in a completely opposite way regarding importing received routes.   
+JunOS by default accepts every route it receives.   
+For example since now there is no import policy, the Leaf-vJunosRouter0 installed all received routes from Spine-DellEMCS4048-ON0 in it's RIB:   
+
+![vjunosroutes](./vjunosroutes.png)    
+
+But I'm going to restrict what routes it can install.  
+
+It's important to note that immediately after you assign any import policy to a BGP group, JunOS changes its behavior and starts denying everything that doesn't fit into the import policy.   
+
+Although in a lab it's easiest to just use `0.0.0.0/0 orlonger` argument cause then JunOS will install all subnets it receives.    
+
+I'm gonna set up two statements for the import policy.   
+I'll allow Leaf-vJunosRouter0 to install the route to `0.0.0.0/0` but only with the `exact` argument. 
+This way, `0.0.0.0/0` will only be a default route to the internet and won't include every single route like with `orlonger` argument.   
+
+The second statement will allow it to install routes to `172.16.0.0/24`.   
+
+That's because all loopback interfaces in my lab have an IP address from the `172.16.0.0-172.16.0.255` range.   
+
+The Leaf-vJunosRouter0 doesn't really need to know routes to every single VM network like `10.1.3.0/24` etc.   
+The Leafs will be connected with VXLANs in the future so the Leafs only need to know how to reach each others loopback interfaces.   
+
+I added new variables:   
+```yaml
+      import_policy_name: RECEIVE-FROM-SPINE
+      import_networks:
+        - address: 172.16.0.0/24
+          type: orlonger
+        - address: 0.0.0.0/0 
+          type: exact
+```
+So again I will use a loop that iterates through the elements of this `import_networks` list.   
+
+First the task to add the networks along with the appropriate argument to the route filter to the import policy.   
+
+```yaml
+    - name: Configuring BGP import policy 
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set policy-options policy-statement {{ bgp.import_policy_name }} term NETWORKS from route-filter {{ item.address }} {{ item.type }}"
+        comment: "Added {{ item.address }} network with {{ item.type }} type to {{ bgp.import_policy_name }} import policy"
+      loop: "{{ bgp.import_networks }}"
+```
+
+On the first iteration of this loop, the `{{ item.address }}` takes the value of `172.16.0.0/24` and the `{{ item.type }}` equals `orlonger`.   
+It's pretty straightforward for the next network.   
+
+Then a task for making the policy accept those networks if the supplied network equals any of them.   
+
+```yaml
+    - name: Adding action to the import policy
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set policy-options policy-statement {{ bgp.import_policy_name }} term NETWORKS then accept"
+        comment: "Set action accept for {{ bgp.import_policy_name }} BGP import policy"
+
+```
+Then what's left is to apply the import policy to the BGP group:   
+```yaml
+    - name: Applying import policy to BGP group
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set protocols bgp group {{ bgp.groupname }} import {{ bgp.import_policy_name }}"
+```
+
+Then I rolled back most of the Leaf-vJunosRouter0 configuration to see if the playbook fully works.   
+
+![ansible2](./ansible2.png)    
 
 
+And as you can see pretty much everything seems to work.   
+
+Leaf-vJunosRouter0 correctly install routes received from BGP in the RIB:   
+
+![vjunosroutes1](./vjunosroutes1.png)   
+
+And the Spine-DellEMCS4048-ON0 receives correct routes from Leaf-vJunosRouter0:   
+
+![dellroutes2](./dellroutes2.png)    

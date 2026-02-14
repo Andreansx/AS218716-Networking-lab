@@ -9,6 +9,7 @@
     jumbo_interfaces:
       - ge-0/0/0
       - ge-0/0/1
+      - ge-0/0/2
     l2mtu: 
       9014
     l3mtu:
