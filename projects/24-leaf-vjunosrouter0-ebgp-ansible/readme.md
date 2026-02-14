@@ -9,7 +9,7 @@ Spine-DellEMCS4048-ON0 is AS4200000000 and Leaf-vJunosRouter0 will be AS42010000
 
 Those devices will be connected through a dedicated 10GbE link instead of how I previously used a Trunk link for a few point-to-points over a single physical cable.   
 
-On the Spine-DellEMCS4048-ON0 side it's `172.16.255.4/3` and on the Leaf-vJunosRouter0 it's `.5`.   
+On the Spine-DellEMCS4048-ON0 side it's `172.16.255.4/31` and on the Leaf-vJunosRouter0 it's `.5`.   
 
 Spine-DellEMCS4048-ON0 RID is `172.16.0.0` and Leaf-vJunosRouter0 is gonna be `172.16.1.0`.   
 
@@ -230,3 +230,29 @@ As you can see after running the playbook, the Spine-DellEMCS4048-ON0 successful
 Of course the route to `10.1.4.0/24` didn't come up in the Spine-DellEMCS4048-ON0 RIB because as I mentioned earlier, JunOS won't advertise a network if the network isn't installed in it's own RIB.   
 
 ![dellroutes](./dellroutes.png)   
+
+
+I powered off the Leaf-vJunosRouter0 and added it an another vNIC in Proxmox.   
+Then I could add another interface to the `bgp_interfaces` list:   
+```yaml
+  vars:
+    bgp_interfaces:
+      - name: ge-0/0/0 
+        address: 172.16.255.5/31
+      - name: ge-0/0/1
+        address: 10.1.4.1/24
+      - name: ge-0/0/2
+        address: 10.1.5.1/24
+      - name: lo0
+        address: 172.16.1.0/32 
+```
+Then I deleted some things manually in the Leaf-vJunosRouter0 and then ran the playbook again:   
+
+![ansible1](./ansible1.png)   
+
+And the Spine-DellEMCS4048-ON0 successfully received routes to both `10.1.4.0/24` and `10.1.5.0/24` networks:   
+
+![dellroutes1](./dellroutes1.png)   
+
+
+

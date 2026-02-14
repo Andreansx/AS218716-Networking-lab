@@ -11,6 +11,8 @@
       - name: ge-0/0/0 
         address: 172.16.255.5/31
       - name: ge-0/0/1
+        address: 10.1.4.1/24
+      - name: ge-0/0/2
         address: 10.1.5.1/24
       - name: lo0
         address: 172.16.1.0/32
@@ -69,3 +71,6 @@
         lines:
           - "set protocols bgp group {{ bgp.groupname }} export {{ bgp.export_policy_name }}"
         comment: "Applied {{ bgp.export_policy_name }} to {{ bgp.groupname }} BGP group"
+
+
+
