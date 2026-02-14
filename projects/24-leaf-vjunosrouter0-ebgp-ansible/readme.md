@@ -3,6 +3,10 @@
 In the previous documentation I used Ansible for the first time in a project to set the MTUs on the interfaces.   
 You can read it [here](../23-jumbo-frames/)    
 
+* [Export policy](#export-policy)   
+* [Import policy](#import-policy)   
+* [MTUs](#mtus)
+
 I'm gonna be connecting Leaf-vJunosRouter0 to Spine-DellEMCS4048-ON0 using eBGP.   
 
 Spine-DellEMCS4048-ON0 is AS4200000000 and Leaf-vJunosRouter0 will be AS4201000000.  
@@ -165,6 +169,9 @@ PLAY RECAP *********************************************************************
 Leaf-vJunosRouter0         : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
+# Export policy
+
+
 Next I wanted to add networks to the export policy so I wrote something like this:  
 ```yaml
 - name: Configuring BGP export policies
@@ -254,6 +261,9 @@ And the Spine-DellEMCS4048-ON0 successfully received routes to both `10.1.4.0/24
 
 ![dellroutes1](./dellroutes1.png)   
 
+# Import policy
+
+
 Now I would like to set an import policy on the Leaf-vJunosRouter0.   
 What's interesting is that junos behaves in a completely opposite way regarding importing received routes.   
 JunOS by default accepts every route it receives.   
@@ -335,3 +345,62 @@ Leaf-vJunosRouter0 correctly install routes received from BGP in the RIB:
 And the Spine-DellEMCS4048-ON0 receives correct routes from Leaf-vJunosRouter0:   
 
 ![dellroutes2](./dellroutes2.png)    
+
+
+# MTUs   
+
+Since this is actually a good setup for future VXLANs, then I need to take into account the encapsulation overhead.   
+
+L2MTU is currently set to 9014 which is enough for typical Ethernet Frame for a L3 MTU of 9000.   
+But the VXLAN encapsulation adds another 50 bytes to the original Ethernet frame.
+8 bytes for VXLAN header itself, another 8 for the UDP header, 20 bytes for IP and 14 bytes for  external Ethernet.   
+
+So I decided to not use the calculated 9050 bytes for L2MTU but rather to go with industry standard of 9216.  
+Media MTU of 9216 just gives a lot of headroom for VXLANs, double tagging like QinQ and other headers.   
+
+So I added those variables to the playbook:   
+```yaml  
+  vars:
+    bgp_interfaces:
+      - name: ge-0/0/0 
+        address: 172.16.255.5/31
+        l2mtu: 9216
+        l3mtu: 9000
+      - name: ge-0/0/1
+        address: 10.1.4.1/24
+        l2mtu: 9216
+        l3mtu: 9000
+      - name: ge-0/0/2
+        address: 10.1.5.1/24
+        l2mtu: 9216
+        l3mtu: 9000
+```
+The L3 MTU remains at 9000 bytes.   
+
+And earlier in the playbook I added this task:   
+```yaml
+    - name: Setting Media MTU and protocol MTU
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set interfaces {{ item.name }} mtu {{ item.l2mtu }}"
+          - "set interfaces {{ item.name }} unit 0 family inet mtu {{ item.l3mtu }}"
+        comment: "Set l2mtu to {{ item.l2mtu }} and l3mtu to {{ item.l3mtu }} for {{ item.name }}"
+      loop: "{{ bgp_interfaces }}"
+      when: "item.name != 'lo0'"
+```
+This taks uses one more thing which is the `when` condition.   
+At first I tried to put those two commands in the earlier task which already iterated through `bgp_interfaces`.  
+
+However then I would have to write:
+```yaml
+- name: lo0
+  address: 172.16.0.6/32
+  l2mtu: 1514
+  l3mtu: 1500
+```
+And that is not possible as the `lo0` interface doesn't have a physical interface so it's not possible to set the Media MTU on it.   
+
+That's why I used this new task with the `when: "item.name != 'lo0'"`.   
+The `item.name` behaves as always and the condition allows the loop to run only when the current value of `item.name` is not equaal to `lo0`. So the loop just skips the loopback interface as you can see below:   
+
+![mtus](./mtus.png)   

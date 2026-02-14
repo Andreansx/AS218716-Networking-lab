@@ -10,10 +10,16 @@
     bgp_interfaces:
       - name: ge-0/0/0 
         address: 172.16.255.5/31
+        l2mtu: 9216
+        l3mtu: 9000
       - name: ge-0/0/1
         address: 10.1.4.1/24
+        l2mtu: 9216
+        l3mtu: 9000
       - name: ge-0/0/2
         address: 10.1.5.1/24
+        l2mtu: 9216
+        l3mtu: 9000
       - name: lo0
         address: 172.16.0.6/32
     bgp:
@@ -45,6 +51,15 @@
         comment: "Applied address {{ item.address }} to interface {{ item.name }}"
       register: result_task1
       loop: "{{ bgp_interfaces }}"
+
+    - name: Setting Media MTU and protocol MTU
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set interfaces {{ item.name }} mtu {{ item.l2mtu }}"
+          - "set interfaces {{ item.name }} unit 0 family inet mtu {{ item.l3mtu }}"
+        comment: "Set l2mtu to {{ item.l2mtu }} and l3mtu to {{ item.l3mtu }} for {{ item.name }}"
+      loop: "{{ bgp_interfaces }}"
+      when: "item.name != 'lo0'"
 
     - name: Configuring eBGP 
       junipernetworks.junos.junos_config:
