@@ -211,3 +211,22 @@ With the current variables, this policy checks if the network is `10.1.4.0/24` O
 As you can see the statements seem to work correctly:   
 
 ![ansible0](./ansible0.png)   
+
+However the Spine-DellEMCS4048-ON0 won't receive any routes from Leaf-vJunosRouter0 until I apply the export policy to the BGP Group.   
+```yaml
+
+
+    - name: Applying export policy to BGP group 
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set protocols bgp group {{ bgp.groupname }} export {{ bgp.export_policy_name }}"
+        comment: "Applied {{ bgp.export_policy_name }} to {{ bgp.groupname }} BGP group"
+
+```
+
+This task applies the `{{ bgp.export_policy_name }}` to `{{ bgp.groupname }}` so in the current setup it applies the `SEND-TO-SPINE` policy to `EBGP-SPINE` BGP Group.   
+
+As you can see after running the playbook, the Spine-DellEMCS4048-ON0 successfully received the routes from Leaf-vJunosRouter0.   
+Of course the route to `10.1.4.0/24` didn't come up in the Spine-DellEMCS4048-ON0 RIB because as I mentioned earlier, JunOS won't advertise a network if the network isn't installed in it's own RIB.   
+
+![dellroutes](./dellroutes.png)   

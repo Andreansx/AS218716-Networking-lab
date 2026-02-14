@@ -64,5 +64,8 @@
           - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS then accept"
         comment: "Set action accept for {{ bgp.export_policy_name }}"
 
-
-
+    - name: Applying export policy to BGP group 
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set protocols bgp group {{ bgp.groupname }} export {{ bgp.export_policy_name }}"
+        comment: "Applied {{ bgp.export_policy_name }} to {{ bgp.groupname }} BGP group"
