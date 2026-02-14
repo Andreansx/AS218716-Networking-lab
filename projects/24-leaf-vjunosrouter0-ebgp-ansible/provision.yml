@@ -10,11 +10,19 @@
     bgp_interfaces:
       - name: ge-0/0/0 
         address: 172.16.255.5/31
+      - name: ge-0/0/1
+        address: 10.1.5.1/24
+      - name: lo0
+        address: 172.16.1.0/32
     bgp:
       groupname: EBGP-SPINE
       type: external
       rid: 172.16.1.0 
       system_as: 4201000000
+      networks:
+        - 10.1.4.0/24
+        - 10.1.5.0/24
+      export_policy_name: SEND-TO-SPINE
     neighbors:
       - ip: 172.16.255.4
         as: 4200000000
@@ -34,11 +42,27 @@
           - "set routing-options autonomous-system {{ bgp.system_as }}"  
           - "set protocols bgp group {{ bgp.groupname }} type {{ bgp.type }}"
           - "set routing-options router-id {{ bgp.rid }}"
-        comment: "Assigned an ASN of {{ bgp.system_as }} and a RID of {{ bgp.rid }}"
+        comment: "Assigned an ASN of {{ bgp.system_as }}, a RID of {{ bgp.rid }} and added the {{ bgp.groupname }} BGP group with a {{ bgp.type }} type."
 
     - name: Configuring eBGP neighbors
       junipernetworks.junos.junos_config:
         lines:
           - "set protocols bgp group {{ bgp.groupname }} neighbor {{ item.ip }} peer-as {{ item.as }}"
+        comment: "New neigbor in the {{ bgp.groupname }} with a {{ item.ip }} IP address and a {{ item.as }} ASN."
       loop: "{{ neighbors }}"
+
+    - name: Configuring BGP export policies
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS from route-filter {{ item }} exact"
+        comment: "Added network {{ item }} to {{ bgp.export_policy_name }}"
+      loop: "{{ bgp.networks }}"
+
+    - name: Addding actions for the export policy
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS then accept"
+        comment: "Set action accept for {{ bgp.export_policy_name }}"
+
+
 

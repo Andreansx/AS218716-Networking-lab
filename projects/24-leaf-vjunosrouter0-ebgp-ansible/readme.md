@@ -34,11 +34,19 @@ I'll also use variables instead of hardcoding everything.
     bgp_interfaces:
       - name: ge-0/0/0 
         address: 172.16.255.5/31
+      - name: ge-0/0/1 
+        address: 10.1.5.1/24 
+      - name: lo0
+        address: 172.16.1.0/32
     bgp:
       groupname: EBGP-SPINE
       type: external
       rid: 172.16.1.0 
       system_as: 4201000000
+      networks:
+        - 10.1.4.0/24
+        - 10.1.5.0/24
+      export_policy_name: SEND-TO-SPINE
     neighbors:
       - ip: 172.16.255.4
         as: 4200000000
@@ -63,6 +71,10 @@ The `bgp_interfaces` is a list which consists of only one interface for now but 
 Each element of the `bgp_interfaces` list consists of a `name` and `address`.  
 So by iterating through the elements in the `bgp_interfaces` list, I can easily apply the same command to a bunch of interfaces.   
 On the first iteration of the loop through the `bgp_interfaces` list, the value of `item.name` field is equal to `ge-0/0/0` and the value of `item.address` is `172.16.255.5/31`.   
+
+On the second iteration, `{{ item.name }}` is `ge-0/0/1` and `{{ item.address }}` is `10.1.5.1/24`, and so on for the next elements in the `bgp_interfaces` list.   
+
+
 If I used only `item` then theoretically it would input both the `name` and the `address` into the `{{ item }}` field.   
 
 The usage of `{{ item.name }}` and `{{ item.address }}` goes the same for the `comment` part.    
@@ -75,20 +87,25 @@ Then the next task is to add an ASN to the Leaf-vJunosRouter0.
       junipernetworks.junos.junos_config:
         lines:
           - "set routing-options autonomous-system {{ bgp.system_as }}"  
+          - "set protocols bgp group {{ bgp.groupname }} type {{ bgp.type }}"
           - "set routing-options router-id {{ bgp.rid }}"
+        comment: "Assigned an ASN of {{ bgp.system_as }}, a RID of {{ bgp.rid }} and added the {{ bgp.groupname }} BGP group with a {{ bgp.type }} type."
 
-        comment: "Assigned an ASN of {{ bgp.system_as }} and a RID of {{ bgp.rid }}"
+
 ```
 
 This is super simple, there isn't any loop etc.  
 
 Next I added a task for setting adding the eBGP neighbors to the `bgp group`.   
 ```yaml
+
     - name: Configuring eBGP neighbors
       junipernetworks.junos.junos_config:
         lines:
           - "set protocols bgp group {{ bgp.groupname }} neighbor {{ item.ip }} peer-as {{ item.as }}"
+        comment: "New neigbor with a {{ item.ip }} IP address and a {{ item.as }} ASN."
       loop: "{{ neighbors }}"
+
 ```
 Again I used a loop. 
 This time the loop iterates through the elements in the `neighbors` list.   
@@ -148,3 +165,49 @@ PLAY RECAP *********************************************************************
 Leaf-vJunosRouter0         : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
+Next I wanted to add networks to the export policy so I wrote something like this:  
+```yaml
+- name: Configuring BGP export policies
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS from route-filter {{ item }} exact"
+          - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS then accept"
+        comment: "Created export policy for {{ bgp.export_policy_name }}"
+      loop: "{{ bgp.networks }}"
+```
+
+And this would theoretically work as Junos doesn't have an issue with duplicated commands but finally I split this into two different tasks.  
+If I left both those lines in the loop, then Ansible would send those commands to Leaf-vJunosRouter0:   
+```
+    set policy-options policy-statement SEND-TO-SPINE term NETWORKS from route-filter 10.1.4.0/24 exact
+    set policy-options policy-statement SEND-TO-SPINE term NETWORKS then accept
+    set policy-options policy-statement SEND-TO-SPINE term NETWORKS from route-filter 10.1.5.0/24 exact
+    set policy-options policy-statement SEND-TO-SPINE term NETWORKS then accept
+```
+
+So the `accept` statement is issued twice.   
+
+In this task I left only the first command which tells the `SEND-TO-SPINE` policy to export only the values of `{{ item }}`.   
+
+I moved the `accept` statement to another task.   
+```yaml
+    - name: Addding actions for the export policy
+      junipernetworks.junos.junos_config:
+        lines:
+          - "set policy-options policy-statement {{ bgp.export_policy_name }} term NETWORKS then accept"
+        comment: "Set action accept for {{ bgp.export_policy_name }}"
+
+```
+As you can see, there is no need for a loop here as this just tells junos to accept those networks entered earlier to the policy-statement.   
+
+What's important to note is the `exact` argument.
+Without it, JunOS could also export subnets but in eBGP that is often unwanted.   
+
+With the current variables, this policy checks if the network is `10.1.4.0/24` OR `10.1.5.0/24` and if yes then it accepts it.   
+
+> [!NOTE]
+> As of now, the Leaf-vJunosRouter0 still wouldn't export the `10.1.4.0/24` network as it does not have any UP interface in that network.   
+
+As you can see the statements seem to work correctly:   
+
+![ansible0](./ansible0.png)   
