@@ -1,4 +1,4 @@
-# 2026-02-10 23:26:17 by RouterOS 7.19.4
+# 2026-02-15 00:26:17 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -35,23 +35,24 @@ add name=pool-users ranges=10.1.3.50-10.1.3.200
 add name=pool-vms-cts ranges=10.1.4.50-10.1.4.200
 add name=pool-kubernetes ranges=10.1.5.2-10.1.5.30
 add name=mgmt-pool ranges=10.1.99.50-10.1.99.200
+add name=dhcp-test ranges=10.1.5.50-10.1.5.200
 /ip dhcp-server
-add address-pool=pool-users interface=bridge0 lease-time=5d name=dhcp-users \
-    relay=10.1.3.1 server-address=172.16.0.1
 add address-pool=pool-vms-cts always-broadcast=yes conflict-detection=no \
     interface=bridge0 lease-time=5d name=dhcp-vlan40 relay=10.1.4.1 \
     server-address=172.16.0.1
 add address-pool=pool-bare-metal interface=bridge0 lease-time=5d name=\
     dhcp-vlan20 relay=10.1.2.1 server-address=172.16.0.1
-add address-pool=pool-kubernetes interface=bridge0 lease-time=1w3d name=\
-    dhcp-kubernetes relay=10.1.5.1 server-address=172.16.0.1
 add address-pool=mgmt-pool interface=ether1 lease-time=4w2d name=dhcp-mgmt
+add address-pool=dhcp-test interface=bridge0 lease-time=4w2d name=dhcp-ttt \
+    relay=10.1.5.1
 /ip vrf
 add interfaces=ether1 name=vrf-mgmt
 /port
 set 0 name=serial0
 /interface bridge port
 add bridge=bridge0 interface=ZONE_BGP_AS65001
+/ip firewall connection tracking
+set enabled=yes
 /ip neighbor discovery-settings
 set discover-interface-list=!ZONE-TO-CRS326-L2 mode=rx-only
 /interface list member
@@ -73,7 +74,7 @@ add address=10.1.5.28 mac-address=BC:24:11:80:55:02
 add address=10.1.2.0/27 dns-server=1.1.1.1 gateway=10.1.2.1
 add address=10.1.3.0/24 dns-server=1.1.1.1 gateway=10.1.3.1
 add address=10.1.4.0/24 dns-server=1.1.1.1 gateway=10.1.4.1
-add address=10.1.5.0/27 dns-server=1.1.1.1,8.8.8.8 gateway=10.1.5.1
+add address=10.1.5.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=10.1.5.1
 add address=10.1.99.0/24 dns-server=1.1.1.1,8.8.8.8 gateway=10.1.99.1
 /ip dns
 set servers=1.1.1.1,8.8.8.8
@@ -124,6 +125,7 @@ add dst-address=10.1.99.0/24 gateway=ether1@vrf-mgmt routing-table=main
 add dst-address=10.1.4.0/24 gateway=172.16.255.1 routing-table=vrf-mgmt
 add dst-address=172.16.255.4/31 gateway=172.16.255.1 routing-table=vrf-mgmt
 add dst-address=172.16.255.4/31 gateway=172.16.255.1 routing-table=main
+add dst-address=10.1.5.0/24 gateway=172.16.255.3 routing-table=vrf-mgmt
 /ip service
 set ftp disabled=yes
 set ssh address=10.1.99.0/24 vrf=vrf-mgmt

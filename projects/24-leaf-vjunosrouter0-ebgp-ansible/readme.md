@@ -273,7 +273,18 @@ For example since now there is no import policy, the Leaf-vJunosRouter0 installe
 
 But I'm going to restrict what routes it can install.  
 
-It's important to note that immediately after you assign any import policy to a BGP group, JunOS changes its behavior and starts denying everything that doesn't fit into the import policy.   
+~~It's important to note that immediately after you assign any import policy to a BGP group, JunOS changes its behavior and starts denying everything that doesn't fit into the import policy~~.   
+
+> [!IMPORTANT]
+> JunOS default behavior is different depending on the fact if it's an export policy or an import policy.   
+> If there is no export policy applied to a BGP group, JunOS by default does not export anything.  
+> However when there is an export policy created and applied to a BGP group, JunOS actually places an implicit deny at the end of it.
+> So if a route doesn't fit into the route filter, it gets rejected by the implicit deny statement placed automatically at the end of the export policy.   
+> However with import policies it's different cause by default, when no import policy is applied, JunOS imports every received route.
+> But what's different in import policy than export policy is that if a route doesn't fit into the route filter, it gets accepted due to JunOS's "accept all" default policy for BGP import.   
+> So I need to actually add a `then reject` statement at the end of the import policy so that unwanted routes do not get installed in the RIB because of the "accept all" behavior.   
+> I missed that when I was doing this for the first time and then when I changed `172.16.0.0/24 orlonger` to `exact` and the routes to `172.16.0.3/32` etc. didn't disappear I didn't know what I did wrong.   
+
 
 Although in a lab it's easiest to just use `0.0.0.0/0 orlonger` argument cause then JunOS will install all subnets it receives.    
 
@@ -313,14 +324,18 @@ First the task to add the networks along with the appropriate argument to the ro
 On the first iteration of this loop, the `{{ item.address }}` takes the value of `172.16.0.0/24` and the `{{ item.type }}` equals `orlonger`.   
 It's pretty straightforward for the next network.   
 
-Then a task for making the policy accept those networks if the supplied network equals any of them.   
+Then a task for making the policy accept those networks if the supplied network equals any of them and also for adding a statement that rejects a network if it doesn't fall into any of the defined networks.   
+
+This is what I forgot earlier. 
+With export policy, there is no need to explicitly state this.  
 
 ```yaml
-    - name: Adding action to the import policy
+    - name: Adding actions to the import policy
       junipernetworks.junos.junos_config:
         lines:
           - "set policy-options policy-statement {{ bgp.import_policy_name }} term NETWORKS then accept"
-        comment: "Set action accept for {{ bgp.import_policy_name }} BGP import policy"
+          - "set policy-options policy-statement {{ bgp.import_policy_name }} then reject"
+        comment: "Set action accept and default reject for {{ bgp.import_policy_name }} BGP import policy"
 
 ```
 Then what's left is to apply the import policy to the BGP group:   

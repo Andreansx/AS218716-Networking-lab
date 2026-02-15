@@ -1,4 +1,4 @@
-# 2026-02-07 12:45:13 by RouterOS 7.19.4
+# 2026-02-08 22:58:18 by RouterOS 7.19.4
 # software id = N85J-2N9M
 #
 # model = CRS326-24S+2Q+
@@ -7,47 +7,39 @@
 add admin-mac=D4:01:C3:75:18:94 auto-mac=no comment=defconf mtu=9216 name=\
     main-bridge vlan-filtering=yes
 /interface ethernet
-set [ find default-name=qsfpplus1-1 ] l2mtu=9216 mtu=9216
-set [ find default-name=qsfpplus1-2 ] l2mtu=9216 mtu=9216
-set [ find default-name=qsfpplus1-3 ] l2mtu=9216 mtu=9216
-set [ find default-name=qsfpplus1-4 ] l2mtu=9216 mtu=9216
-set [ find default-name=qsfpplus2-1 ] l2mtu=9216 mtu=9216
-set [ find default-name=qsfpplus2-2 ] l2mtu=9216 mtu=9216
-set [ find default-name=qsfpplus2-3 ] l2mtu=9216 mtu=9216
-set [ find default-name=qsfpplus2-4 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus1 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus2 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus3 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus4 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus5 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus6 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus7 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus8 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus9 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus10 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus11 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus12 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus13 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus14 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus15 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus16 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus17 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus18 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus19 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus20 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus21 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus22 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus23 ] l2mtu=9216 mtu=9216
-set [ find default-name=sfp-sfpplus24 ] l2mtu=9216 mtu=9216
-/interface vlan
-add disabled=yes interface=main-bridge name=eBGP_LINK_AS65000_0 vlan-id=100
-add disabled=yes interface=main-bridge name=eBGP_LINK_AS65000_1 vlan-id=102
-add disabled=yes interface=main-bridge name=eBGP_LINK_AS65000_2 vlan-id=104
-add disabled=yes interface=main-bridge name=eBGP_LINK_AS65002_0 vlan-id=106
-add disabled=yes interface=main-bridge name=vlan20-bare-metal vlan-id=20
-add disabled=yes interface=main-bridge name=vlan40-vms-cts vlan-id=40
-add disabled=yes interface=main-bridge name=vlan50-kubernetes vlan-id=50
-add disabled=yes interface=main-bridge name=vlan90-mgmt vlan-id=90
+set [ find default-name=ether1 ] l2mtu=2028 mtu=2028
+set [ find default-name=qsfpplus1-1 ] l2mtu=9216 mtu=9100
+set [ find default-name=qsfpplus1-2 ] l2mtu=9216 mtu=9100
+set [ find default-name=qsfpplus1-3 ] l2mtu=9216 mtu=9100
+set [ find default-name=qsfpplus1-4 ] l2mtu=9216 mtu=9100
+set [ find default-name=qsfpplus2-1 ] l2mtu=9216 mtu=9100
+set [ find default-name=qsfpplus2-2 ] l2mtu=9216 mtu=9100
+set [ find default-name=qsfpplus2-3 ] l2mtu=9216 mtu=9100
+set [ find default-name=qsfpplus2-4 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus1 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus2 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus3 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus4 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus5 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus6 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus7 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus8 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus9 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus10 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus11 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus12 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus13 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus14 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus15 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus16 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus17 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus18 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus19 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus20 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus21 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus22 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus23 ] l2mtu=9216 mtu=9100
+set [ find default-name=sfp-sfpplus24 ] l2mtu=9216 mtu=9100
 /interface list
 add name=ZONE_TO_AS65000
 add name=LINK_USERS_NET
@@ -104,24 +96,11 @@ add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=50
 add bridge=main-bridge tagged=main-bridge,sfp-sfpplus3 vlan-ids=102
 add bridge=main-bridge tagged=main-bridge,LINK_USERS_NET vlan-ids=106
 /interface list member
-add interface=eBGP_LINK_AS65000_0 list=ZONE_TO_AS65000
-add interface=eBGP_LINK_AS65000_1 list=ZONE_TO_AS65000
 add interface=sfp-sfpplus5 list=LINK_USERS_NET
-add interface=eBGP_LINK_AS65000_2 list=ZONE_TO_AS65000
 /ip address
 add address=172.16.0.2 interface=lo network=172.16.0.2
 add address=10.1.99.5/24 interface=ether1 network=10.1.99.0
 add address=172.16.255.7/31 interface=sfp-sfpplus2 network=172.16.255.6
-/ip dhcp-relay
-# Interface not running
-add dhcp-server=172.16.0.1 disabled=no interface=vlan20-bare-metal \
-    local-address-as-src-ip=yes name=vlan20-dhcp-relay
-# Interface not running
-add dhcp-server=172.16.0.1 disabled=no interface=vlan50-kubernetes \
-    local-address-as-src-ip=yes name=kubernetes-dhcp-relay
-# Interface not running
-add dhcp-server=172.16.0.1 disabled=no interface=vlan40-vms-cts \
-    local-address-as-src-ip=yes name=vlan40-dhcp-relay
 /ip dhcp-server network
 add address=10.1.4.0/24
 /ip dns

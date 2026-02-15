@@ -36,7 +36,7 @@
       import_policy_name: RECEIVE-FROM-SPINE
       import_networks:
         - address: 172.16.0.0/24
-          type: orlonger
+          type: exact
         - address: 0.0.0.0/0 
           type: exact
     neighbors:
@@ -102,11 +102,12 @@
         comment: "Added {{ item.address }} network with {{ item.type }} type to {{ bgp.import_policy_name }} import policy"
       loop: "{{ bgp.import_networks }}"
 
-    - name: Adding action to the import policy
+    - name: Adding actions to the import policy
       junipernetworks.junos.junos_config:
         lines:
           - "set policy-options policy-statement {{ bgp.import_policy_name }} term NETWORKS then accept"
-        comment: "Set action accept for {{ bgp.import_policy_name }} BGP import policy"
+          - "set policy-options policy-statement {{ bgp.import_policy_name }} then reject"
+        comment: "Set action accept and default reject for {{ bgp.import_policy_name }} BGP import policy"
 
     - name: Applying import policy to BGP group
       junipernetworks.junos.junos_config:
