@@ -2,7 +2,10 @@
 
 Here I document everything about my networking lab which serves as a practical ground for learning modern datacenter technologies.     
 
-Currently I'm mainly focused on turning the lab into a datacenter-styled network, particularly I want to create a ultrafast switching fabric in a Clos architecture using my Dell EMC S4048-ON as the spine switch, along with Juniper vQFXs as leaf switches, all connected with eBGP.
+Currently I have shifted my focus from learning solely networking to more NetDevOps Intent Based Networking.  
+
+I'm turning my network into a fully automated datacenter-styled network with Ansible, Netbox and Jinja2.   
+
 
 > [!NOTE]   
 > I passed CCNA on 8th of January. 
@@ -10,71 +13,62 @@ Currently I'm mainly focused on turning the lab into a datacenter-styled network
 
 <div align=“center”>
 
-![ansible](https://img.shields.io/badge/ansible-2B0948?style=for-the-badge&logo=ansible&logoColor=white&logoSize=auto)
+![ansible](https://img.shields.io/badge/ansible+Netbox-2B0948?style=for-the-badge&logo=ansible&logoColor=white&logoSize=auto)
 ![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white&logoSize=auto)
-![broadcom](https://img.shields.io/badge/StrataXGS,%20TCAM-7D3742?style=for-the-badge&logo=broadcom&logoColor=white&logoSize=auto)
-![dell](https://img.shields.io/badge/EMC%20OS9-A54E3E?style=for-the-badge&logo=dell&logoColor=white&logoSize=auto)
+![jinja2](https://img.shields.io/badge/Jinja2-7D3742?style=for-the-badge&logo=jinja&logoColor=white&logoSize=auto)
+![dell](https://img.shields.io/badge/EMC%20OS10-A54E3E?style=for-the-badge&logo=dell&logoColor=white&logoSize=auto)
 ![Junos](https://img.shields.io/badge/junos-CE653B?style=for-the-badge&logo=juniper-networks&logoColor=white&logoSize=auto)
 
 </div>
 
-## Table of Contents
-1.  [Projects](#projects)
-2.  [How This Repository Is Organized](#how-this-repository-is-organized)
-3.  [Lab Architecture](#lab-architecture)
-4.  [Hardware](#hardware)
-5.  [Contact](#contact)
+# Architecture
+
+My lab is modeled after hyperscale datacenters.
+I'm currently using all of this as a learning ground.
+The network is built in a L3 CLOS (Spine-Leaf) architecture with eBGP for the ultra fast non-blocking underlay connection. Management is separated in a separate VRF.   
+
+I do know that the S4048-ON is overkill cause there is not one service in my lab that would require anywhere near this bandwith.   
+
+You can check out all of these devices but basically the Dell EMC S4048-ON with OS10 is the Spine switch (AS4200000000) and all of the other devices are Leaf switches like the Leaf-vJunosRouter0 or the MikroTik CCR2004-1G-12S+2XS which is a border leaf.   
+
+
+Now I'm focusing more on automation. 
+Specifically Ansible with Jinja2 templates and Netbox.   
+
+I want this whole network to be 100% driven by code so it would be possible to set up an exact same topology with only the Netbox inventory and an Ansible playbook.   
+
+Also I want everything to be fully scalable so for example I can set up a completly new vJunos Router with only a couple of entries in the Netbox inventory.  
+
 
 # Projects
 
 *   **[Leaf-vJunosRouter0 eBGP provisioning with Ansible](./projects/24-leaf-vjunosrouter0-ebgp-ansible/)**    
-
-
 *   **[Spine-DellEMCS4048-ON0 provisioning with Ansible](./Ansible/Provision-Spine-DellEMCS4048-ON0/)**   
-
-
 *   **[Jumbo Frames](./projects/23-jumbo-frames/)**   
-
-
 *   **[Dell EMC S4048-ON eBGP test run](./projects/22-ebgp-s4048-ccr2004/)**    
-
-
 *   **[Dell EMC S4048-ON Day0 and SSH pubkey setup](./projects/21-dell-emc-s4048-on-day0/)**    
-
-
 *   **[Out-of-band Management](./projects/19-oob-mgmt)**    
-
-
 *   **[CCNA Lab with HSRP, VTP, L2 Security](./projects/17-ccna-hsrp-vtp-dhcp-snooping/readme.md)**    
-
 *   **[CCNA Lab with OSPF, HSRP on subinterfaces](./projects/16-ccna-ospf-hsrp/readme.md)**   
-
 *   **[Comparative analysis of the purchase of a Dell EMC S4048-ON for the lab instead of other devies](./projects/14-dell-s4048-on-comparative-analysis)** - I was focused on CCNA so I kind of forgot about this but I will get back to it.
-
 *   **[School Network fried by lightning, WiFi fixing, Cisco WLC](./projects/13-school-network/readme.md)** - I think the longest documentation I wrote for now. Lot of my messing with a cisco catalyst 3850, APs MIC certificates expiring, getting kind of blamed for the network not working. I think this has ended because the school got TP-Link Omada.
-
 *   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation/readme.md)** - Plus DHCP Nightmare
-
 *   **[Super Important OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop/readme.md)** - This is important as it makes some changes to the entire lab archtecture. 
-
 *   **[Finally OSPF Implementation !](./projects/06-ospf-backbone)** - Area 0 between CCR2004 and CRS326   
-
 *   **[Addressation modernization, better management](./projects/04-management-network-split)**
-
 *   **[L3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)** - Super fast port-speed connection for wide bandwith between Virtual Machines !
-
 * **[IPv6](./IPv6/)** - For now there is not much here since my ISP does not provide IPv6, and because they use CGNAT, I need to use a Tunnelbroker from Hurricane Electric. But another problem is the lack of a stable IPv4 endpoint.      
-
 * [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)     
 
-# How This Repository Is Organized
+# Spine-Leaf switches
 
-*   **`/projects/`**: Probably the most interesting directory cause it's where all project documentations are.    
-*  Device files:    
-    *   **[`/border-leaf-ccr2004`](./border-leaf-ccr2004/)** - MikroTik CCR2004 config    
-    *   **[`/leaf-crs326`](./leaf-crs326/)** - MikroTik CRS326 config   
-    *   **[`/spine-s4048-on`](./spine-s4048-on/)** - Dell EMC S4048-ON config
-*   **`/docs/`** - Some other documents but honstly nothing really important.
+| Model | Role | NOS | ASN | Note |
+| :--- | :--- | :--- | :--- | :---|
+| [Dell EMC S4048-ON](./Spine-DellEMCS4048-ON/) | Underlay Spine Switch | Dell EMC OS10 | 4200000000 | Spine for the ultra fast switching fabric with a StrataXGS Trident2 (not 2+ though so it can't perform RIOT) |
+| MikroTik CCR2004-1G-12S+2XS | Underlay Border Leaf Switch | ROSv7 | 4200000001 | Border leaf which performs NAT and runs a DHCP server. Also a gateway for the OOB Management network |
+| MikroTik CRS326-24S+2Q+RM | Underlay Leaf Switch | ROSv7 | 4200000002 | Nothing as of now really |  
+| Leaf-vJunosRouter0 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000000 | gateway for VMs in PVE |
+
 
 # Lab Architecture
 
@@ -100,10 +94,10 @@ Here is the simplified diagram which shows what I'm making my network to look li
 
 ![cables](./media/cables.jpeg)
 
-# Main overview + Plans
+# Plans
 
 > [!NOTE]   
-> I re-wrote the overview and plans so I hope they are a bit less messy and are more understandable.   
+> Honestly I didn't know whether to leave these things I wrote below cause they aren't actually well written but I'll leave them just so someone interested may read all that.     
 
 
 I would like to divide the description of my network into two main parts: the up-and-running part, and the planned part.   
@@ -403,22 +397,6 @@ Of course first there has to be a stable switching fabric but I think this prett
 > Same for the vSRX3.
 > But the JunOS is the same as on a real device, only the Packet Forwarding Engine is just a separate VM, rather than a real switching chip.   
 > However, as you probably already noticed, the speed is absolutely not an issue for me, since there is pretty much no bandwidth requiring service running in my lab.
-
-
-
-## Hardware
-
-A list of the key components in my lab. Click a device name to see its configuration files.
-
-| Device Type      | Model                                   | Role in the Lab                                   |
-|:---|:---|:---|
-| **Server Rack**  | [HPE 10636 G2](./hpe-10636-g2/)         | Central mounting point for all equipment.         |
-| **PVE Server**       | [Dell PowerEdge R710](./r710/)          | Main virtualization host, running Proxmox VE.     |
-| **Border Leaf Router**  | [MikroTik CCR2004](./border-leaf-ccr2004/)           | Border leaf Router, provides access to the internet, NAT, DHCP Server on loopback interface, VPNs and main firewall for North-South traffic       |
-| **Leaf Router**  | [MikroTik CRS326](./leaf-crs326/)           | Leaf router. For now handles BGP, inter-VLAN routing with line-speed thanks to L3HW offload | 
-| **Spine Switch**          | [Dell S4048-ON](./spine-s4048-on/)  | For now unused. However, I am learning a lot of theory about it's StrataXGS BCM56850 switching chip and it's system architecture. It will be the spine switch and will be a part of the ultra fast switching fabric. |
-| **OOB Switch**| [Brocade FastIron LS648](./oob-fls648/)      | Switch for OOB Management. Handles single L2 domain.     |
-| **0U PDU**          | [HP S1132](./hpe-s1132/)                | Enterprise-grade Power Distribution Unit.                  |
 
 ## Contact
 

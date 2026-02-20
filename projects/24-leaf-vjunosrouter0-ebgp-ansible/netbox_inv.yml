@@ -1,0 +1,13 @@
+plugin: netbox.netbox.nb_inventory
+api_endpoint: http://localhost:8000
+token: YqzlmfZGBqIGG1TuWxAKlMVClSZDmB9I1bPqzxUd
+validate_certs: False
+config_context: False
+group_by:
+  - device_roles
+  - sites
+  - manufacturers
+compose:
+  ansible_network_os: platform.slug
+  ansible_host: primary_ipv4.address | ipaddr('address')
+

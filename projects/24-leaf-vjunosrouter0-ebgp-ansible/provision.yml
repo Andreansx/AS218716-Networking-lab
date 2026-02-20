@@ -1,6 +1,6 @@
 ---
 - name: Provisioning Leaf-vJunosRouter0 with eBGP config 
-  hosts: Leaf-vJunosRouter0
+  hosts: device_roles_leaf_router
   connection: netconf 
   gather_facts: no 
   collections:
@@ -36,7 +36,7 @@
       import_policy_name: RECEIVE-FROM-SPINE
       import_networks:
         - address: 172.16.0.0/24
-          type: exact
+          type: orlonger
         - address: 0.0.0.0/0 
           type: exact
     neighbors:
@@ -113,7 +113,7 @@
       junipernetworks.junos.junos_config:
         lines:
           - "set protocols bgp group {{ bgp.groupname }} import {{ bgp.import_policy_name }}"
-
+        comment: "Applied {{ bgp.import_policy_name }} BGP import policy to {{ bgp.groupname }} BGP Group"
 
 
 
