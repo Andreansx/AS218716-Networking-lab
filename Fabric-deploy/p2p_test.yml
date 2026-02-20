@@ -1,0 +1,12 @@
+--- 
+- name: Testing Point to point links setup
+  hosts: device_roles_leaf_switch_junos
+  gather_facts: no
+
+  tasks:
+    - name: Generating config locally
+      ansible.builtin.template:
+        src: ./templates/junos/p2p.j2
+        dest: p2p
+      delegate_to: localhost
+

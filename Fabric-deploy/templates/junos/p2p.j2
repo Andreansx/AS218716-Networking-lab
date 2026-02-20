@@ -1,0 +1,13 @@
+{% for interface in interfaces %}
+{% if interface.ip_addresses %}
+interfaces {
+    {{ interface.name }} {
+        unit 0 {
+            family inet {
+                address {{ interface.ip_addresses[0].address }};
+            }                           
+        }
+    }
+  }
+{% endif %}
+{% endfor %}
