@@ -1,0 +1,7 @@
+system {
+    host-name {{ inventory_hostname }};
+
+  }
+routing-options {
+    autonomous-system {{ custom_fields.ebgp_asn }}
+  }

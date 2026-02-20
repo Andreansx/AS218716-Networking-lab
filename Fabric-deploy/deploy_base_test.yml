@@ -1,0 +1,17 @@
+---
+- name: Deploying test config with j2
+  hosts: device_roles_leaf_switch
+  gather_facts: no 
+  connection: netconf 
+
+  tasks:
+    - name: generating config locally
+      ansible.builtin.template:
+        src: "./templates/junos/base.j2"
+        dest: "./junos_base"
+      delegate_to: localhost
+
+    - name: push config to leaf switch 
+      junipernetworks.junos.junos_config:
+        src: "./junos_base"
+        update: merge

@@ -4,3 +4,5 @@ token: YqzlmfZGBqIGG1TuWxAKlMVClSZDmB9I1bPqzxUd
 validate_certs: False
 config_context: True
 interfaces: True
+group_by:
+  - device_roles
