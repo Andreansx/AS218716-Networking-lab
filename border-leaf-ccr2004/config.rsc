@@ -1,4 +1,4 @@
-# 2026-02-15 00:26:17 by RouterOS 7.19.4
+# 2026-02-21 15:28:26 by RouterOS 7.19.4
 # software id = 91XQ-9UAD
 #
 # model = CCR2004-1G-12S+2XS
@@ -30,21 +30,13 @@ add name=ZONE-TO-CRS326-L2
 /interface lte apn
 set [ find default=yes ] ip-type=ipv4 use-network-apn=no
 /ip pool
-add name=pool-bare-metal ranges=10.1.2.2-10.1.2.29
-add name=pool-users ranges=10.1.3.50-10.1.3.200
 add name=pool-vms-cts ranges=10.1.4.50-10.1.4.200
-add name=pool-kubernetes ranges=10.1.5.2-10.1.5.30
 add name=mgmt-pool ranges=10.1.99.50-10.1.99.200
-add name=dhcp-test ranges=10.1.5.50-10.1.5.200
 /ip dhcp-server
 add address-pool=pool-vms-cts always-broadcast=yes conflict-detection=no \
     interface=bridge0 lease-time=5d name=dhcp-vlan40 relay=10.1.4.1 \
     server-address=172.16.0.1
-add address-pool=pool-bare-metal interface=bridge0 lease-time=5d name=\
-    dhcp-vlan20 relay=10.1.2.1 server-address=172.16.0.1
 add address-pool=mgmt-pool interface=ether1 lease-time=4w2d name=dhcp-mgmt
-add address-pool=dhcp-test interface=bridge0 lease-time=4w2d name=dhcp-ttt \
-    relay=10.1.5.1
 /ip vrf
 add interfaces=ether1 name=vrf-mgmt
 /port

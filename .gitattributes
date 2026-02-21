@@ -1,6 +1,5 @@
 *.md linguist-detectable=true
 *.md linguist-language=Markdown
-*.rsc linguist-detectable=true
 config linguist-detectable=true
 config linguist-language=Config
-
+*.rsc linguist-generated
