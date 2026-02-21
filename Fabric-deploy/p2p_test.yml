@@ -10,3 +10,8 @@
         dest: p2p
       delegate_to: localhost
 
+    - name: Pushing config to device_roles_leaf_switch_junos
+      junipernetworks.junos.junos_config:
+        src:  ./p2p
+        update: merge
+

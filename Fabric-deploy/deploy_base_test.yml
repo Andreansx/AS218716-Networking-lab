@@ -1,6 +1,6 @@
 ---
 - name: Deploying test config with j2
-  hosts: device_roles_leaf_switch
+  hosts: device_roles_leaf_switch_junos
   gather_facts: no 
   connection: netconf 
 
