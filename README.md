@@ -55,10 +55,10 @@ Also I want everything to be fully scalable so for example I can set up a comple
 *   **[eBGP Implementation between two AS'es](./projects/12-eBGP-implementation/readme.md)** - Plus DHCP Nightmare
 *   **[Super Important OSPF and L2 Loop troubleshooting](./projects/11-ospf-and-l2-loop/readme.md)** - This is important as it makes some changes to the entire lab archtecture. 
 *   **[Finally OSPF Implementation !](./projects/06-ospf-backbone)** - Area 0 between CCR2004 and CRS326   
-*   **[Addressation modernization, better management](./projects/04-management-network-split)**
+*   ~~**[Addressation modernization, better management](./projects/04-management-network-split)**~~ - check out [19-oob-mgmt](./projects/19-oob-mgmt/) instead
 *   **[L3 hardware offload instead of router-on-a-stick](./projects/03-l3-hw-offload-on-core-switch)** - Super fast port-speed connection for wide bandwith between Virtual Machines !
 * **[IPv6](./IPv6/)** - For now there is not much here since my ISP does not provide IPv6, and because they use CGNAT, I need to use a Tunnelbroker from Hurricane Electric. But another problem is the lack of a stable IPv4 endpoint.      
-* [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transreceivers)     
+* [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transceivers)     
 
 # Spine-Leaf switches
 
@@ -94,10 +94,10 @@ Here is the simplified diagram which shows what I'm making my network to look li
 
 ![cables](./media/cables.jpeg)
 
-# Plans
+# Design notes 
 
 > [!NOTE]   
-> Honestly I didn't know whether to leave these things I wrote below cause they aren't actually well written but I'll leave them just so someone interested may read all that.     
+> Honestly I didn't know whether to leave these things I wrote below cause they aren't actually well written but I'll leave them just so someone interested may read all that. Just please know that I didn't put much attention to those notes lately so do not refer to them as a source of truth.     
 
 
 I would like to divide the description of my network into two main parts: the up-and-running part, and the planned part.   
@@ -155,9 +155,9 @@ How did I even got the idea to create it like that?
 
 Well, I thought to myself that, I need to manage networking devices very often, and going to the rack to plug the ethernet cable from the management port to a access port didn't seem very nice.   
 
-So I just combined that two things into a single network, which is obviously a bad practise.    
+So I just combined that two things into a single network, which is obviously a bad practice.    
 
-Also the management network should probably be a single subnet, however in my case it is not, which again is not a good practise.    
+Also the management network should probably be a single subnet, however in my case it is not, which again is not a good practice.    
 The CCR2004 has management interface in `10.1.1.0/30`, while the CRS326 has it in `10.1.1.4/30`.   
 This makes it neccessary to use routing, when wanting to access one management interface, from the other one.
 
@@ -179,7 +179,7 @@ On my two MikroTik devices, those management ports are basically just an another
 
 I mean yeah on the CRS326 block diagram, you can see that the `ether1` interface is connected to the CPU rather than to the ASIC, but this is not a carrier-grade control and data plane separation.
 The control and data plane would have to be separated also in the software to make any difference.
-Without it, when one service glitches, the entire system can glitch, because it is a monolythic system.
+Without it, when one service glitches, the entire system can glitch, because it is a monolithic system.
 That would explain why the part of the network reachable through the ASIC, is actually unaccessable from the `ether1` interface, when L3 Hardware offload is enabled on the ASIC.   
 
 I don't know if that is a feature or a bug, but I tested it a lot of times and it just doesn't work.   

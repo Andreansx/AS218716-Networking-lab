@@ -8,11 +8,12 @@
       ansible.builtin.set_fact:
         device_context: "{{ local_context_data | combine }}"
 
-
-
     - name: generating config locally
       ansible.builtin.template:
         src: ./templates/junos/ebgp_peers.j2
         dest: ebgp_peers
       delegate_to: localhost
 
+    - name: Debug generated config
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.template', './templates/junos/ebgp_peers.j2') }}"
