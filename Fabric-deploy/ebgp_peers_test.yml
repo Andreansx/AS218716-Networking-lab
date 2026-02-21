@@ -1,0 +1,12 @@
+---
+- name: Testing eBGP peers setup with j2
+  gather_facts: no 
+  hosts: device_roles_leaf_switch_junos
+  
+  tasks:
+    - name: generating config locally
+      ansible.builtin.template:
+        src: ./templates/junos/ebgp_peers.j2
+        dest: ebgp_peers
+      delegate_to: localhost
+

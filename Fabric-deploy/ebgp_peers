@@ -1,0 +1,10 @@
+protocols {
+    bgp {
+        group UNDERLAY {
+            type external;
+                        neighbor 172.16.0.4 {
+                peer-as 4200000000;
+              }
+                      }
+      }
+  }

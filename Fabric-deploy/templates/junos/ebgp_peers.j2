@@ -1,0 +1,12 @@
+protocols {
+    bgp {
+        group UNDERLAY {
+            type external;
+            {% for peer in local_context_data[0].ebgp_peers %}
+            neighbor {{ peer.remote_ip }} {
+                peer-as {{ peer.remote_as }};
+              }
+            {% endfor %}
+          }
+      }
+  }
