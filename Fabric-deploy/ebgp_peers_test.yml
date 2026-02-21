@@ -2,8 +2,14 @@
 - name: Testing eBGP peers setup with j2
   gather_facts: no 
   hosts: device_roles_leaf_switch_junos
-  
+
   tasks:
+    - name: Merging local context into the dict
+      ansible.builtin.set_fact:
+        device_context: "{{ local_context_data | combine }}"
+
+
+
     - name: generating config locally
       ansible.builtin.template:
         src: ./templates/junos/ebgp_peers.j2
