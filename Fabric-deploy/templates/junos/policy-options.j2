@@ -1,0 +1,18 @@
+policy-options {
+    policy-statement EXPORT-UNDERLAY {
+        term EXPORT-LOOPBACK {
+              from {
+                  route-filter {{ primary.ip4 }} exact;
+                }
+              then accept;
+          }
+        term REJECT-BY-DEFAULT {
+            then reject;
+          }
+      }
+    policy-statement IMPORT-UNDERLAY {
+        term ACCEPT-ALL {
+            then accept;
+          }
+      }
+  }
