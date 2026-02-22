@@ -1,0 +1,12 @@
+---
+- name: testing routing options jinja2 template
+  gather_facts: no
+  hosts: device_roles_leaf_switch_junos
+
+  tasks:
+    - name: generating config 
+      ansible.builtin.template:
+        src: ./templates/junos/routing-options.j2
+        dest: routing_options
+      delegate_to: localhost
+
