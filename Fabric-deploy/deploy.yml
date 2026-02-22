@@ -1,0 +1,14 @@
+---
+- name: Main deployment playbook
+  hosts: all
+  gather_facts: no 
+
+  tasks:
+    - name: merging local context into the dict 
+      ansible.builtin.set_fact:
+        device_context: "{{ local_context_data | combine }}"
+
+    - name: Generating local config for Leaf Switch Junos
+      junipernetworks.junos.junos_config:
+        src: "./templates/junos/main.j2"
+      when: ansible_network_os == 'junipernetworks.junos.junos'
