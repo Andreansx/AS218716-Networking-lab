@@ -2,7 +2,7 @@ policy-options {
     policy-statement EXPORT-UNDERLAY {
         term EXPORT-LOOPBACK {
               from {
-                  route-filter {{ primary.ip4 }} exact;
+                  route-filter {{ primary_ip4 }} exact;
                 }
               then accept;
           }

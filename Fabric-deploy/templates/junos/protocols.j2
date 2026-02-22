@@ -4,6 +4,11 @@ protocols {
             type external;
             export EXPORT-UNDERLAY;
             import IMPORT-UNDERLAY;
+{% for peer in device_context.ebgp_peers %}
+            neighbor {{ peer.remote_ip }} {
+                peer-as {{ peer.remote_as }};
+              }
+{% endfor %}
           }
       }
   }

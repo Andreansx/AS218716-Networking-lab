@@ -1,0 +1,19 @@
+--- 
+- name: Protocols
+  gather_facts: no
+  hosts: device_roles_leaf_switch_junos
+
+  tasks:
+    - name: combining config context
+      ansible.builtin.set_fact:
+        device_context: "{{ local_context_data | combine }}"
+          
+    - name: generating config locally
+      ansible.builtin.template:
+        src: ./templates/junos/protocols.j2
+        dest: ./protocols
+      delegate_to: localhost
+
+    - name: showing config
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.template', './templates/junos/protocols.j2') }}"
