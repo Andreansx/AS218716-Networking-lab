@@ -1,3 +1,4 @@
 routing-options {
-    router-id {{ primary_ip4.split('/')[0] }};
+    router-id {{ primary_ip4 }};
+    autonomous-system {{ custom_fields.ebgp_asn }};
 }

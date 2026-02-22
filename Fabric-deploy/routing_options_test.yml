@@ -9,4 +9,6 @@
         src: ./templates/junos/routing-options.j2
         dest: routing_options
       delegate_to: localhost
-
+    - name: show configs
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.template', './templates/junos/routing-options.j2')  }}" 
