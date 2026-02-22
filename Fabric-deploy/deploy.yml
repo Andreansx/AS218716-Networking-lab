@@ -1,6 +1,6 @@
 ---
 - name: Main deployment playbook
-  hosts: all
+  hosts: device_roles_leaf_switch_junos
   gather_facts: no 
 
   tasks:

@@ -6,3 +6,4 @@ config_context: true
 interfaces: True
 group_by:
   - device_roles
+

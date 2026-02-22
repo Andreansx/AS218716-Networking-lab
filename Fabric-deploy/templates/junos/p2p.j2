@@ -2,7 +2,7 @@ interfaces {
 {% for interface in interfaces %}
 {% if interface.ip_addresses %}
     {{ interface.name }} {
-{% if interface.name != 'fxp0' %}
+{% if interface.name != 'fxp0' and interface.name != 'lo0' %}
         mtu {{ interface.mtu }};
 {% endif %}
         unit 0 {
