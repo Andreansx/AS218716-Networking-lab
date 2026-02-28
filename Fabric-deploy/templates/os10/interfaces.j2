@@ -1,7 +1,7 @@
 {% for interface in interfaces %}
 {% if interface.ip_addresses and interface.name %}
 interface {{ interface.name | default([]) }}
-  {% if interface.name not in ["loopback0","mgmt1/1/1"] %}
+  {% if interface.name.startswith("ethernet") %}
   mtu 9216
   no switchport
   {% endif %}

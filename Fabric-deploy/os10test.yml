@@ -6,7 +6,7 @@
   tasks:
     - name: generate config
       dellemc.os10.os10_config:
-        src: ./templates/os10/interfaces.j2
+        src: "./templates/os10/main.j2"
 
 
 

@@ -15,5 +15,5 @@
 
     - name: Generating and pushing config for Spine Switch OS10
       dellemc.os10.os10_config:
-      src: "./templates/os10/main.j2"
+        src: "./templates/os10/main.j2"
       when: ansible_network_os == 'dellemc.os10.os10'
