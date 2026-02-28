@@ -68,7 +68,9 @@ Also I want everything to be fully scalable so for example I can set up a comple
 | [Dell EMC S4048-ON](./Spine-DellEMCS4048-ON/) | Underlay Spine Switch | Dell EMC OS10 | 4200000000 | Spine for the ultra fast switching fabric with a StrataXGS Trident2 (not 2+ though so it can't perform RIOT) |
 | MikroTik CCR2004-1G-12S+2XS | Underlay Border Leaf Switch | ROSv7 | 4200000001 | Border leaf which performs NAT and runs a DHCP server. Also a gateway for the OOB Management network |
 | MikroTik CRS326-24S+2Q+RM | Underlay Leaf Switch | ROSv7 | 4200000002 | Sold it |  
-| Leaf-vJunosRouter0 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000000 | gateway for VMs in PVE |
+| Leaf-vJunosRouter-0 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000000 | gateway for VMs in PVE |
+| Leaf-vJunosRouter-1 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000001 | gateway for VMs in PVE |
+
 
 
 # Lab Architecture

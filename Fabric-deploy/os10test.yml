@@ -1,0 +1,15 @@
+--- 
+- name: Test run for os10 spine dell emc s4048-on
+  gather_facts: no
+  hosts: device_roles_spine_switch_os10
+
+  tasks:
+    - name: sh version 
+      dellemc.os10.os10_command:
+        commands:
+          - "show version"
+      register: shver
+
+    - name: display output
+      debug:
+        var: shver.stdout_lines
