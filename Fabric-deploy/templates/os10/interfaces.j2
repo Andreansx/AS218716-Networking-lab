@@ -1,4 +1,10 @@
-interface ethernet1/1/1
-  no switchport
+{% for interface in interfaces %}
+{% if interface.ip_addresses %}
+interface {{ interface.name | default([]) }}
+  {% if interface.name != "mgmt1/1/1" %}
+  mtu 9216
+  {% endif %}
   desc "ansible os10 test"
-  ip address 172.16.255.4/31
+  ip address {{ interface.ip_addresses[0].address }}
+{% endif %}
+{% endfor %}
