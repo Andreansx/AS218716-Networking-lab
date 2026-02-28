@@ -8,7 +8,12 @@
       dellemc.os10.os10_command:
         commands:
           - "show version"
+          - "show interface mgmt1/1/1"
       register: shver
+
+    - name: generate config
+      dellemc.os10.os10_config:
+        src: ./templates/os10/interfaces.j2
 
     - name: display output
       debug:
