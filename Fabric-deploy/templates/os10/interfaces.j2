@@ -1,10 +1,13 @@
 {% for interface in interfaces %}
-{% if interface.ip_addresses %}
+{% if interface.ip_addresses and interface.name %}
 interface {{ interface.name | default([]) }}
-  {% if interface.name != "mgmt1/1/1" %}
+  {% if interface.name.startswith("ethernet") %}
   mtu 9216
+  no switchport
   {% endif %}
-  desc "ansible os10 test"
+  {% if interface.description %}
+  description "{{ interface.description }}"
+  {% endif %}
   ip address {{ interface.ip_addresses[0].address }}
 {% endif %}
 {% endfor %}

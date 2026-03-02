@@ -1,0 +1,5 @@
+router bgp {{ custom_fields.ebgp_asn }}
+{% for peer in device_context.ebgp_peers | default([]) %}
+  neighbor {{ peer.remote_ip }}
+    remote-as {{ peer.remote-as }}
+{% endfor %}
