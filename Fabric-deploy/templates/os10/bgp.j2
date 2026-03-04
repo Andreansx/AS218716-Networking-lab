@@ -1,2 +1,7 @@
 router bgp {{ custom_fields.ebgp_asn }}
-  
+  maximum-pahts ebgp 4
+  redistribute imported-bgp
+{% for peer in device_context.ebgp_peers | default([]) %}
+  neighbor {{ peer.remote_ip }} remote-as {{ peer.remote-as }}
+  neighbor {{ peer.remote_ip }} no shutdown
+{% endfor %}

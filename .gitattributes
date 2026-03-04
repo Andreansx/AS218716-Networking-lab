@@ -3,3 +3,4 @@
 config linguist-detectable=true
 config linguist-language=Config
 *.rsc linguist-generated
+*.zshrc linguist-detectable=false

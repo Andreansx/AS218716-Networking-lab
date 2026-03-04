@@ -1,0 +1,6 @@
+tailnet = "100.64.0.0/10"
+tcpservices = "{ 22 }"
+
+pass in quick proto tcp from $tailnet to any port $tcpservices
+
+block drop in quick proto tcp from ! $tailnet to any port $tcpservices
