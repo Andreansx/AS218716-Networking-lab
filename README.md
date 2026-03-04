@@ -61,6 +61,11 @@ Also I want everything to be fully scalable so for example I can set up a comple
 * **[IPv6](./IPv6/)** - For now there is not much here since my ISP does not provide IPv6, and because they use CGNAT, I need to use a Tunnelbroker from Hurricane Electric. But another problem is the lack of a stable IPv4 endpoint.      
 * [Enabling VLAN30 access with a Dual-Port 10GbE NIC](./projects/02-vlan30-access-without-sfp-transceivers)     
 
+# Laptops
+
+*   ThinkPad T450s with 12GB of DDR3 RAM running Arch Linux with i3wm. For a long time I thought that I wouldn't need anything else other than this ThinkPad but I wanted to switch from solely VMs like vJunos to containers like cRPD and cEOS. This laptop was painful to use when running two cEOS containers with Podman. It's connected to the Out-of-band Management network, to my Tailnet and is also an SSH bastion.   
+*   [MacBook Pro M2 Max](./MacBookProM2Max/) with 32GB of RAM running Tahoe 26.3. Finally a certified Single UNIX Specification OS device. A lot more comfortable to use. Orbstack runs really well on it and I'm finally able to run a lot of ARM64 cRPDs and cEOS containers in parallel. 
+
 # Spine-Leaf switches
 
 | Model | Role | NOS | ASN | Note |
@@ -70,7 +75,6 @@ Also I want everything to be fully scalable so for example I can set up a comple
 | MikroTik CRS326-24S+2Q+RM | Underlay Leaf Switch | ROSv7 | 4200000002 | Sold it |  
 | Leaf-vJunosRouter-0 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000000 | gateway for VMs in PVE |
 | Leaf-vJunosRouter-1 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000001 | gateway for VMs in PVE |
-
 
 
 # Lab Architecture
