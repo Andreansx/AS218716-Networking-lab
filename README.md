@@ -76,11 +76,11 @@ Also I want everything to be fully scalable so for example I can set up a comple
 | Leaf-vJunosRouter-0 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000000 | gateway for VMs in PVE |
 | Leaf-vJunosRouter-1 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000001 | gateway for VMs in PVE |
 
+# Lab Architecture
+
 ## Logical topology
 
 ![logical diagram](./media/logical_diagram.png)
-
-# Lab Architecture
 
 ## Modernization and currently ongoing
 
