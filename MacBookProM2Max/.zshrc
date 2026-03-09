@@ -62,6 +62,8 @@ alias -g -- ytdlp='yt-dlp'
 
 alias -g -- ytdlpc='yt-dlp --cookies-from-browser firefox:~/.zen'
 
+alias -g -- ssh='kitty +kitten ssh'
+
 alias update='brew update && brew upgrade'
 alias cleanup='brew cleanup'
 
@@ -102,10 +104,13 @@ export PATH="$HOME/.local/share/gem/ruby/3.4.0/bin:$PATH"
 
 echo "\n\n"
 fastfetch 
-echo "\n"
 
 eval "$(ssh-agent -s)" > /dev/null
 ssh-add -l > /dev/null 2>&1 || ssh-add --apple-use-keychain ~/.ssh/id_ed25519 > /dev/null 2>&1
 true
+
+# rbenv initialization
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
 
 

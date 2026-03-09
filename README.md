@@ -76,6 +76,9 @@ Also I want everything to be fully scalable so for example I can set up a comple
 | Leaf-vJunosRouter-0 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000000 | gateway for VMs in PVE |
 | Leaf-vJunosRouter-1 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000001 | gateway for VMs in PVE |
 
+## Logical topology
+
+![logical diagram](./media/logical_diagram.png)
 
 # Lab Architecture
 
@@ -89,10 +92,6 @@ Here is the simplified diagram which shows what I'm making my network to look li
 ## Physical connections diagram
 
 ![physical diagram](./media/physical_diagram.png)
-
-## Logical topology
-
-![logical diagram](./media/logical_diagram.png)
 
 
 ## Photos
