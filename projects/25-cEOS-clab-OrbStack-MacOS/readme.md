@@ -5,7 +5,13 @@
 I'll be doing less in my physical lab because I've got a new piece of hardware.
 Specifically a MacBook Pro M2 Max with 32GB of RAM and 1TB of SSD.  
 
-This thing has like 10 times more computing power than every device in my rack combined and uses 60-something milliwatts when running a cEOS container inside OrbStack, Spotify, Tailscale, Telegram and some other things, all at the same time.    
+This thing has like 10 times more computing power than every device in my rack combined and uses ~~60-something~~ 40-something milliwatts when running a cEOS container inside OrbStack, Spotify, Tailscale, Telegram and some other things, all at the same time.    
+
+> [!NOTE]
+> This is with two cEOSes running in OrbStack while doing some super simple BGP testing.   
+
+![powermetrics](./powermetrics.png)   
+
 
 Also what really makes me love this is the fact that the cEOS works insanely well and there is next to no virtualization overhead.  
 That's what I absolutely love about this architecture. The M2 Max is an Apple Silicon ARM64 chip, the Ubuntu VM is running native ARM64, and then the EOS is also compiled for ARM64.  
