@@ -1,4 +1,5 @@
 router bgp {{ custom_fields.ebgp_asn }}
+  bgp router-id {{ primary_ip4 }}
   maximum-pahts ebgp 4
   redistribute imported-bgp
 {% for peer in device_context.ebgp_peers | default([]) %}

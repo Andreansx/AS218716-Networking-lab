@@ -42,6 +42,8 @@ Also I want everything to be fully scalable so for example I can set up a comple
 
 # Projects
 
+*   **[Arista cEOS ARM64 on M2 Max with OrbStack and Containerlab](./projects/25-cEOS-clab-OrbStack-MacOS/)**    
+
 *   **[The whole network defined in code](./Fabric-deploy/)**   
 *   **[Leaf-vJunosRouter0 eBGP provisioning with Ansible](./projects/24-leaf-vjunosrouter0-ebgp-ansible/)**    
 *   **[Spine-DellEMCS4048-ON0 provisioning with Ansible](./Ansible/Provision-Spine-DellEMCS4048-ON0/)**   
