@@ -1,9 +1,12 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Safari/605.1.15" version="29.6.1">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Safari/605.1.15">
   <diagram name="Page-1" id="-y3EHT8feiAD6p2sav88">
-    <mxGraphModel dx="1725" dy="638" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1563" dy="514" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=light-dark(#000000,#9E1533);dashed=1;" value="" vertex="1">
+          <mxGeometry height="135.45" width="150.24" x="759.76" y="304.55" as="geometry" />
+        </mxCell>
         <mxCell id="uIP3YnZnH0VjU6vRyVLK-87" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;strokeColor=light-dark(#000000,#FFA347);strokeWidth=1;" value="" vertex="1">
           <mxGeometry height="130" width="370" x="135" y="431.6" as="geometry" />
         </mxCell>
@@ -217,6 +220,56 @@
         </mxCell>
         <mxCell id="CAE27C0HRIpD04MnC_L3-2" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/ansible-light.svg;" value="" vertex="1">
           <mxGeometry height="38.4" width="38.4" x="759.76" y="381.6" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-1" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://companieslogo.com/img/orig/ORCL-d5a587ae.png?t=1740130451;" value="" vertex="1">
+          <mxGeometry height="20" width="31.32" x="-20" y="459.1" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-2" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="OCI VPS" vertex="1">
+          <mxGeometry height="30" width="60" x="-34.34" y="431.6" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-3" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZfX-WNVATcgej7T2jKjR4hMBSDn77gEE1455l7VZabsv_AvizyostxLFW&amp;s=10;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="-69.58" y="481.6" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-5" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://images.credly.com/images/98078626-1aae-4abc-986d-0ba58d27770f/blob.png;clipPath=inset(40.17% 19.33% 41% 17.5%);" value="" vertex="1">
+          <mxGeometry height="23.4" width="78.48" x="817.91" y="352.24000000000007" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-6" edge="1" parent="1" source="aGFOSOIXKVoA9bnvCmel-2" style="endArrow=none;html=1;rounded=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;strokeWidth=2;dashed=1;curved=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="10" y="420" />
+              <mxPoint x="170" y="420" />
+              <mxPoint x="170" y="230" />
+            </Array>
+            <mxPoint x="110" y="398.2421820905156" as="sourcePoint" />
+            <mxPoint x="374.8299999999999" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-7" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://avatars.githubusercontent.com/u/3368377?s=200&amp;v=4;" value="" vertex="1">
+          <mxGeometry height="40.9" width="40.9" x="-29.58" y="479.1" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-8" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/duckdns.png;" value="" vertex="1">
+          <mxGeometry height="60" width="60" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-10" edge="1" parent="1" source="aGFOSOIXKVoA9bnvCmel-2" style="endArrow=none;html=1;rounded=1;entryX=0.25;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#FFFFFF);exitX=0.25;exitY=0;exitDx=0;exitDy=0;curved=0;" target="aGFOSOIXKVoA9bnvCmel-8" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="-19" y="240" />
+            </Array>
+            <mxPoint x="-34.339999999999975" y="469.1" as="sourcePoint" />
+            <mxPoint x="-29.339999999999975" y="342.1" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="cEOSes in OrbStack" vertex="1">
+          <mxGeometry height="30" width="60" x="827.15" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-12" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/claudecode-color.png;" value="" vertex="1">
+          <mxGeometry height="50" width="50" x="827.15" y="381.6" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-13" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://upload.wikimedia.org/wikipedia/commons/6/66/New_qBittorrent_Logo.svg;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="41.629999999999995" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Also moviebot" vertex="1">
+          <mxGeometry height="30" width="60" x="10" y="484.54999999999995" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
