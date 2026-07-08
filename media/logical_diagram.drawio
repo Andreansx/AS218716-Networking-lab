@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Safari/605.1.15">
   <diagram name="Page-1" id="-y3EHT8feiAD6p2sav88">
-    <mxGraphModel dx="1563" dy="514" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1564" dy="515" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -8,7 +8,7 @@
           <mxGeometry height="135.45" width="150.24" x="759.76" y="304.55" as="geometry" />
         </mxCell>
         <mxCell id="uIP3YnZnH0VjU6vRyVLK-87" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;strokeColor=light-dark(#000000,#FFA347);strokeWidth=1;" value="" vertex="1">
-          <mxGeometry height="130" width="305" x="135" y="431.6" as="geometry" />
+          <mxGeometry height="130" width="215" x="135" y="431.6" as="geometry" />
         </mxCell>
         <mxCell id="uIP3YnZnH0VjU6vRyVLK-1" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://i.dell.com/is/image/DellContent//content/dam/ss2/product-images/dell-enterprise-products/networking-products/dell/s-series/s5048f/pdp/dell-networking-s5048f-on-ff-pdp.psd?fmt=png-alpha;clipPath=inset(35.33% 3.33% 37.33% 2%);" value="" vertex="1">
           <mxGeometry height="60.9" width="421.82" x="214" y="290" as="geometry" />
@@ -155,12 +155,6 @@
         <mxCell id="W09ZDZRgXsoOGQEnRdml-4" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/netbox.png;" value="" vertex="1">
           <mxGeometry height="41.63" width="41.63" y="318.37" as="geometry" />
         </mxCell>
-        <mxCell id="W09ZDZRgXsoOGQEnRdml-6" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://logodix.com/logo/1313925.png;" value="" vertex="1">
-          <mxGeometry height="23.9" width="78.66" x="345" y="508.04999999999995" as="geometry" />
-        </mxCell>
-        <mxCell id="W09ZDZRgXsoOGQEnRdml-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;cRPD 23.4R2&lt;/pre&gt;&lt;pre&gt;in Podman&lt;/pre&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="18.4" width="80" x="345" y="476.6" as="geometry" />
-        </mxCell>
         <mxCell id="3w7pFa69wVAjG6sSWlF4-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="PVE host&lt;div&gt;10.1.99.2&lt;/div&gt;" vertex="1">
           <mxGeometry height="30" width="80" x="80" y="474.1" as="geometry" />
         </mxCell>
@@ -221,7 +215,7 @@
         <mxCell id="aGFOSOIXKVoA9bnvCmel-1" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://companieslogo.com/img/orig/ORCL-d5a587ae.png?t=1740130451;" value="" vertex="1">
           <mxGeometry height="20" width="31.32" x="24.340000000000003" y="436.6" as="geometry" />
         </mxCell>
-        <mxCell id="aGFOSOIXKVoA9bnvCmel-2" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="OCI VPS" vertex="1">
+        <mxCell id="aGFOSOIXKVoA9bnvCmel-2" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="OCI VPS0" vertex="1">
           <mxGeometry height="30" width="60" x="-34.34" y="431.6" as="geometry" />
         </mxCell>
         <mxCell id="aGFOSOIXKVoA9bnvCmel-3" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZfX-WNVATcgej7T2jKjR4hMBSDn77gEE1455l7VZabsv_AvizyostxLFW&amp;s=10;" value="" vertex="1">
@@ -289,6 +283,21 @@
             </Array>
             <mxPoint x="540" y="420" as="sourcePoint" />
             <mxPoint x="600" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J8qIjEwmpTwbEjHbr87D-2" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://companieslogo.com/img/orig/ORCL-d5a587ae.png?t=1740130451;" value="" vertex="1">
+          <mxGeometry height="20" width="31.32" x="-65.66" y="519.1" as="geometry" />
+        </mxCell>
+        <mxCell id="J8qIjEwmpTwbEjHbr87D-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="OCI VPS1" vertex="1">
+          <mxGeometry height="30" width="60" x="-124.34" y="514.1" as="geometry" />
+        </mxCell>
+        <mxCell id="J8qIjEwmpTwbEjHbr87D-4" edge="1" parent="1" style="endArrow=none;html=1;rounded=1;strokeWidth=2;strokeColor=light-dark(#000000,#FFFFFF);curved=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="-80" y="320" />
+            </Array>
+            <mxPoint x="-80" y="520" as="sourcePoint" />
+            <mxPoint x="-20" y="270" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
