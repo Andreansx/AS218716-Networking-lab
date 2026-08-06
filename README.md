@@ -1,15 +1,14 @@
 # Datacenter networking lab
 
-Here I document everything about my networking lab which serves as a practical ground for learning modern datacenter technologies.     
+Here I document everything about my networking lab which serves as a practical ground for learning modern datacenter/service-provider technologies.     
 
-Currently I have shifted my focus from learning solely networking to more NetDevOps Intent Based Networking.  
+Currently I have shifted my focus from learning solely networking to more NetDevOps Intent Based Networking and traffic engineering.
 
 I'm turning my network into a fully automated datacenter-styled network with Ansible, Netbox and Jinja2.   
 
 
 > [!NOTE]   
-> I passed CCNA on 8th of January. 
-> Now I'm finally getting into Ansible and automation of Junos devices.
+> Focusing now more on anycast BGP and will be getting into building my own AS with multihoming via Vultr and iFog.
 
 <div align=“center”>
 
@@ -27,13 +26,11 @@ My lab is modeled after hyperscale datacenters.
 I'm currently using all of this as a learning ground.
 The network is built in a L3 CLOS (Spine-Leaf) architecture with eBGP for the ultra fast non-blocking underlay connection. Management is separated in a separate VRF.   
 
+Currently my main focus will be to become my own AS. Two VPSes will have eBGP peerings established and there will be iBGP between them and my CCR2004 border leaf through wireguard tunnels. However most of the lab is in fact turned off, cause it's too loud and too power-hungry, so im leaving only the border-leaf on.    
+
 I do know that the S4048-ON is overkill cause there is not one service in my lab that would require anywhere near this bandwith.   
 
 You can check out all of these devices but basically the Dell EMC S4048-ON with OS10 is the Spine switch (AS4200000000) and all of the other devices are Leaf switches like the Leaf-vJunosRouter0 or the MikroTik CCR2004-1G-12S+2XS which is a border leaf.   
-
-
-Now I'm focusing more on automation. 
-Specifically Ansible with Jinja2 templates and Netbox.   
 
 I want this whole network to be 100% driven by code so it would be possible to set up an exact same topology with only the Netbox inventory and an Ansible playbook.   
 
@@ -41,6 +38,8 @@ Also I want everything to be fully scalable so for example I can set up a comple
 
 
 # Projects
+
+*   **[SYN/Accept overflow](./projects/26-syn-accept-overflow)**   
 
 *   **[Arista cEOS ARM64 on M2 Max with OrbStack and Containerlab](./projects/25-cEOS-clab-OrbStack-MacOS/)**    
 
@@ -72,13 +71,17 @@ Also I want everything to be fully scalable so for example I can set up a comple
 
 | Model | Role | NOS | ASN | Note |
 | :--- | :--- | :--- | :--- | :---|
-| [Dell EMC S4048-ON](./Spine-DellEMCS4048-ON/) | Underlay Spine Switch | Dell EMC OS10 | 4200000000 | Spine for the ultra fast switching fabric with a StrataXGS Trident2 (not 2+ though so it can't perform RIOT) |
+| [Dell EMC S4048-ON](./Spine-DellEMCS4048-ON/) | Underlay Spine Switch | Dell EMC OS10 | 4200000000 | Spine for the ultra fast switching fabric with a StrataXGS Trident2 (not 2+ though so it can't perform single pass RIOT) |
 | MikroTik CCR2004-1G-12S+2XS | Underlay Border Leaf Switch | ROSv7 | 4200000001 | Border leaf which performs NAT and runs a DHCP server. Also a gateway for the OOB Management network |
 | MikroTik CRS326-24S+2Q+RM | Underlay Leaf Switch | ROSv7 | 4200000002 | Sold it |  
 | Leaf-vJunosRouter-0 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000000 | gateway for VMs in PVE |
 | Leaf-vJunosRouter-1 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000001 | gateway for VMs in PVE |
 
 # Lab Architecture
+
+## Want to create my own AS like this
+
+![own as simplified](./media/ownassimplified.png)    
 
 ## Logical topology
 
