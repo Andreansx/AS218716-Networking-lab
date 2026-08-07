@@ -10,7 +10,7 @@ The server (`pythonserver.py`) listens on `:8080` with `backlog=5` and `time.sle
 
 ### network and server
 
-```
+```zsh
 docker network create labnet
 
 docker run -it --rm \
@@ -23,7 +23,7 @@ docker run -it --rm \
   python:3.12-slim bash
 ```
 and inside the container   
-```
+```zsh
 python -u pythonserver.py
 ```
 the `-u` makes it soe the 'accept' prints are not buffered   
@@ -36,7 +36,7 @@ The sysctls do propagate into the container as it was verified inside it
 ### load generator
 
 I needed to install wrk as base alpine does not have it   
-```
+```zsh 
 docker run -it --rm \
   --name bench \
   --network labnet \
