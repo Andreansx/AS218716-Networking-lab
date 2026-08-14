@@ -2,13 +2,9 @@
 
 Here I document everything about my networking lab which serves as a practical ground for learning modern datacenter/service-provider technologies.     
 
-Currently I have shifted my focus from learning solely networking to more NetDevOps Intent Based Networking and traffic engineering.
+The current focus for now is getting my own ASN and PI IPv6 /48, then setting up my own Looking Glass on my domain which will be anycasted. And also later I would like to set up my own authoritative nameserver.   
 
-I'm turning my network into a fully automated datacenter-styled network with Ansible, Netbox and Jinja2.   
-
-
-> [!NOTE]   
-> Focusing now more on anycast BGP and will be getting into building my own AS with multihoming via Vultr and iFog.
+Anycast will work for IPv6, but for people behind IPv4, the Anycasted IP in the AAAA record, will fall back to two non-anycast A records.   
 
 <div align=“center”>
 
@@ -38,6 +34,8 @@ Also I want everything to be fully scalable so for example I can set up a comple
 
 
 # Projects
+
+*   **[iBGP between BIRD and cEOS through Wireguard](./projects/27-ibgp-bird-cEOS-wireguard)**
 
 *   **[SYN/Accept overflow](./projects/26-syn-accept-overflow)**   
 

@@ -1,0 +1,26 @@
+name: ibgp-wg
+
+topology:
+  nodes:
+    ceos:
+      kind: ceos
+      image: ceos:4.35.3F
+      startup-config: ceos.partial.cfg
+
+    alpine:
+      kind: linux
+      image: alpine-wg:3.22
+      cmd: sleep infinity
+      binds:
+        - wg-eos.conf:/etc/wireguard/wg0.conf
+      sysctls:
+        net.ipv4.ip_forward: 1
+      exec:
+        - ip link set eth1 up
+        - ip addr add 10.10.99.1/30 dev eth1
+        - ip addr add 10.0.99.1/32 dev lo
+        - wg-quick up wg0
+        - ip route add 10.0.99.2/32 via 10.10.99.2
+
+  links:
+    - endpoints: ["ceos:eth1", "alpine:eth1"]

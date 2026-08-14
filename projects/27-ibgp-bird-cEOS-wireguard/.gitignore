@@ -1,3 +1,7 @@
 wg*.conf
 wg.key
 wg.pub
+
+clab-*/
+.tls/
+*.bak
