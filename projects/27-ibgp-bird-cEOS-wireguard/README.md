@@ -244,6 +244,48 @@ The MTUs on both sides of the veth are in fact different and that's because noth
 #### overhead
 
 Now about the overhead.
-Underlay mtu is confirmed to be 1500 bytes and I wanted to run iBGP through Wireguard. 
+Underlay mtu is confirmed to be 1500 bytes and I wanted to run iBGP through Wireguard between cEOS and a VPS. 
 So thats 1500 minus 20 for outer IPv4, minus 8 for UDP, minus 16 for WG's header (4 bytes for type+reserved, 4 for receiver index and 8 for the counter) and minus another 16 for Poly1305 tag. That comes out to 1440 Bytes.   
 With IPv6 it comes out to 1420, because ipv6 subtracts not 20 bytes but 40.
+
+Also there is something called padding which wireguard does do. Basically it adds the padding to the segment to make it a multiple of 16 bytes in size. With 1440, it's possible to represent this size as 90 multiples of 16 bytes, so there is no padding. With 1441, the packet would get padded to 1456 making it 1516 in its entirety.  
+So MTU of the tunnel must always be a multiple of 16 bytes.   
+
+#### ping on EOS and on Linux/MacOS
+
+The known MTU of the underlay is 1500 bytes. If I know that, i can determine if the `-s` on MacOS is the size of the whole datagram, or the size only of the payload.   
+
+
+> [!NOTE]
+> Note that this measurement is meaningless without `-D` flag (or generally, without DF-bit). 
+Here is the screenshot I already showed above but it is relevant here too.   
+![macos mtu](./scrn4.png)   
+If the underlay mtu is 1500, and a ping with `-s 1472` goes through, but a ping with `-s 1473` does not, then it is safe to assume that `-s` is the size of the payload, not the whole datagram.   
+The stock MTU on cEOS' side of the veth is 1500.   
+
+![scrn7](./scrn7.png)    
+
+As you can see, ping with `size 1500` goes through but the one with `size 1501` doesn't, which must mean that `size` in EOS' ping represents the size of the whole packet.   
+
+However in EOS' bash the ping command acts the same as on Linux and MacOS.   
+![scnr8](./scrn8.png)   
+
+
+Here with no MTU set in `Ethernet1` config on cEOS I tried to ping the VPS' Loopback with a 1441 byte packet.   
+![mtu](./mtu.gif)    
+As you can see, the packet gets to the Alpine, the cEOS is not aware of the 1440 MTU inside the WG tunnel, and Alpine responds with `frag needed`.   
+
+After adding:
+```
+interface Ethernet1 
+  mtu 1440
+```
+in ceos.partial.cfg, the denial is local and nothing even appears on tcpdump on Alpine's side, because the packet does not even reach it.   
+![mtu1](./mtu1.gif)    
+
+
+#### why it's not good to rely on icmp 
+
+First of all, ICMP gets filtered out sometimes. So that's a typical PMTUD black hole.   
+Also in IPv6 there is no fragmentation at all.   
+And even if PMTUD states that the MTU is smaller and fragmentation is needed, the first packet is lost anyway.   
