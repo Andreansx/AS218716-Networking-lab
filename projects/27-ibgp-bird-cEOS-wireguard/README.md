@@ -58,7 +58,7 @@ AllowedIPs = 10.99.99.2/32, 10.0.99.2/32, 10.10.99.1/32
 
 In Wireguard, the AllowedIPs is not a simple filter, as it has a meaning in the cryptography, and the BGP packets will originate not from Alpine/wg container's own wg0 interface, but rather from the cEOS' side of the veth link connecting the cEOS to wg. So the IP address, from which the packets will arrive in the tunnel, will be 10.10.99.1, not 10.99.99.1.    
 So the config on the VPS has to allow the IP addresses on the veth link between the wg and cEOS.
-This config allows 10.99.99.2/32 (cEOS' side of wireguard tunnel), 10.0.99.2/32 (cEOS' loopback) and 10.10.99.1/32 (cEOS' side of wg<->cEOS veth).
+This config allows 10.99.99.2/32 (Alpine's side of wireguard tunnel), 10.0.99.2/32 (cEOS' loopback) and 10.10.99.1/32 (cEOS' side of wg<->cEOS veth).
 
 
 
@@ -166,8 +166,8 @@ And on the Alpine this list looks like this
 AllowedIPs = 10.99.99.1/32, 10.0.99.1/32
 ```
 
-The VPS has to allow more IPs, because behind it's only peer (Alpine) there is also cEOS.  
-Both sides need to allow the peer's loopback address. Alpine allows 10.0.99.1/32 and VPS allows 10.0.99.2/32. 
+The VPS has to allow more IPs, because behind its only peer (Alpine) there is also cEOS.  
+Both sides need to allow the peer's loopback address (or the loopback behind the peer, from VPS' point of view). Alpine allows 10.0.99.1/32 and VPS allows 10.0.99.2/32. 
 Both sides allow also only the peer's IP inside the wg tunnel itself. VPS allows only 10.99.99.2/32 and Alpine allows only 10.99.99.1/32.  
 It would be possible to theoretically input 10.99.99.0/30, but that breaks the concept that wireguard makes possible thanks to cryptokey routing. If I wrote 10.99.99.0/30 on Alpine's side, it would allow incoming packets from the VPS which state that they are originating from the Alpine itself.   
 Also we shouldn't enter the same prefix on both peers on the same interface. Meaning, we have two peers on wg0, and we shouldn't enter the same prefix in the AllowedIPs section for both those peers, as the AllowedIPs relate strictly to the cryptographic identity of the peer.  
@@ -177,7 +177,7 @@ There is basically one trie like that for a wg interface, it's the same for all 
 Now a crucial thing. The iBGP session is actually loopback-to-loopback, which means, the `10.10.99.0/30` prefix is not really needed in AllowedIPs on VPS' side.   
 The iBGP session would in fact establish. But for example, pings for testing the MTU, would not get back from the VPS to the cEOS. 
 That is because in it's default behavior, the AllowedIPs list also makes wg-quick install the routes to those prefixes in the FIB, but Wireguard itself does never touch the FIB.   
-So if I removed 10.10.99.0/30 from AllowedIPs on the VPS, a packet originating from 10.10.99.2 would arrive on Alpine, it would get encapsulated, sent to VPS, thus changing it SRC to Alpine's CGNATed public IP (cause Im behind CGNAT) and DST to VPS' public IP, then it arrives on VPS, gets decapsulated, Wireguard looks at the SRC of the decapsulated packet, sees 10.10.99.2, notices, that this is not even an allowed prefix, from the peer from which it received the packet from, and silently drops it.   
+So if I removed 10.10.99.0/30 from AllowedIPs on the VPS, a packet originating from 10.10.99.2 would arrive on Alpine, it would get encapsulated, sent to VPS, thus changing its SRC to Alpine's CGNATed public IP (cause Im behind CGNAT) and DST to VPS' public IP, then it arrives on VPS, gets decapsulated, Wireguard looks at the SRC of the decapsulated packet, sees 10.10.99.2, notices, that this is not even an allowed prefix, from the peer from which it received the packet from, and silently drops it.   
 That is the first issue, but let's say that the packet somehow got through the trie, and got into the networking stack of the VPS.
 The VPS then wants to send a response to the ping, it sets 10.10.99.2 as the DST, and then drops it, because it does not know any route to 10.10.99.2.   
 This is of course fixable, by manually adding `ip route 10.10.99.0/30 dev wg0` on the VPS, but as I said before, the packet would not even be allowed to enter the VPS' IP stack, because it originates from an IP that is not allowed to arrive from VPS' peer (Alpine).   
@@ -187,3 +187,63 @@ But I am in fact leaving 10.10.99.0/30 in VPS' AllowedIPs, not for BGP but for r
 
 
 ### MTU
+
+
+#### Why MTU before BGP 
+
+So first of all, the MTU needs to be stated before iBGP because if I didn't check the MTU and then iBGP UPDATEs wouldn't go through, I would blame the firewalls or something, while it could be just the MTU.   
+Even if the MTU wasn't set correctly, the iBGP sessions would establish, cause BGP OPENs have like 29 to 60 bytes and KEEPALIVE has 19 bytes, but UPDATEs, which carry the prefixes, are larger.   
+
+Specifically, TCP packs the UPDATEs into segments up to 1460 bytes in size. `1460` is the size specific to this topology. This is not a standard. BGP UPDATE itself has a limit of 4096 bytes so TCP cuts that into segments anyway.   
+The MSS that we state in SYN is a declaration of how big of a payload can we receive, not send. The receiver does an operation like `min(peer's advertised MSS, own MTU on the route - 40)`. 
+So for example let's use the cEOS. cEOS would advertise a MSS of 1460 (1500 - 40), as it does not know that Alpine cannot pass such a big segment with 1460 bytes in size, because of the Wireguard tunnel. 
+VPS advertises 1380 because 1420 (default MTU on wg0) - 40 is 1380. 
+So cEOS will finally send UPDATEs packed into segments up to `min(1380, 1500 - 40)=min(1380, 1460)`, so 1380 bytes in size.  
+
+But that's the case where the wg mtu is right. If wg0 was left on 1500 then the VPS would advertise 1460 in it's SYNs, cEOS would send 1500 byte packets, Alpine's wg would accept them and after encapsulation those packets would be 1560 in size, getting sent onto a 1500 byte underlay.
+Then OPEN would go through and KEEPALIVE would be stuck behind a unconfirmed UPDATE, as they both are in the same TCP stream. So retransmissions would go on and on, peer stops getting KEEPALIVEs, hold timer expires.
+
+In the topology here, there are links that differ in MTU size. For example, the link, through which the iBGP session will be established, is, unbeknownst to cEOS, inside a wireguard tunnel, which cuts the MTU by 60 bytes.
+cEOS has no way of knowing that its traffic is passing through a wireguard tunnel, cause the tunnel terminates on Alpine, not on cEOS.   
+
+#### default MTUs
+The underlay network has a MTU of 1500. On my Mac i was able to check that:    
+![scrn4](./scrn4.png)    
+
+on MacOS `-D` is the flag to set the df-bit to 1.   
+That's the ping from my Mac to the Oracle VPS. This is passing through my ISP's CGNAT.    
+However `sendto: Message too long` is a local denial, as its basically the limit of the Mac's interface, and not a discovered limit on the whole path to the VPS.   
+One thing to note here is the difference between `-s` on Linux or MacOS, and `size` in cEOS. Tha value, that `-s` on Linux and MacOS takes, is the size of the ICMP payload itself only. `size` on cEOS however seems to be the size of the whole payload, along with ICMP's 8 bytes and IP's 20 bytes.
+
+But generally since 1500B with DF got to the VPS and got back, the underlay MTU is 1500.   
+
+
+The MTU on cEOS' side of the veth is 1500 by default:   
+![ceos mtu](./scrn5.png)   
+
+and on Alpine's side it's 9500:   
+![alpine mtu](./scrn6.png)   
+
+The thing is that i couldnt get `-M do` flag to work on Alpine. The Busybox ping is relatively simple, but even after explicitly trying with `iputils-ping` added to the Dockerfile and rebuilding, the `-M` flag still was not recognized.   
+
+For some reason `/usr/bin/ping -M do` also does not really work.   
+
+Wireguard connection stated a MTU of 1420, and as I will show in a while, 1420 is not the most optimistic value for this topology.
+
+Note that wg does choose 1420 by default because it's the safest option. MTU of 1420 allows for the use of outer IPv6, which is a precaution.   
+Wireguard just cuts the underlay MTU first by 40 (IPv6), then by 8 (udp) and then by 32 (wg itself).
+So if this topology was IPv6, then the default MTU of 1420 would actually be perfect.
+```
+/ # ip link show wg0
+3: wg0: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1420 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/none
+```
+
+The MTUs on both sides of the veth are in fact different and that's because nothing is negotiating that. Alpine could send a packet with l3mtu of 9500 to cEOS.   
+
+#### overhead
+
+Now about the overhead.
+Underlay mtu is confirmed to be 1500 bytes and I wanted to run iBGP through Wireguard. 
+So thats 1500 minus 20 for outer IPv4, minus 8 for UDP, minus 16 for WG's header (4 bytes for type+reserved, 4 for receiver index and 8 for the counter) and minus another 16 for Poly1305 tag. That comes out to 1440 Bytes.   
+With IPv6 it comes out to 1420, because ipv6 subtracts not 20 bytes but 40.
