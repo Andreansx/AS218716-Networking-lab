@@ -1,5 +1,7 @@
 ### Here i wanted to do something that will prove that my intended own AS setup is possible. Meaning I'll establish an iBGP session between an cEOS container and a VPS with BIRD. 
 
+[AllowedIPs](#allowedips) is an interesting section along with [MTU](#mtu) (most of the talking is there)   
+
 The iBGP connection will be established through a wireguard tunnel. Though EOS does not support Wireguard, so I will set a lightweight Alpine linux container next to cEOS and route all traffic from and out of the cEOS through the Alpine container.
 
 Both the cEOSarm and Alpine containers will be launched with Containerlab in Orbstack on my Mac.   
@@ -249,7 +251,8 @@ So thats 1500 minus 20 for outer IPv4, minus 8 for UDP, minus 16 for WG's header
 With IPv6 it comes out to 1420, because ipv6 subtracts not 20 bytes but 40.
 
 Also there is something called padding which wireguard does do. Basically it adds the padding to the segment to make it a multiple of 16 bytes in size. With 1440, it's possible to represent this size as 90 multiples of 16 bytes, so there is no padding. With 1441, the packet would get padded to 1456 making it 1516 in its entirety.  
-So MTU of the tunnel must always be a multiple of 16 bytes.   
+So MTU of the tunnel ~must always~ should be a multiple of 16 bytes. I mean a packet that is a non-multiple of 16 bytes does not break the transmission, but it wastes some bytes.   
+
 
 #### ping on EOS and on Linux/MacOS
 
@@ -284,8 +287,70 @@ in ceos.partial.cfg, the denial is local and nothing even appears on tcpdump on 
 ![mtu1](./mtu1.gif)    
 
 
-#### why it's not good to rely on icmp 
+#### why it's not good to rely on icmp messages regarding the need for fragmentation
 
 First of all, ICMP gets filtered out sometimes. So that's a typical PMTUD black hole.   
-Also in IPv6 there is no fragmentation at all.   
+Also in IPv6 there is no fragmentation at all. I mean there is something like Fragment Extension Header, and the source can in fact fragment something, but none of the SP routers on the path to something will fragment our packet.     
 And even if PMTUD states that the MTU is smaller and fragmentation is needed, the first packet is lost anyway.   
+
+#### final MTUs
+
+So again, underlay is 1500 bytes, wireguard cuts the MTU by 60 bytes, cEOS does not know about the MTU inside the WG tunnel, as it is not a peer in the tunnel.   
+
+So both sides of the veth cEOS<->Alpine do need to have a MTU of 1440. 
+
+So `ceos.partial.cfg` looks now like this:   
+```
+interface Ethernet1
+  no switchport
+  ip address 10.10.99.2/30
+  mtu 1440
+interface Loopback0
+  ip address 10.0.99.2/32
+ip routing
+ip route 10.0.99.1/32 10.10.99.1
+```
+
+And both on the VPS and Alpine in wg-alpine.conf and wg-vps.conf I set `MTU=1440` in `[Interface]`. For example on Alpine:   
+```
+[Interface]
+Privatekey = ...
+Address = 10.99.99.2/30
+MTU=1440
+```
+And in `topology.clab.yml` file in `exec` section for node `alpine` I added `ip link set eth1 mtu 1440`.
+So the whole file looks like this:   
+```
+name: ibgp-wg
+
+topology:
+  nodes:
+    ceos:
+      kind: ceos
+      image: ceos:4.35.3F
+      startup-config: ceos.partial.cfg
+
+    alpine:
+      kind: linux
+      image: alpine-wg:3.22
+      binds:
+        - wg-alpine.conf:/etc/wireguard/wg0.conf
+      sysctls:
+        net.ipv4.ip_forward: 1
+      exec:
+        - ip link set eth1 up
+        - ip addr add 10.10.99.1/30 dev eth1
+        - ip link set eth1 mtu 1440
+        - wg-quick up wg0
+        - ip route add 10.0.99.2/32 via 10.10.99.2
+
+  links:
+    - endpoints: ["ceos:eth1", "alpine:eth1"]
+```
+
+#### note on IPv6
+
+My AS will ultimately be almost entirely on IPv6 (apart from VPSes with public IPv4s), so the whole calculated MTU for traffic inside the tunnels will be different, as IPv6 has 80 bytes of overhead. 
+But basically that's actually simple, and the final value is the same one as WG's default, safest and universal one, which is 1420 bytes.   
+
+### iBGP finally 

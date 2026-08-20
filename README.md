@@ -35,7 +35,7 @@ Also I want everything to be fully scalable so for example I can set up a comple
 
 # Projects
 
-*   **[iBGP between BIRD and cEOS through Wireguard](./projects/27-ibgp-bird-cEOS-wireguard)** - Wireguard, some stuff about importance of cryptokey routing, cEOS, BIRD and a lot of MTU  
+*   **[iBGP between BIRD and cEOS through Wireguard](./projects/27-ibgp-bird-cEOS-wireguard)** - This is actaully pretty big. Wireguard, some stuff about importance of cryptokey routing, cEOS, BIRD and a lot of MTU  
 
 *   **[SYN/Accept overflow](./projects/26-syn-accept-overflow)**   
 

@@ -17,6 +17,7 @@ topology:
       exec:
         - ip link set eth1 up
         - ip addr add 10.10.99.1/30 dev eth1
+        - ip link set eth1 mtu 1440
         - wg-quick up wg0
         - ip route add 10.0.99.2/32 via 10.10.99.2
 
