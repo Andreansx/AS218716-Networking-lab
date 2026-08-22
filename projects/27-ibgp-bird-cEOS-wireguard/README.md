@@ -262,6 +262,8 @@ The known MTU of the underlay is 1500 bytes. If I know that, i can determine if 
 > [!NOTE]
 > Note that this measurement is meaningless without `-D` flag (or generally, without DF-bit). 
 Here is the screenshot I already showed above but it is relevant here too.   
+
+
 ![macos mtu](./scrn4.png)   
 If the underlay mtu is 1500, and a ping with `-s 1472` goes through, but a ping with `-s 1473` does not, then it is safe to assume that `-s` is the size of the payload, not the whole datagram.   
 The stock MTU on cEOS' side of the veth is 1500.   
@@ -354,3 +356,80 @@ My AS will ultimately be almost entirely on IPv6 (apart from VPSes with public I
 But basically that's actually simple, and the final value is the same one as WG's default, safest and universal one, which is 1420 bytes.   
 
 ### iBGP finally 
+
+Now that MTU is documented i can get into the thing that i like more, which is BGP.   
+
+Both cEOS and VPS will be in AS65000 and the iBGP connection will be loopback-to-loopback.   
+
+I spun up a small clab to just test connectivity between cEOSes. so the topology file here is as simple as it gets:   
+```
+name: ceosbgp
+topology:
+  nodes:
+    r1:
+      kind: ceos
+      image: ceos:4.35.3F
+      startup-config: ceos1.partial.cfg
+    r2:
+      kind: ceos
+      image: ceos:4.35.3F
+      startup-config: ceos2.partial.cfg
+  links:
+    - endpoints: ["r1:eth1","r2:eth1"]
+```
+ceos1.partial.cfg looks like this:
+```
+interface Ethernet1
+  no switchport
+  ip address 172.16.10.0/31
+interface Lo0
+  ip address 172.16.99.1/32
+ip routing
+ip route 172.16.99.2/32 172.16.10.1
+```
+
+And similarly for the ceos2.partial.cfg.
+
+Note that in the AS this will be on IPv6 but since I started this PoC with IPv4 then I might as well just finish it like that.   
+
+So now I wanted to set up an iBGP connection between those two cEOSes. This is what I added to the config:   
+```
+ip route 172.16.67.0/24 Null0
+router bgp 65000
+  router-id 10.255.0.1
+  neighbor 172.16.99.2 remote-as 65000
+  neighbor 172.16.99.2 update-source Lo0
+  neighbor 172.16.99.2 next-hop-self
+  neighbor 172.16.99.2 send-community
+  neighbor 172.16.99.2 description ibgp-to-ceos2
+  address-family ipv4
+    neighbor 172.16.99.2 activate
+    network 172.16.67.0/24
+```
+`ip route 172.16.67.0/24 Null0` is necessary, since EOS will not advertise a network that does not have a route installed for it, in EOS' FIB.   
+`router-id` can be set either manually or automatically, as long as there is IPv4. Ultimately on my IPv6 topology, `router-id` will need to be set manually.   
+Options `remote-as` and `description` are pretty self-explanatory.   
+`next-hop-self` is necessary for the target setup. Cause let's picture a setup with three routers, where there are two in one AS100 and one router in a different AS, AS200. AS100's router advertises a network, AS200 border router sets the next hop address, to reach that network, to AS100's border router, on the point-to-point link. AS200 border router sends the route to AS100 to the second router in AS200 via iBGP, and the second router says `unreachable` under that route, because the next hop for this route is unreachable, as it is the ip address of the AS100's border router side of the eBGP link between AS100 and AS200.   
+By adding `next-hop-self` in AS200 border router config, EOS on that router will set the next-hop of the route to AS100 to it's own address on the link between it, and the second router connected by iBGP.   
+This way the internal router in AS200 has a reachable next hop on the path to AS100.   
+
+`send-community` is not necessary here and does not really do anything here however I wanted to make including that a habit, since in my AS it will be needed, both on external and internal BGP.
+
+After spinning clab up, i could check if the iBGP session came up:
+```
+r2#show ip route bgp detail
+
+VRF: default
+Source Codes:
+...
+Priority Codes:
+       PL - Priority low, PM - Priority medium, PH - Priority high
+Other Codes:
+       LR - Part of a recursive route resolution loop
+
+ B I      172.16.67.0/24 [200/0] PL
+           via 172.16.10.0, Ethernet1
+
+r2#
+```
+So it's clear that the IPv4 /24 advertised by r1 got installed in r2's FIB via Internal BGP (cause `B I`)   
