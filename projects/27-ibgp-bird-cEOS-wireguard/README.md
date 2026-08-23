@@ -433,3 +433,84 @@ Other Codes:
 r2#
 ```
 So it's clear that the IPv4 /24 advertised by r1 got installed in r2's FIB via Internal BGP (cause `B I`)   
+
+#### So now iBGP between the cEOS and VPS through Wireguard 
+
+First thing is BGP on cEOS. This is the config I wrote:   
+```
+ip route 10.67.67.0/24 Null0
+router bgp 65000
+  neighbor 10.0.99.1 remote-as 65000
+  neighbor 10.0.99.1 description ibgp-to-vps
+  neighbor 10.0.99.1 send-community
+  neighbor 10.0.99.1 update-source Loopback0
+  address-family ipv4
+    neighbor 10.0.99.1 activate
+    network 10.0.99.2/32
+    network 10.67.67.0/24
+```
+For the purposes of this PoC I routed `10.67.67.0/24` to a blackhole, just so EOS has something to advertise other than it's own Loopback, which will already be reachable via a static route.   
+In `address-family ipv4` I added `network 10.0.99.2/32` which is cEOS' loopback, and `10.67.67.0/24` which is the sample network for advertisement.  
+
+Now BIRD config on VPS, I will explain the specific blocks more.   
+First the definitions, RID and logging:
+```
+router id 10.0.255.1;
+define ASN=65000;
+define LO=10.0.99.1/32;
+define CEOS=10.0.99.2;
+log syslog all;
+```
+
+This is kinda messy but I will re-do that in the final setup.   
+Now protocol device and kernel:
+```
+protocol device {
+    scan time 10;
+  }
+protocol kernel {
+	  ipv4 {
+		  import none;
+		  export all;
+	  };
+	  persist;
+  }
+```
+`scan time 10` is pretty standard.  
+In the `protocol kernel` block in `ipv4` I set `import none` cause I only want to install routes in the FIB, not import them into BIRD's RIB, and `export all` cause as I said, I want to install all routes from RIB to FIB.   
+
+Now the directly connected interfaces:
+```
+protocol direct {
+    interface "eth*", "lo", "wg*";
+  }
+```
+At first I forgot to include `wg0` there, but it also has to be included.   
+
+And a single static route to make cEOS' Loopback reachable.   
+```
+protocol static {
+  route 10.0.99.2/32 via 10.99.99.2;
+}
+```
+Now here is a really cool thing. [Here](#allowedips) I talked about how wg-quick works by default. So generally, if 10.0.99.2/32 (cEOS Loopback) is in AllowedIPs on VPS' wg0.conf, then wg-quick on VPS would install a route to 10.0.99.2/32 pointing at `wg0` (as wireguard interfaces are dev L3 Point-to-multipoint, NOT `via` so they dont have a L2 next hop), in the FIB. So, `route 10.0.99.2/32 via 10.99.99.2` could be unnecessary on VPS, because even though BIRD does not have that route in it's RIB, the VPS itself does have a route to that destination in its FIB, installed by wg-quick.   
+That's because of this:
+```
+protocol kernel {
+  ipv4 {
+    import none;
+    export all;
+  };
+}
+```
+So BIRD will not like take the routes from the Linux FIB into its own RIB, but it will install the routes from its RIB into the FIB.   
+
+So generally, when BIRD wants to establish the BGP connection, it calls `connect()`, the destination is 10.99.99.2, this goes to the kernel, FIB has a route `10.99.99.2/32 dev wg0`, the packet gets sent to `wg0` and only then Wireguard does an actual lookup of the IP of the next-hop. So that generally works. 
+
+However, BIRD still needs to have a resolvable next-hop in its own RIB to accept a received prefix.   
+So, BIRD receives a prefix announced from cEOS with `NEXT_HOP 10.0.99.2` (because of `update-source Loopback0` on cEOS), looks up a next hop for 10.0.99.2/32 in its own RIB (NOT Kernel's FIB), sees that there is no route, and it drops the prefix.   
+
+Nothing in `protocol static` nor in `direct` gives BIRD any way to resolve a next hop for 10.0.99.2/32.   
+That is why BIRD does need a static `route 10.0.99.2/32 via 10.99.99.2;`, because a route with a unreachable next-hop is useless.   
+
+This is the consequence of `import none;` in BIRD's `protocol kernel` block. BIRD will not import the routes already installed in the kernel to its own RIB.   
