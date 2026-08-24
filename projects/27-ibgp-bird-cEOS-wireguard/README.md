@@ -1,6 +1,7 @@
 ### Here i wanted to do something that will prove that my intended own AS setup is possible. Meaning I'll establish an iBGP session between an cEOS container and a VPS with BIRD. 
 
 [AllowedIPs](#allowedips) is an interesting section along with [MTU](#mtu) (most of the talking is there)   
+[importance-of-import-none](#importance-of-import-none) is also interesting.   
 
 The iBGP connection will be established through a wireguard tunnel. Though EOS does not support Wireguard, so I will set a lightweight Alpine linux container next to cEOS and route all traffic from and out of the cEOS through the Alpine container.
 
@@ -482,6 +483,7 @@ In the `protocol kernel` block in `ipv4` I set `import none` cause I only want t
 Now the directly connected interfaces:
 ```
 protocol direct {
+    ipv4;
     interface "eth*", "lo", "wg*";
   }
 ```
@@ -490,9 +492,11 @@ At first I forgot to include `wg0` there, but it also has to be included.
 And a single static route to make cEOS' Loopback reachable.   
 ```
 protocol static {
+  ipv4;
   route 10.0.99.2/32 via 10.99.99.2;
 }
 ```
+#### importance of import none
 Now here is a really cool thing. [Here](#allowedips) I talked about how wg-quick works by default. So generally, if 10.0.99.2/32 (cEOS Loopback) is in AllowedIPs on VPS' wg0.conf, then wg-quick on VPS would install a route to 10.0.99.2/32 pointing at `wg0` (as wireguard interfaces are dev L3 Point-to-multipoint, NOT `via` so they dont have a L2 next hop), in the FIB. So, `route 10.0.99.2/32 via 10.99.99.2` could be unnecessary on VPS, because even though BIRD does not have that route in it's RIB, the VPS itself does have a route to that destination in its FIB, installed by wg-quick.   
 That's because of this:
 ```
@@ -505,12 +509,98 @@ protocol kernel {
 ```
 So BIRD will not like take the routes from the Linux FIB into its own RIB, but it will install the routes from its RIB into the FIB.   
 
-So generally, when BIRD wants to establish the BGP connection, it calls `connect()`, the destination is 10.99.99.2, this goes to the kernel, FIB has a route `10.99.99.2/32 dev wg0`, the packet gets sent to `wg0` and only then Wireguard does an actual lookup of the IP of the next-hop. So that generally works. 
+So generally, when BIRD wants to establish the BGP connection, it calls `connect()`, the destination is 10.0.99.2, this goes to the kernel, FIB has a route `10.0.99.2/32 dev wg0`, the packet gets sent to `wg0` and only then Wireguard does an actual lookup of the IP of the next-hop. So that generally works. 
 
-However, BIRD still needs to have a resolvable next-hop in its own RIB to accept a received prefix.   
-So, BIRD receives a prefix announced from cEOS with `NEXT_HOP 10.0.99.2` (because of `update-source Loopback0` on cEOS), looks up a next hop for 10.0.99.2/32 in its own RIB (NOT Kernel's FIB), sees that there is no route, and it drops the prefix.   
+However, to accept a received prefix, BIRD needs to resolve the `NEXT_HOP` against ITS OWN RIB.   
+So, BIRD receives a prefix announced from cEOS with `NEXT_HOP 10.0.99.2` (because of `update-source Loopback0` on cEOS), looks up a next hop for 10.0.99.2/32 in its own RIB (NOT Kernel's FIB), sees that there is no route, and it ~drops the prefix~ keeps the prefix in the RIB, it does not discard the prefix with unreachable NH, but it will never get installed into the FIB.   
 
 Nothing in `protocol static` nor in `direct` gives BIRD any way to resolve a next hop for 10.0.99.2/32.   
 That is why BIRD does need a static `route 10.0.99.2/32 via 10.99.99.2;`, because a route with a unreachable next-hop is useless.   
 
-This is the consequence of `import none;` in BIRD's `protocol kernel` block. BIRD will not import the routes already installed in the kernel to its own RIB.   
+This is the consequence of `import none;` in BIRD's `protocol kernel` block. BIRD will not import the routes already installed in the kernel to its own RIB.  
+
+Though this could create a conflict. BIRD does not know that there already is a route (`route 10.0.99.2/32 dev wg0`) in the FIB and it installs its own `route 10.0.99.2/32 via 10.99.99.2`. 10.99.99.2 is in fact reachable via yet another wg0 route (`ip route` shows `10.99.99.0/30 dev wg0 proto kernel`).   
+
+Now the `protocol bgp` block   
+```
+protocol bgp ibgptoceos {
+    local 10.0.99.1 as ASN;
+    neighbor CEOS as ASN;
+    ipv4 {
+	    import all;
+    	export all;
+	  };
+}
+```
+`all` will be later changed to appropriate filters.   
+After that i launched `birdc configure` on the VPS and redeployed the clab and in a while I was able to check whether the VPS received the prefix from cEOS.   
+```
+bird> show route
+Table master4:
+10.0.99.2/32         unicast [static1 15:50:59.592] * (200)
+	via 10.99.99.2 on wg0
+                     unicast [ibgptoceos 15:51:04.442 from 10.0.99.2] (100/?) [i]
+	via 10.99.99.2 on wg0
+10.0.99.1/32         unicast [direct1 15:50:59.593] * (240)
+	dev lo
+10.67.67.0/24        unicast [ibgptoceos 15:51:04.442 from 10.0.99.2] * (100/?) [?]
+	via 10.99.99.2 on wg0
+10.99.99.0/30        unicast [direct1 15:50:59.593] * (240)
+	dev wg0
+bird>
+```
+And on cEOS:   
+```
+ S        10.0.99.1/32 [1/0]
+           via 10.10.99.1, Ethernet1
+ C        10.0.99.2/32
+           directly connected, Loopback0
+ C        10.10.99.0/30
+           directly connected, Ethernet1
+ S        10.67.67.0/24
+           directly connected, Null0
+ B I      10.99.99.0/30 [200/0]
+           via 10.10.99.1, Ethernet1
+ C        172.20.20.0/24
+           directly connected, Management0
+```
+
+So now to explain what those outputs mean, BIRD correctly receives 10.0.99.2/32 (cEOS loopback) and 10.67.67.0/24 (cEOS LAN) via BGP, and cEOS correctly receives a route to the Alpine-VPS WG link (10.99.99.0/30).  
+
+However there is another interesting thing worth noting here. This specifically:   
+```
+10.67.67.0/24        unicast [ibgptoceos 15:51:04.442 from 10.0.99.2] * (100/?) [?]
+	via 10.99.99.2 on wg0
+```
+
+The square brackets should have a `i` in them. 
+
+Arista EOS implements `network` as taking a route from the RIB and it derives ORIGIN from the protocol of the source route.   
+on cEOS route to 10.0.99.2/32 is saw as `redistributed (Connected)`, `direct`, with ORIGIN IGP (`[i]`) and the one to 10.67.67.0/24 is saw as `redistributed (Static)`, it's `static (Null0)` with ORIGIN INCOMPLETE (`[?]`).   
+
+So I guess everytime I will originate my prefix from EOS in the typical way, which is a static to Null0, the routes will exit my AS as INCOMPLETE even though I added them to bgp config with `network`.   
+Typically, for example in Cisco's IOS (I think), INCOMPLETE is reserved for redistributed routes. The route to Null0 does not seem redistributed but in EOS eyes I guess it is.
+
+A second interesting thing here is on cEOS' side: 
+```
+ceos#sh ip bgp 10.0.99.2
+BGP routing table information for VRF default
+Router identifier 10.0.99.2, local AS number 65000
+BGP routing table entry for 10.0.99.2/32
+ Paths: 2 available
+  Local
+    - from - (10.0.99.2)
+      Origin IGP, metric -, localpref -, IGP metric -, weight 0, tag 0
+      Received 01:32:47 ago, valid, local, best, redistributed (Connected)
+      Rx SAFI: Unicast
+  Local
+    10.99.99.2 from 10.0.99.1 (10.0.255.1)
+      Origin IGP, metric 0, localpref 100, IGP metric 0, weight 0, tag 0
+      Received 00:46:12 ago, valid, internal
+      Rx SAFI: Unicast
+```
+Basically this is the consequence of `export all` in `protocol bgp ibgptoceos` on BIRD.
+cEOS receives a route to its own loopback from the VPS. `export all` exports the whole master4 table along with the static `route 10.0.99.2/32 via 10.99.99.2`. The `(10.0.255.1)` is VPS' RID.  
+
+One more thing here is that the next hop is `10.99.99.2` and not `10.0.99.2`, as BIRD kept the original gateway of the static route instead of replacing it with itself. This is different than the route `10.99.99.0/30 dev wg0`, cause this route does not have a gateway anyway so BIRD had to set a next hop by itself.   
+This shows that BIRD does not really have a global next-hop-self and it just decides per-route.
