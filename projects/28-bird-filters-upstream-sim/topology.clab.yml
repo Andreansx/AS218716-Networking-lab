@@ -11,7 +11,7 @@ topology:
         net.ipv6.conf.all.forwarding: 1 
         net.ipv6.conf.all.disable_ipv6: 0
       exec:
-        - ip -6 addr add 2001:db8:dead::1/128 dev lo
+        - ip -6 addr add 2001:db8:1111::1/128 dev lo
         - ip -6 addr add 2001:db8:beef::/127 dev eth1
         - bird -c /etc/bird.conf
     bird2:
