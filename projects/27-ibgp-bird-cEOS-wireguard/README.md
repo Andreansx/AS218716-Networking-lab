@@ -604,3 +604,4 @@ cEOS receives a route to its own loopback from the VPS. `export all` exports the
 
 One more thing here is that the next hop is `10.99.99.2` and not `10.0.99.2`, as BIRD kept the original gateway of the static route instead of replacing it with itself. This is different than the route `10.99.99.0/30 dev wg0`, cause this route does not have a gateway anyway so BIRD had to set a next hop by itself.   
 This shows that BIRD does not really have a global next-hop-self and it just decides per-route.
+
