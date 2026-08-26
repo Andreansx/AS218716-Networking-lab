@@ -33,6 +33,7 @@ topology:
       image: bird1:local
       binds:
         - telekom1.conf:/etc/bird.conf
+        - clab-birdtest1/authorized_keys:/root/.ssh/authorized_keys:ro
       sysctls:
         net.ipv4.ip_forward: 1 
         net.ipv6.conf.all.forwarding: 1 
@@ -41,6 +42,7 @@ topology:
         - ip -6 addr add 2001:db8:abcd::1/128 dev lo 
         - ip -6 addr add 2001:db8:beef::3/127 dev eth1
         - bird -c /etc/bird.conf
+        - /usr/sbin/sshd
   links:
     - endpoints: ["bird1:eth1","bird2:eth1"]
     - endpoints: ["telekom1:eth1","bird2:eth2"]

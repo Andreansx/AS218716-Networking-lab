@@ -355,3 +355,26 @@ And now bird2 does not import that route even into it's own RIB.
 
 `import keep filtered on` earlier in bird2's config was necessary to show that the route via AS65001 to bird2's own prefix, got into the RIB, but was not selected as the best route.
 Without that option, the route would not show up there.
+
+Also I wanted to allow myself to SSH into the containers from my Mac.   
+The first thing is that MacOS does not know how to reach 172.20.20.0/24 which is the network in which `eth0` interfaces are in.
+But that's easily solvable by running `sudo route -n add -net 172.20.20.0/24 <Orbstack VM address here>`, so in my case I ran `sudo route -n add -net 172.20.20.0/24 192.168.139.231`.   
+Now MacOS can ping the containers, but the Alpine containers do not even have ssh, so I had to add `openssh` to the `apk add` command in the Dockerfile, along with `&& ssh-keygen -A`, because without that, sshd would not launch.   
+Then it's necessary to add the command for launching the SSH Daemon, which is just `/usr/sbin/sshd`. So now the `exec:` section in telekom1 section in topology.clab.yml looks like this:   
+```
+      exec:
+        - ip -6 addr add 2001:db8:abcd::1/128 dev lo
+        - ip -6 addr add 2001:db8:beef::3/127 dev eth1
+        - bird -c /etc/bird.conf
+        - /usr/sbin/sshd
+```
+
+I do not really have to add anything to the authorized_keys, since at deploy, clab creates a folder, here called `clab-birdtest1` in which it creates the authorized_keys file and it basically dumps all found pubkeys into it, including the pubkeys created by Secretive.   
+However it is not mounted by default, I mean I do not really know if that's the correct behaviour but that's how it behaves in my case.
+But since all pubkeys are in one file, it can be just mounted to the container by adding `clab-birdtest1/authorized_keys:/root/.ssh/authorized_keys:ro`. Clab will create the `/root/.ssh` folder by itself with mode 755 root:root.   
+
+So now i can log into the container through Orbstack or via ssh.   
+
+![scrn8](./scrn8.gif)    
+
+
