@@ -4,25 +4,21 @@ Here I document everything about my networking lab which serves as a practical g
 
 The current focus for now is getting my own ASN and PI IPv6 /48, then setting up my own Looking Glass on my domain which will be anycasted. And also later I would like to set up my own authoritative nameserver.   
 
-Anycast will work for IPv6, but for people behind IPv4, the Anycasted IP in the AAAA record, will fall back to two non-anycast A records.   
+Anycast will only work for people behind IPv6. The A records for my domain will just point to the two public IPv4 addresses of the VPSes.   
 
 <div align=“center”>
 
 ![ansible](https://img.shields.io/badge/ansible+Netbox-2B0948?style=for-the-badge&logo=ansible&logoColor=white&logoSize=auto)
-![Proxmox](https://img.shields.io/badge/proxmox-542045?style=for-the-badge&logo=proxmox&logoColor=white&logoSize=auto)
+![BGP](https://img.shields.io/badge/BGP_Anycast-542045?style=for-the-badge)
 ![jinja2](https://img.shields.io/badge/Jinja2-7D3742?style=for-the-badge&logo=jinja&logoColor=white&logoSize=auto)
-![dell](https://img.shields.io/badge/EMC%20OS10-A54E3E?style=for-the-badge&logo=dell&logoColor=white&logoSize=auto)
-![Junos](https://img.shields.io/badge/junos-CE653B?style=for-the-badge&logo=juniper-networks&logoColor=white&logoSize=auto)
+![dell](https://img.shields.io/badge/EOS-A54E3E?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTI3IiBoZWlnaHQ9IjEwOTkiIHZpZXdCb3g9IjAgMCAxNTI3IDEwOTkiPjx0aXRsZT5BcmlzdGEtbmV0d29ya3MtbG9nby1zdmc8L3RpdGxlPjxwYXRoIGQ9Ik04NzQuMyA2MC44YzUyLjEgODQuOSA2NTIgMTAzMS40IDY1MiAxMDMxLjRoLTIxNS4yTDc2My40IDIxNy41IDUyOC43IDU5Ni4xaDQzMC40TDg0OC4yIDc3Mi40SDQxNy45bC0yMDIuMiAzMjYuNEguNlM2MDcgMTM5LjIgNjUyLjYgNjcuNGM1OC43LTg0LjkgMTYzLTkxLjQgMjIxLjctNi42IiBzdHlsZT0iZmlsbDojZmZmIi8+PC9zdmc+&logoColor=white&logoSize=auto)
+![Junos](https://img.shields.io/badge/BIRD-CE653B?style=for-the-badge)
 
 </div>
 
 # Architecture
 
-My lab is modeled after hyperscale datacenters.
-I'm currently using all of this as a learning ground.
-The network is built in a L3 CLOS (Spine-Leaf) architecture with eBGP for the ultra fast non-blocking underlay connection. Management is separated in a separate VRF.   
-
-Currently my main focus will be to become my own AS. Two VPSes will have eBGP peerings established and there will be iBGP between them and my CCR2004 border leaf through wireguard tunnels. However most of the lab is in fact turned off, cause it's too loud and too power-hungry, so im leaving only the border-leaf on.    
+Currently my main focus is to become my own AS. Two VPSes will have eBGP peerings established and there will be iBGP between them and my CCR2004 border leaf through wireguard tunnels. However most of the lab is in fact turned off, cause it's too loud and too power-hungry, so im leaving only the border-leaf on.    
 
 I do know that the S4048-ON is overkill cause there is not one service in my lab that would require anywhere near this bandwith.   
 
@@ -30,12 +26,11 @@ You can check out all of these devices but basically the Dell EMC S4048-ON with 
 
 I want this whole network to be 100% driven by code so it would be possible to set up an exact same topology with only the Netbox inventory and an Ansible playbook.   
 
-Also I want everything to be fully scalable so for example I can set up a completly new vJunos Router with only a couple of entries in the Netbox inventory.  
-
-
 # Projects
 
-*   [iBGP and eBGP between BIRDs and some simple filters and functions](./projects/28-bird-filters-upstream-sim/)    
+*   **[PoC but with IPSec instead of Wireguard](./projects/29-ipsec-PoC-bird/)**    
+
+*   **[iBGP and eBGP between BIRDs and some simple filters and functions](./projects/28-bird-filters-upstream-sim/)**    
 
 *   **[iBGP between BIRD and cEOS through Wireguard](./projects/27-ibgp-bird-cEOS-wireguard)** - This is actaully pretty big. Wireguard, some stuff about importance of cryptokey routing, cEOS, BIRD and a lot of MTU  
 
@@ -66,16 +61,6 @@ Also I want everything to be fully scalable so for example I can set up a comple
 
 *   ThinkPad T450s with 12GB of DDR3 RAM running Arch Linux with i3wm. For a long time I thought that I wouldn't need anything else other than this ThinkPad but I wanted to switch from solely VMs like vJunos to containers like cRPD and cEOS. This laptop was painful to use when running two cEOS containers with Podman. It's connected to the Out-of-band Management network, to my Tailnet and is also an SSH bastion.   
 *   [MacBook Pro M2 Max](./MacBookProM2Max/) with 32GB of RAM running Tahoe 26.3. Finally a certified Single UNIX Specification OS device. A lot more comfortable to use. Orbstack runs really well on it and I'm finally able to run a lot of ARM64 cRPDs and cEOS containers in parallel. 
-
-# Spine-Leaf switches
-
-| Model | Role | NOS | ASN | Note |
-| :--- | :--- | :--- | :--- | :---|
-| [Dell EMC S4048-ON](./Spine-DellEMCS4048-ON/) | Underlay Spine Switch | Dell EMC OS10 | 4200000000 | Spine for the ultra fast switching fabric with a StrataXGS Trident2 (not 2+ though so it can't perform single pass RIOT) |
-| MikroTik CCR2004-1G-12S+2XS | Underlay Border Leaf Switch | ROSv7 | 4200000001 | Border leaf which performs NAT and runs a DHCP server. Also a gateway for the OOB Management network |
-| MikroTik CRS326-24S+2Q+RM | Underlay Leaf Switch | ROSv7 | 4200000002 | Sold it |  
-| Leaf-vJunosRouter-0 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000000 | gateway for VMs in PVE |
-| Leaf-vJunosRouter-1 | Underlay Leaf Switch (virtual) | JunOS 25.4R1 | 4201000001 | gateway for VMs in PVE |
 
 # Lab Architecture
 
