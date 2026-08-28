@@ -2,7 +2,7 @@
 
 Here I document everything about my networking lab which serves as a practical ground for learning modern datacenter/service-provider technologies.     
 
-The current focus for now is getting my own ASN and PI IPv6 /48, then setting up my own Looking Glass on my domain which will be anycasted. And also later I would like to set up my own authoritative nameserver.   
+The current focus for now is getting my own ASN and PA IPv6 /48, then setting up my own Looking Glass on my domain which will be anycasted. And also later I would like to set up my own authoritative nameserver.   
 
 Anycast will only work for people behind IPv6. The A records for my domain will just point to the two public IPv4 addresses of the VPSes.   
 
@@ -22,11 +22,15 @@ Currently my main focus is to become my own AS. Two VPSes will have eBGP peering
 
 I do know that the S4048-ON is overkill cause there is not one service in my lab that would require anywhere near this bandwith.   
 
-You can check out all of these devices but basically the Dell EMC S4048-ON with OS10 is the Spine switch (AS4200000000) and all of the other devices are Leaf switches like the Leaf-vJunosRouter0 or the MikroTik CCR2004-1G-12S+2XS which is a border leaf.   
+~You can check out all of these devices but basically the Dell EMC S4048-ON with OS10 is the Spine switch (AS4200000000) and all of the other devices are Leaf switches like the Leaf-vJunosRouter0 or the MikroTik CCR2004-1G-12S+2XS which is a border leaf.~   
+
+For now the S4048-ON does nothing, as only the CCR2004-1G-12S+2XS is used for full-mesh iBGP topology with two VPSes through tunnels, one VPS is already ordered.   
 
 I want this whole network to be 100% driven by code so it would be possible to set up an exact same topology with only the Netbox inventory and an Ansible playbook.   
 
 # Projects
+
+*   **[Some writing about IPSec, IKEv2, differences between ipsec.conf and swanctl.conf, and intended problem showcase with rekeying and PFS](./projects/30-some-ipsec-policy-based-experimenting/)**    
 
 *   **[PoC but with IPSec instead of Wireguard](./projects/29-ipsec-PoC-bird/)**    
 

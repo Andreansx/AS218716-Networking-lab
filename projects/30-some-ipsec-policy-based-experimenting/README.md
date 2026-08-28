@@ -140,3 +140,72 @@ For the IKE Security Association channel, DH algorithm is necessary, but for Chi
 
 As you can see, on r2's side there is `auto=start` but not on r1's side. That because if `right` on r1 is defined as `%any` then r1 does not know where to send the initiation.
 R1 can only respond so `auto` is set to `add` on r1.   
+
+IKE SA and Child SA Proposals do not allow even a partial mismatch. Out of all the accepted parts from each sides of the tunnel, there must be one that both sides can fully agree on.
+If there is something that both sides can't seem to agree on, for example on the ENCR in IKE Proposal, then the initiating side gets a `NO_PROPOSAL_CHOOSEN`.
+However the difference between IPSec and Wireguard is that IPSec has two completely different channels, and those channels are authenticated separately.
+Basically IKE can go through, but ESP can fail.   
+So I wanted to check that in practice.  
+
+On r1 I set `esp=aes256gcm16` instead of `esp=aes256-sha256`, so I deliberately caused a mismatch of the INTEG field. I mean `aes256gcm16` makes it so there is no INTEG field, or it is set to NULL. Cause there is a difference between AEAD, which is Authenticated Encryption with Associated Data and CBC+HMAC here.
+`aes256-sha256` means that AES-256-CBC is used for encryption and SHA256 used to compute the checksum. `aes256gcm16` means that AES 256 in Galois-Counter Mode is used with built-in integrity check, cause AES GCM and ChaCha20 both do include integrity in the cipher itself. `16` is the length of the ICV tag in bytes, so 128 bits.   
+
+Then I deployed the lab   
+
+![scrn0](./scrn0.png)   
+
+And basically the tunnel came up so I got kind of confused.
+The reason for that is actually described in the ipsec man page. Cmd+f and `esp` showed me the section where `esp` behaviour is mentioned. It basically goes like this:
+```
+esp = <cipher suites>
+    [...]
+    Defaults to aes128-sha256. The daemon adds its extensive default proposal to this default or the configured value. To restrict it to the configured proposal an exclamation mark (!) can be added at the end.
+
+    Note: As a responder, the daemon defaults to selecting the first configured proposal that's also supported by the peer. This may be changed via strongswan.conf(5) to selecting the first acceptable proposal sent by the peer instead. In order to restrict a responder to only accept specific cipher suites, the strict flag (!, exclamation mark) can be used, e.g: aes256-sha512-modp4096!
+```
+So this explains everything. Even though i caused an intended mismatch of the INTEG field in Child SA, the daemon added the default cipher suites, so one of them had to be acceptable via both sides.   
+
+In the same man pages, in `ike` section, there is the same thing:
+```
+ike = <cipher suites>
+    [...]
+    Defaults to aes128-sha256-modp3072. The daemon adds its extensive default proposal to this default or the configured value. To restrict it to the configured proposal an exclamation mark (!) can be added at the end.
+
+    Note: As a responder the daemon accepts the first supported proposal received from the peer. In order to restrict a responder to only accept specific cipher suites, the strict flag (!, exclamation mark) can be used, e.g: aes256-sha512-modp4096!
+```
+
+I even checked the Security Associations for IKE and ESP:    
+![scrn1](./scrn1.png)   
+So it looks like it used the intended AES-256-CBC with HMAC SHA256 and modp2048 DH group.   
+And for the ESP it agreed on AES 256 GCM with 16-byte ICV tag, which is what r1 intended.
+So i assume r1 had some kind of priority here, as it wanted `aes256gcm16`, but even though r2 wanted `aes256-sha256`, they agreed on `aes256gcm16`.
+Or `aes256gcm16` was just earlier in some kind of a list.   
+
+After adding the exclamation mark on both sides and re-deploying, the ESP channel would not establish, but the IKE channel did:   
+
+![scrn2](./scrn2.png)   
+
+As you can see, there is a selected cipher for IKE but there is no ESP channel visible.   
+I checked charon.log on both sides and found the exact point where ESP establishment fails on r1:   
+
+![r1](./r1.png)   
+
+and on r2:   
+
+![r2](./r2.png)   
+
+This line on r2 is crucial `received proposals: ESP:AES_CBC_256/HMAC_SHAZ_256_128/NO_EXT_SEQ`.
+I saw that with the IKE proposal, there was no `NO_EXT_SEQ` on the end, and instead there was a long list of different ciphers:   
+
+![scrn3](./scrn3.png)   
+
+So this confirms that ipsec in this specific implementation by default does not really care about the mismatch of `esp=` and `ike=` lines between the endpoints, as it does send all default ENCR and INTEG fields anyway.   
+But I couldn't find the exclamation mark in strongswan documentation. Since the ipsec.conf file that I used is the old config, but StrongSwan does now focus on the new config file which is swanctl.conf.   
+
+But there is a section "Default Proposals" in StrongSwan's documentation:
+```
+If no explicit proposals are configured with the proposals or ah|esp_proposals settings in swanctl.conf, default proposals are used. These proposals can also be added after custom proposals via the default keyword.
+```
+So it seems like in the new `swanctl.conf` file, the `proposals` and `esp_proposals` sections behave in the opposite ways. 
+In `ipsec.conf` the proposals do include default ones but in `swanctl.conf` they do not.   
+
