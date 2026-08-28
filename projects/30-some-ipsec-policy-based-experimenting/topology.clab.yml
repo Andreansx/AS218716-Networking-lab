@@ -1,0 +1,39 @@
+name: ipsecpolicybasedexp
+topology:
+  nodes:
+    r1:
+      kind: linux
+      image: bird1:local
+      sysctls:
+        net.ipv4.ip_forward: 1
+        net.ipv6.conf.all.forwarding: 1
+        net.ipv6.conf.all.disable_ipv6: 0 
+      binds:
+        - r1.ipsec.conf:/etc/ipsec.conf
+        - strongswan.conf:/etc/strongswan.conf
+        #- clab-ipsecpolicybasedexp/authorized_keys:/root/.ssh/authorized_keys:ro
+        - ipsec.secrets:/etc/ipsec.secrets
+      exec:
+        - ip addr add 2001:db8:abcd:10::/127 dev eth1
+        - ip addr add 2001:db8:abcd:1111::1/64 dev lo
+        - ipsec restart
+        - /usr/sbin/sshd
+    r2:
+      kind: linux
+      image: bird1:local
+      sysctls:
+        net.ipv4.ip_forward: 1
+        net.ipv6.conf.all.forwarding: 1
+        net.ipv6.conf.all.disable_ipv6: 0
+      binds:
+        - r2.ipsec.conf:/etc/ipsec.conf
+        - strongswan.conf:/etc/strongswan.conf
+        #- clab-ipsecpolicybasedexp/authorized_keys:/root/authorized_keys:ro
+        - ipsec.secrets:/etc/ipsec.secrets
+      exec:
+        - ip addr add 2001:db8:abcd:10::1/127 dev eth1
+        - ip addr add 2001:db8:abcd:2222::1/64 dev lo
+        - ipsec restart
+        - /usr/sbin/sshd
+  links:
+    - endpoints: ["r1:eth1","r2:eth1"]
