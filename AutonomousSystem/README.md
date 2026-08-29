@@ -7,6 +7,8 @@
 |PoP-A|pending|
 |PoP-B|activated|
 
+I would like to add PTR records for my PoPs, so I would use `edge01.zrh.andreansx.net` for PoP-A, and `edge01.dus.andreansx.net`.   
+Looking glass will be at `lg.andreansx.net`    
 
 I'll place security notes in here rather than in [projects](../projects/).   
 
@@ -22,3 +24,6 @@ iFog VPS is a Switzerland Ryzen G2 with 2 AMD Ryzen Shared Cores, 2GB RAM, 50GB 
 ## Docs
 
 * [Why not Vultr or BGPTunnel and Oracle Always-Free VPS](./00-vultr-bgptunnel-oci.md)   
+* [Decisions on the sponsoring LIR](./01-LIR.md)   
+* [Why 2GB of RAM on iFog VPS because of comfort and FogIXP](./02-vps-memory-bgp-full-table.md)    
+
