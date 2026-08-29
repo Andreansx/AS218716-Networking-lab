@@ -16,6 +16,10 @@ Anycast will only work for people behind IPv6. The A records for my domain will 
 
 </div>
 
+# Autonomous System
+
+Check directory [./AutonomousSystem/](./AutonomousSystem/) for information specifically about the AS.
+
 # Architecture
 
 Currently my main focus is to become my own AS. Two VPSes will have eBGP peerings established and there will be iBGP between them and my CCR2004 border leaf through wireguard tunnels. However most of the lab is in fact turned off, cause it's too loud and too power-hungry, so im leaving only the border-leaf on.    
