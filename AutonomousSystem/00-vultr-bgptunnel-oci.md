@@ -12,15 +12,15 @@ And Oracle itself does not establish a BGP session with a client.
 I was also thinking about Vultr, which I later considered not eligible for my need, cause they are an hourly cloud provider but RIPE requires two upstreams which cannot be hourly cloud providers (or so I thought).
 Turns out that this is only an iFog's requirement and not a RIPE requirement in general, for example, Lagrange Cloud, after I asked them, confirmed that there is no restrictions on using hourly cloud providers for people in the RIPE NCC region.   
 
-Part of the response I received:   
+Part of the response from Lagrange Cloud, that I received:   
 
 > "There are no restrictions on using hourly providers as upstream. RIPE will accept any valid ASN, although may request evidence if you list a noteworthy partner such as Cloudflare or Google. The only "restriction" on hourly providers is for requests from customers outside the RIPE region who are requesting a RIPE ASN, as they must provide an invoice for a VPS or similar within the RIPE region. Most hourly providers do not issue invoices in a format acceptable by RIPE due to how their services operate. You are in-region so do not have to provide an invoice."   
 
 So after all, I could use Vultr, but only if my sponsoring LIR would be other than iFog, as stated on iFog's website:   
-> Notes:
-> IMPORTANT regarding AS-Number registration:
-> -We require a copy of your Passport and/or Company Certificate, two Upstream Carrier with AS-Number and eMail you plan to use for the RIPE NCC.
-> -Documents such as Company Certificate or Certificate of good standing cant be older than 3 months.
+> Notes:   
+> IMPORTANT regarding AS-Number registration:   
+> -We require a copy of your Passport and/or Company Certificate, two Upstream Carrier with AS-Number and eMail you plan to use for the RIPE NCC.   
+> -Documents such as Company Certificate or Certificate of good standing cant be older than 3 months.   
 > -Upstreams MUST be in the RIPE NCC Service region (eg. Europe) and CANNOT be a hourly cloud provider. If you are outside the region, you will need to provide Invoices of your upstreams within the region.   
 
 

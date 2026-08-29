@@ -18,7 +18,7 @@ Anycast will only work for people behind IPv6. The A records for my domain will 
 
 # Autonomous System
 
-Check directory [./AutonomousSystem/](./AutonomousSystem/) for information specifically about the AS.
+Check directory [./AutonomousSystem/](./AutonomousSystem/) for information specifically about the AS. 
 
 # Architecture
 

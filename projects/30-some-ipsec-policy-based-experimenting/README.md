@@ -3,6 +3,8 @@
 IPSec is honestly so damn complex and it's hard for me to get a grasp on IKEv2 now. I mean as of now I somewhat get how does IKE_SA_INIT and IKE_AUTH work a bit, but there are so many specific details, and also the MTU can change depending on the cipher and other stuff. 
 In wireguard it's 60 or 80 bytes depending on the usage of IPv4 or IPv6 and that is it.  
 
+[This](#intended-failure-at-rekeying-with-pfs) section is interesting, cause it shows a mismatch that can cause a silent traffic loss.    
+
 As I said [here](../29-ipsec-PoC-bird/), it is not possible to use route-based encryption with xfrm interfaces in Alpine Linux containers in Docker in Orbstack on Apple Silicon, because the Orbstack's kernel does lack the necessary `xfrm_interface` module.   
 BUT policy-based does work, and basically a lot of stuff with IKE and its behaviour can be learned there, as IPSec generally works, just not with the VTI way.   
 
@@ -141,6 +143,8 @@ For the IKE Security Association channel, DH algorithm is necessary, but for Chi
 As you can see, on r2's side there is `auto=start` but not on r1's side. That because if `right` on r1 is defined as `%any` then r1 does not know where to send the initiation.
 R1 can only respond so `auto` is set to `add` on r1.   
 
+### Intended mismatch 
+
 IKE SA and Child SA Proposals do not allow even a partial mismatch. Out of all the accepted parts from each sides of the tunnel, there must be one that both sides can fully agree on.
 If there is something that both sides can't seem to agree on, for example on the ENCR in IKE Proposal, then the initiating side gets a `NO_PROPOSAL_CHOOSEN`.
 However the difference between IPSec and Wireguard is that IPSec has two completely different channels, and those channels are authenticated separately.
@@ -155,6 +159,9 @@ Then I deployed the lab
 ![scrn0](./scrn0.png)   
 
 And basically the tunnel came up so I got kind of confused.
+
+### differences between ipsec.conf and swanctl.conf
+
 The reason for that is actually described in the ipsec man page. Cmd+f and `esp` showed me the section where `esp` behaviour is mentioned. It basically goes like this:
 ```
 esp = <cipher suites>
@@ -208,4 +215,86 @@ If no explicit proposals are configured with the proposals or ah|esp_proposals s
 ```
 So it seems like in the new `swanctl.conf` file, the `proposals` and `esp_proposals` sections behave in the opposite ways. 
 In `ipsec.conf` the proposals do include default ones but in `swanctl.conf` they do not.   
+
+### intended failure at rekeying with PFS
+
+By default there is no Perfect Forward Secrecy enabled. I mean what decides on whether it is enabled, is the cipher suite used for Child SA.
+Typically a DH group is added only for IKE Proposal, but it can be added to Child SA if we want to enable PFS.   
+
+A DH group for ESP Channel is added by adding for example `-ecp384` to `esp=aes256gcm16`, making `esp=aes256gcm16-ecp384`.   
+However, the Child SA DH group is not compared at the start of the tunnel. It is first compared only at the end of the soft lifetime of the Child SA, so at rekeying.   
+
+Basically I wanted to see if a BGP connection can survive a rekeying issue caused by a mismatch of the DH groups for the ESP channel.
+In theory, the ESP establishment should fail only at the keys soft lifetime end, since a mismatch of DH groups for Child SA, should not be noticed neither at IKE_SA_INIT nor at IKE_AUTH.
+And BGP session should survive and not drop, since the hold timer is usually longer than the estimated interruption.   
+
+But before that I had to set the timers low so I wouldn't have to wait long to see the effect and issues. 
+However I thought that at this point it's better to transfer the configs from ipsec.conf to the newer syntax in swanctl.conf. Also swanctl.conf syntax is more readable.
+So this is how r1.swanctl.conf looks like:   
+```
+connections {
+    r1-to-r2-policy {
+        version      = 2
+        local_addrs  = 2001:db8:abcd:10::
+        remote_addrs = %any
+        proposals    = aes256-sha256-modp2048
+        rekey_time   = 60s
+        local {
+            auth = psk
+            id   = r1
+        }
+        remote {
+            auth = psk
+            id   = r2
+        }
+        children {
+            r1-to-r2-policy {
+                local_ts  = 2001:db8:abcd:1111::/64
+                remote_ts = 2001:db8:abcd:2222::/64
+                esp_proposals = aes256gcm16
+                rekey_time = 15s
+                life_time  = 30s
+                dpd_action   = restart
+                close_action = restart
+                start_action = none
+            }
+        }
+    }
+}
+include swanctl.secrets
+```
+A bit of explaining now. The main difference between ipsec.conf and swanctl.conf is like the difference between EOS' startup.cfg and BIRD's bird.conf.
+swanctl.conf uses a format with blocks instead of indentation.    
+`version = 2` is equal to `keyexchange=ikev2`, `local_addrs` is the same as `left` and `remote_addrs` is equal to `right`, `leftid=@r1` is now `local { id = r1 }`, `ike` is now `proposals` and `esp` is now `esp_proposals`.   
+The rest is pretty self explanatory. Here I use the same trick as before with `right=%any` but now with `remote_addrs = %any`, so that r2 can be behind NAT, though it is not behind NAT right now.   
+
+Also by default the secrets are in the `secrets { }` block but there is a way to place them in a separate file, by adding `include swanctl.secrets` in `swanctl.conf`.   
+
+The contents of `swanctl.secrets` look like this:   
+```
+secrets {
+    ike-r1-r2 {
+        id-1   = r1
+        id-2   = r2
+        secret = "somesupersupersecretkey"
+    }
+}
+```
+So in `topology.clab.yml` i had to replace the `r*.ipsec.conf` bind with:   
+```
+      binds:
+        - r2.swanctl.conf:/etc/swanctl/swanctl.conf
+        - swanctl.secrets:/etc/swanctl/swanctl.secrets
+```
+And in exec I removed `ipsec restart` and instead added those lines:
+```
+      exec:
+        - ipsec start
+        - sleep 2
+        - swanctl --load-all
+```
+And also `swanctl --load-all` is kind of more verbose than `ipsec restart` when launching it with `clab deploy`.
+`ipsec restart` didn't really output anything into `stdout` but `swanctl --load-all` does talk a bit:   
+
+![scrn4](./scrn4.png)   
 
