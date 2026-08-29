@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Strona-1" id="vJBmcMmv5R3fYHrPMBMq">
-    <mxGraphModel dx="1416" dy="1508" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1534" dy="1593" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -14,13 +14,13 @@
           <mxGeometry height="15" width="90" x="535.81" y="302" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-4" parent="1" style="shape=image;imageAspect=0;aspect=fixed;verticalLabelPosition=bottom;verticalAlign=top;image=https://ifog.ch/user/images/g5_helium/media/logoifog-tw.png;" value="" vertex="1">
-          <mxGeometry height="30" width="117.29" x="-270" y="220" as="geometry" />
+          <mxGeometry height="30" width="117.29" x="-269.99" y="205" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;eBGP peering with iFog AS34927&lt;/pre&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="15" width="190" x="-128.65" y="220" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;eBGP peering with Servperso AS34872&lt;/pre&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="30" width="161.36" x="-100.01" y="357.25" as="geometry" />
+          <mxGeometry height="30" width="241.35" x="-156.35" y="360" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;pre&gt;Wireguard tunnels &lt;/pre&gt;" vertex="1">
           <mxGeometry height="30" width="120" x="335.68" y="60" as="geometry" />
@@ -32,7 +32,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;p&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;iBGP between those 3 routers on WG links&lt;/font&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="30" width="160.01" x="230.69" y="289" as="geometry" />
+          <mxGeometry height="30" width="160.01" x="252.97" y="282.5" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-15" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#3399FF);" value="::2/128" vertex="1">
           <mxGeometry height="30" width="60" x="170.01" y="165" as="geometry" />
@@ -83,7 +83,7 @@
           <mxGeometry height="15" width="80" x="190" y="275" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-31" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#FF3399);" value="&lt;pre&gt;:10::5/127&lt;/pre&gt;" vertex="1">
-          <mxGeometry height="15" width="80" x="190" y="317" as="geometry" />
+          <mxGeometry height="15" width="80" x="190" y="305" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-32" edge="1" parent="1" source="8y6Ee9ZSgGJN8aSKaIr5-30" style="endArrow=none;html=1;rounded=0;strokeColor=light-dark(#000000,#88171A);strokeWidth=3;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="8y6Ee9ZSgGJN8aSKaIr5-31" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
@@ -115,7 +115,7 @@
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-38" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Technically not &#39;border&#39; anymore but it&#39;s still the edge of my home network" vertex="1">
           <mxGeometry height="30" width="160.01" x="640" y="290.5" as="geometry" />
         </mxCell>
-        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-41" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#99FF33);" value="">
+        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-41" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#99FF33);entryX=0.004;entryY=0.445;entryDx=0;entryDy=0;entryPerimeter=0;" target="Hxd1n3aajGHy5NscjLkm-4" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <mxPoint x="-151.34000000000015" y="362.5" as="sourcePoint" />
             <mxPoint x="140.01" y="362.5" as="targetPoint" />
@@ -137,31 +137,31 @@
           <mxGeometry height="30" width="159.32" x="600" y="327.5" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
-          <mxGeometry height="85" width="120" x="140.01" y="193" as="geometry" />
+          <mxGeometry height="85" width="171.35" x="88.66" y="193" as="geometry" />
         </mxCell>
-        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#BD145D);" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;PoP-A&lt;/font&gt;&lt;/pre&gt;&lt;pre&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;iFog VPS&lt;/font&gt;&lt;/pre&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="30" width="120" x="140.01" y="195" as="geometry" />
+        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#BD145D);" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;PoP-A&lt;/font&gt;&lt;/pre&gt;&lt;pre&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;iFog VPS&lt;/font&gt;&lt;/pre&gt;&lt;pre&gt;edge01.zrh.andreansx.net&lt;/pre&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="171.35" x="88.66" y="197.25" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#BD145D);" value="&lt;div style=&quot;line-height: 90%;&quot;&gt;&lt;font style=&quot;font-size: 9px; line-height: 90%;&quot;&gt;bird-lg-go&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;font-size: 9px;&quot;&gt;looking glass frontend and agent&lt;/span&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="30" width="120" x="140.01" y="225" as="geometry" />
+          <mxGeometry height="15" width="120" x="114.33999999999999" y="243" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
-          <mxGeometry height="75.5" width="120" x="140.01" y="334.5" as="geometry" />
+          <mxGeometry height="85" width="171.35" x="88.66" y="325" as="geometry" />
         </mxCell>
-        <mxCell id="Hxd1n3aajGHy5NscjLkm-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#5964FF);" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;PoP-B&lt;/font&gt;&lt;/pre&gt;&lt;pre&gt;&lt;span style=&quot;font-size: 11px;&quot;&gt;Servperso VPS&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="30" width="120" x="140.01" y="332.5" as="geometry" />
+        <mxCell id="Hxd1n3aajGHy5NscjLkm-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#5964FF);" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;&lt;font style=&quot;font-size: 15px;&quot;&gt;PoP-B&lt;/font&gt;&lt;/pre&gt;&lt;pre&gt;&lt;span style=&quot;font-size: 11px;&quot;&gt;Servperso VPS&lt;/span&gt;&lt;/pre&gt;&lt;pre&gt;&lt;span style=&quot;font-size: 11px;&quot;&gt;edge01.dus.andreansx.net&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="171.35" x="88.66" y="330.5" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#5964FF);" value="&lt;div style=&quot;line-height: 90%;&quot;&gt;&lt;font style=&quot;font-size: 9px; line-height: 90%;&quot;&gt;bird-lg-go&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;font-size: 9px;&quot;&gt;looking glass frontend and agent&lt;/span&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="30" width="120" x="140.01" y="362.5" as="geometry" />
+          <mxGeometry height="16.07" width="120" x="114.33999999999999" y="376.43" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="*The A record for backwards compatibility points to the VPSes public IPv4 addresses" vertex="1">
           <mxGeometry height="30" width="171.35" x="-142.71" y="120" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;pre&gt;&lt;font style=&quot;font-size: 13px; color: light-dark(rgb(0, 0, 0), rgb(0, 255, 128));&quot;&gt;:a::1/128&lt;/font&gt;&lt;/pre&gt;" vertex="1">
-          <mxGeometry height="20" width="80" x="160.01" y="390" as="geometry" />
+          <mxGeometry height="20" width="80" x="134.33999999999997" y="390" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;pre&gt;&lt;font style=&quot;font-size: 13px; color: light-dark(rgb(0, 0, 0), rgb(0, 255, 128));&quot;&gt;:a::1/128&lt;/font&gt;&lt;/pre&gt;" vertex="1">
-          <mxGeometry height="15" width="80" x="160.01" y="260" as="geometry" />
+          <mxGeometry height="15" width="80" x="134.33999999999997" y="260" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;pre&gt;&lt;font style=&quot;font-size: 13px; color: light-dark(rgb(0, 0, 0), rgb(0, 255, 128));&quot;&gt;:a::1/128&lt;/font&gt;&lt;/pre&gt;" vertex="1">
           <mxGeometry height="20" width="80" x="460.69" y="90" as="geometry" />
@@ -169,7 +169,7 @@
         <mxCell id="Hxd1n3aajGHy5NscjLkm-14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 20%;&quot;&gt;&lt;pre&gt;Main anycasted domain address&amp;nbsp;&lt;/pre&gt;&lt;pre&gt;(Main and Looking Glass Page)&lt;/pre&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="30" width="202.71" x="252.97" y="90" as="geometry" />
         </mxCell>
-        <mxCell id="5-CPWnVBL3Z6EtDBN7YI-1" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#99FF33);" value="">
+        <mxCell id="5-CPWnVBL3Z6EtDBN7YI-1" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#99FF33);entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="Hxd1n3aajGHy5NscjLkm-2" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <mxPoint x="-151.34" y="235.57999999999998" as="sourcePoint" />
             <mxPoint x="140.01000000000013" y="235.57999999999998" as="targetPoint" />
@@ -209,7 +209,7 @@
           <mxGeometry height="15" width="80" x="460.69" y="193" as="geometry" />
         </mxCell>
         <mxCell id="ZalLBJPP6w9tjaAZMeg1-9" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;:11::2/128&lt;/pre&gt;" vertex="1">
-          <mxGeometry height="15" width="80" x="256" y="212" as="geometry" />
+          <mxGeometry height="15" width="80" x="255.68" y="205" as="geometry" />
         </mxCell>
         <mxCell id="ZalLBJPP6w9tjaAZMeg1-10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;:11::3/128&lt;/pre&gt;" vertex="1">
           <mxGeometry height="15" width="80" x="255.68" y="354.07" as="geometry" />
@@ -222,6 +222,9 @@
         </mxCell>
         <mxCell id="ZalLBJPP6w9tjaAZMeg1-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;&amp;lt;someprefix&amp;gt;:11::0/64&lt;/pre&gt;" vertex="1">
           <mxGeometry height="15" width="160.01" x="510" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="TMRvGMm4HgYq10W0olI9-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;pre&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;FogIXP&lt;/font&gt;&lt;/pre&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="-230" y="227" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
