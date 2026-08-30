@@ -35,7 +35,15 @@ Basically having an IXP port does not mean that the Looking Glass will magically
 
 So whether I will be connected to LocIX DUS depends on how does connecting work, since with FogIXP it is simple, cause FogIXP is owned by the same company as my VPS, so connecting is trivial.
 But LocIX is a separate organisation, it is not owned by Servperso Systems, so I assume that I will have to register with LocIX myself, but Servperso will provide the L2 connection.
-I sent a ticket to Servperso about that and also asked if the connection is delivered via a separate interface or via a tagged VLAN on the existing interface.   
+I sent a ticket to Servperso about that and also asked if the connection is delivered via a separate interface or via a tagged VLAN on the existing interface. [Check below](#servperso-response)   
 By the way, Serperso exposes the Proxmox panel for accessing the VPS, so I have more insight into the VM and I also can install whatever OS I want, since they have a lot of ISOs on the mounted ISO Storage.   
 
 So the total costs of the VPSes come out to 120CHF + 114,64EUR a year, but having 2GBs of RAM will provide more comfort. I mean not really a room for comfort, since 2GBs is more kind of the minimal reasonable amount for a full IPv6 table plus tens of thousands of prefixes from the IXP.    
+
+###### servperso response
+Also, in a recent response to a ticket from Servperso, they said:   
+> "Every ixp is delivered as a separate interface. \[...\]   
+> For locix, we do the registration on our side after you got an asn and a peeringdb account."    
+
+So LocIX is pretty straightforward and I am glad that Servperso does handle the registration. I will just fill out the blanks in my PeeringDB profile after I get the ASN from iFog.   
+
