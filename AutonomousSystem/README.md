@@ -7,6 +7,8 @@
 |PoP-A|pending|
 |PoP-B|activated|
 
+`edge01.dus.andreansx.net` is [here](../edge01.dus.andreansx.net/)    
+
 I would like to add PTR records for my PoPs, so I would use `edge01.zrh.andreansx.net` for PoP-A, and `edge01.dus.andreansx.net`.   
 Looking glass will be at `lg.andreansx.net`    
 
@@ -27,4 +29,6 @@ iFog VPS is a Switzerland Ryzen G2 with 2 AMD Ryzen Shared Cores, 2GB RAM, 50GB 
 * [Decisions on the sponsoring LIR](./01-LIR.md)   
 * [Why 2GB of RAM on iFog VPS because of comfort and FogIXP](./02-vps-memory-bgp-full-table.md)    
 * [Why not HTTP-01 and why DNS-01 and acme.sh/lego due to anycast](./03-anycast-dns01-acmesh-lego.md)    
+* [OS](./04-os.md)   
+* [Dusseldorf VPS](./05-vps-dusseldorf.md)   
 
