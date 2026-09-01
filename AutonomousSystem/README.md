@@ -2,9 +2,9 @@
 
 |resource |status|
 |:-|:-|
-|ASN|Pending|
-|Sponsoring LIR|Pending|
-|PoP-A|pending|
+|ASN|Ordered, awaiting review|
+|Sponsoring LIR|Lagrange Cloud|
+|PoP-A|pending, awaiting ASN and /48|
 |PoP-B|activated|
 
 `edge01.dus.andreansx.net` is [here](../edge01.dus.andreansx.net/)    
@@ -26,7 +26,7 @@ iFog VPS is a Switzerland Ryzen G2 with 2 AMD Ryzen Shared Cores, 2GB RAM, 50GB 
 ## Docs
 
 * [Why not Vultr or BGPTunnel and Oracle Always-Free VPS](./00-vultr-bgptunnel-oci.md)   
-* [Decisions on the sponsoring LIR](./01-LIR.md)   
+* [Decisions on the sponsoring LIR (Lagrange Cloud)](./01-LIR.md)   
 * [Why 2GB of RAM on iFog VPS because of comfort and FogIXP](./02-vps-memory-bgp-full-table.md)    
 * [Why not HTTP-01 and why DNS-01 and acme.sh/lego due to anycast](./03-anycast-dns01-acmesh-lego.md)    
 * [OS](./04-os.md)   
