@@ -1,0 +1,27 @@
+---
+- name: test
+  hosts: debians
+  gather_facts: yes
+  tasks:
+    - name: iproute2
+      ansible.builtin.apt:
+        name: iproute2
+        state: present
+    - name: motd
+      ansible.builtin.template:
+        src: motd.j2
+        dest: /etc/motd
+    - name: interfaces
+      ansible.builtin.template:
+        src: netup.sh.j2
+        dest: /usr/local/bin/netup.sh
+        mode: "0755"
+    - name: apply netupsh
+      ansible.builtin.command: /usr/local/bin/netup.sh
+    - name: bird
+      ansible.builtin.template:
+        src: bird.conf.j2
+        dest: /etc/bird.conf
+        mode: "0755"
+    - name: activate bird
+      ansible.builtin.command: sudo /usr/sbin/bird -c /etc/bird.conf

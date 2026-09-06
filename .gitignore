@@ -4,3 +4,7 @@ oob-fls648/extracted
 .DS_Store
 
 clab-*/
+
+*.key
+*psk
+*.net.conf

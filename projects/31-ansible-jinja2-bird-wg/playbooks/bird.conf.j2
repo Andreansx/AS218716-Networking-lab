@@ -1,0 +1,17 @@
+router id {{ router_id }};
+define LO={{ loopback }};
+
+protocol kernel {
+  ipv6 {
+    import none;
+    export all;
+  };
+}
+protocol device {
+  scan time 10;
+}
+protocol direct {
+  ipv6;
+  interfaces "-eth0", "eth*", "lo";
+}
+

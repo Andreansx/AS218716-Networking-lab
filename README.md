@@ -34,6 +34,8 @@ I want this whole network to be 100% driven by code so it would be possible to s
 
 # Projects
 
+*   [Kind of a post-mortem with an issue with ssh and wireguard and nftables and the difference between iif and iifname](./projects/32-issue-wg-nftables-ssh/)   
+
 *   **[Some writing about IPSec, IKEv2, differences between ipsec.conf and swanctl.conf, and intended problem showcase with rekeying and PFS](./projects/30-some-ipsec-policy-based-experimenting/)**    
 
 *   **[PoC but with IPSec instead of Wireguard](./projects/29-ipsec-PoC-bird/)**    

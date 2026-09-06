@@ -1,0 +1,9 @@
+[Interface]
+Privatekey=
+Address=2a06:9801:1514:2::1/128
+[Peer]
+Publickey=
+PreSharedKey=
+AllowedIPs=2a06:9801:1514:2::3/128
+Endpoint=185.44.82.168:49583
+Persistentkeepalive=25

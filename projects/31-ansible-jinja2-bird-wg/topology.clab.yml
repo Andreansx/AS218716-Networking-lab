@@ -1,0 +1,16 @@
+name: ansibletest
+topology:
+  nodes:
+    ansible-host0:
+      kind: linux
+      image: debian0:local
+      binds:
+        - ./playbooks:/playbooks
+    debian0:
+      kind: linux
+      image: debian0:local
+    debian1:
+      kind: linux
+      image: debian0:local
+  links:
+    - endpoints: ["debian0:eth1","debian1:eth1"]

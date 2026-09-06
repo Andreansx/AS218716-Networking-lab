@@ -1,0 +1,5 @@
+#!/bin/sh
+ip addr replace {{ loopback }} dev lo
+{% for i in interfaces %}
+ip addr replace {{ i.address }} dev {{ i.name }}
+{% endfor %}

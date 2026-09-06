@@ -4,7 +4,7 @@
 |:-|:-|
 |ASN|Ordered, awaiting review|
 |Sponsoring LIR|Lagrange Cloud|
-|PoP-A|pending, awaiting ASN and /48|
+|PoP-A|activated|
 |PoP-B|activated|
 
 `edge01.dus.andreansx.net` is [here](../edge01.dus.andreansx.net/)    
@@ -12,13 +12,13 @@
 I would like to add PTR records for my PoPs, so I would use `edge01.zrh.andreansx.net` for PoP-A, and `edge01.dus.andreansx.net`.   
 Looking glass will be at `lg.andreansx.net`    
 
-I'll place security notes in here rather than in [projects](../projects/).   
+I'll place all technical things and security notes regarding my Autonomous System in here rather than in [projects](../projects/).   
 
 ## Diagram 
 
 ![diagram](../media/ownassimplified.png)   
 
-As of now, Servperso VPS is activated, iFog VPS is pending.   
+As of now, both Servperso VPS and iFog VPS are activated.   
 
 Servperso VPS is a Basic tier with 2 vCores, 2GB RAM, 15GB SSD, 500Mbps with IPv4 and IPv6 public IPs for 28,66 EUR quarterly.   
 iFog VPS is a Switzerland Ryzen G2 with 2 AMD Ryzen Shared Cores, 2GB RAM, 50GB NVMe SSD and also a public IPv4 and IPv6 and up to 8TB traffic monthly at up to 10Gbps for 10 CHF a month.   
@@ -31,4 +31,4 @@ iFog VPS is a Switzerland Ryzen G2 with 2 AMD Ryzen Shared Cores, 2GB RAM, 50GB 
 * [Why not HTTP-01 and why DNS-01 and acme.sh/lego due to anycast](./03-anycast-dns01-acmesh-lego.md)    
 * [OS](./04-os.md)   
 * [Dusseldorf VPS](./05-vps-dusseldorf.md)   
-
+* [Not a technical decision but just an issue with ssh and wireguard and nftables](../projects/32-issue-wg-nftables-ssh/)     
