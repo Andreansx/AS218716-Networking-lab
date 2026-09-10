@@ -2,7 +2,7 @@
 
 |resource |status|
 |:-|:-|
-|ASN|Ordered, awaiting review|
+|ASN, IPv6 PA /48|Assigned, AS218716|
 |Sponsoring LIR|Lagrange Cloud|
 |PoP-A|activated|
 |PoP-B|activated|

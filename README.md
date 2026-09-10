@@ -1,8 +1,8 @@
-# Datacenter networking lab
+# AS218716 Datacenter networking lab
 
 Here I document everything about my networking lab which serves as a practical ground for learning modern datacenter/service-provider technologies.     
 
-The current focus for now is getting my own ASN and PA IPv6 /48, then setting up my own Looking Glass on my domain which will be anycasted. And also later I would like to set up my own authoritative nameserver.   
+The current focus for now is setting up my own Looking Glass on my domain which will be anycasted. And also later I would like to set up my own authoritative nameserver.   
 
 Anycast will only work for people behind IPv6. The A records for my domain will just point to the two public IPv4 addresses of the VPSes.   
 
@@ -22,7 +22,7 @@ Check directory [./AutonomousSystem/](./AutonomousSystem/) for information speci
 
 # Architecture
 
-Currently my main focus is to become my own AS. Two VPSes will have eBGP peerings established and there will be iBGP between them and my CCR2004 border leaf through wireguard tunnels. However most of the lab is in fact turned off, cause it's too loud and too power-hungry, so im leaving only the border-leaf on.    
+Currently my main focus is build projects on top of my own AS, as having an AS does open the way to some things that are not possible to create without an AS. Two VPSes will have eBGP peerings established and there will be iBGP between them and my CCR2004 border leaf through wireguard tunnels. However most of the lab is in fact turned off, cause it's too loud and too power-hungry, so im leaving only the border-leaf on.    
 
 I do know that the S4048-ON is overkill cause there is not one service in my lab that would require anywhere near this bandwith.   
 
