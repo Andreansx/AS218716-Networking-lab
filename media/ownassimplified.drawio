@@ -43,13 +43,13 @@
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#3399FF);" value="::1/128" vertex="1">
           <mxGeometry height="30" width="60" x="550" y="362.5" as="geometry" />
         </mxCell>
-        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-19" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#FF3399);" value="&lt;pre&gt;&amp;lt;some prefix&amp;gt;:10::/64&lt;/pre&gt;" vertex="1">
+        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-19" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#FF3399);" value="&lt;pre&gt;2a06:9801:1514:10::/64&lt;/pre&gt;" vertex="1">
           <mxGeometry height="30" width="159.32" x="450.68" y="30" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-20" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="iBGP links INSIDE Wireguard" vertex="1">
           <mxGeometry height="30" width="110" x="340.68" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-21" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#3399FF);" value="&lt;pre&gt;&lt;span style=&quot;&quot;&gt;&amp;lt;some prefix&amp;gt;:ffff::/64&lt;/span&gt;&lt;/pre&gt;" vertex="1">
+        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-21" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#3399FF);" value="&lt;pre&gt;&lt;span style=&quot;&quot;&gt;2a06:9801:1514:ffff::/64&lt;/span&gt;&lt;/pre&gt;" vertex="1">
           <mxGeometry height="30" width="159.32" x="450.68000000000006" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-22" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="loopbacks (unique address but reachable via both PoPs)" vertex="1">
@@ -91,7 +91,7 @@
             <mxPoint x="480" y="200" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-33" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 30%;&quot;&gt;&lt;p style=&quot;line-height: 100%;&quot;&gt;My PA IPv6 &amp;lt;some prefix&amp;gt;::/48&amp;nbsp;&lt;br&gt;is propagated from both those PoPs&amp;nbsp;&lt;br&gt;Also, the AAAA record for my looking glass domain&amp;nbsp;&lt;br&gt;points to an anycasted address (:a::1)&lt;/p&gt;&lt;p style=&quot;line-height: 100%;&quot;&gt;And route6 object (RIPE DB) + ROA&lt;/p&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-33" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 30%;&quot;&gt;&lt;p style=&quot;line-height: 100%;&quot;&gt;My PA IPv6 2a06:9801:1514::/48&amp;nbsp;&lt;br&gt;is propagated from both those PoPs&amp;nbsp;&lt;br&gt;Also, the AAAA record for my looking glass domain&amp;nbsp;&lt;br&gt;points to an anycasted address (:a::1)&lt;/p&gt;&lt;p style=&quot;line-height: 100%;&quot;&gt;And route6 object (RIPE DB) + ROA&lt;/p&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="65" width="310" x="-121.35000000000001" y="37.5" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-34" edge="1" parent="1" source="8y6Ee9ZSgGJN8aSKaIr5-33" style="endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" value="">
@@ -133,7 +133,7 @@
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-45" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="However the WG between the two PoPs will be established on Provider&#39;s IPv6s, cause those VPSes do get a public IPv6. Basically PoP-to-PoP will be IPv6, and PoP-to-borderleaf will be IPv4.&lt;div&gt;Sessions to PoPs are always initiated from my home&lt;/div&gt;" vertex="1">
           <mxGeometry height="30" width="370" x="205.01000000000002" y="535" as="geometry" />
         </mxCell>
-        <mxCell id="R28ODRYxSrZf4fFENDjZ-10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#3399FF);" value="&lt;div style=&quot;line-height: 30%;&quot;&gt;&lt;pre&gt;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 255, 255));&quot;&gt;&amp;lt;some prefix&amp;gt;:67::1/64&lt;/span&gt;&lt;/pre&gt;&lt;pre&gt;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 255, 255));&quot;&gt;sample lan network&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="R28ODRYxSrZf4fFENDjZ-10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#3399FF);" value="&lt;div style=&quot;line-height: 30%;&quot;&gt;&lt;pre&gt;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 255, 255));&quot;&gt;2a06:9801:1514:67::1/64&lt;/span&gt;&lt;/pre&gt;&lt;pre&gt;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(153, 255, 255));&quot;&gt;sample lan network&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="30" width="159.32" x="600" y="327.5" as="geometry" />
         </mxCell>
         <mxCell id="Hxd1n3aajGHy5NscjLkm-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="" vertex="1">
@@ -205,13 +205,13 @@
             <mxPoint x="480" y="160" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZalLBJPP6w9tjaAZMeg1-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;:11::1/128&lt;/pre&gt;" vertex="1">
+        <mxCell id="ZalLBJPP6w9tjaAZMeg1-8" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;:2::1/128&lt;/pre&gt;" vertex="1">
           <mxGeometry height="15" width="80" x="460.69" y="193" as="geometry" />
         </mxCell>
-        <mxCell id="ZalLBJPP6w9tjaAZMeg1-9" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;:11::2/128&lt;/pre&gt;" vertex="1">
+        <mxCell id="ZalLBJPP6w9tjaAZMeg1-9" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;:2::2/128&lt;/pre&gt;" vertex="1">
           <mxGeometry height="15" width="80" x="255.68" y="205" as="geometry" />
         </mxCell>
-        <mxCell id="ZalLBJPP6w9tjaAZMeg1-10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;:11::3/128&lt;/pre&gt;" vertex="1">
+        <mxCell id="ZalLBJPP6w9tjaAZMeg1-10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;:2::3/128&lt;/pre&gt;" vertex="1">
           <mxGeometry height="15" width="80" x="255.68" y="354.07" as="geometry" />
         </mxCell>
         <mxCell id="ZalLBJPP6w9tjaAZMeg1-11" edge="1" parent="1" source="ZalLBJPP6w9tjaAZMeg1-8" style="endArrow=none;html=1;rounded=0;strokeColor=light-dark(#000000,#B266FF);strokeWidth=3;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="ZalLBJPP6w9tjaAZMeg1-10" value="">
@@ -220,7 +220,7 @@
             <mxPoint x="450" y="219" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ZalLBJPP6w9tjaAZMeg1-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;&amp;lt;someprefix&amp;gt;:11::0/64&lt;/pre&gt;" vertex="1">
+        <mxCell id="ZalLBJPP6w9tjaAZMeg1-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="&lt;pre&gt;2a06:9801:1514:2::0/64&lt;/pre&gt;" vertex="1">
           <mxGeometry height="15" width="160.01" x="510" y="135" as="geometry" />
         </mxCell>
         <mxCell id="TMRvGMm4HgYq10W0olI9-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;pre&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;FogIXP&lt;/font&gt;&lt;/pre&gt;" vertex="1">
