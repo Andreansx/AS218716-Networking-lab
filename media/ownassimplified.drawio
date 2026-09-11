@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Strona-1" id="vJBmcMmv5R3fYHrPMBMq">
-    <mxGraphModel dx="1534" dy="1593" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1416" dy="1508" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -109,7 +109,7 @@
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-36" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;The :10::/127 etc. addresses are INSIDE wireguard tunnels. The tunnels from my home to VPS themselves are established on VPS&#39; public IPv4s to punch through my CGNAT&amp;nbsp;&lt;/font&gt;" vertex="1">
           <mxGeometry height="50" width="310" x="230.69" y="450" as="geometry" />
         </mxCell>
-        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-37" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;&lt;font size=&quot;4&quot;&gt;My AS&amp;lt;some ASN&amp;gt;&lt;/font&gt;&lt;/pre&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-37" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 10%;&quot;&gt;&lt;pre&gt;&lt;font size=&quot;4&quot;&gt;AS218716&lt;/font&gt;&lt;/pre&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="20" width="159.32" x="345" y="410" as="geometry" />
         </mxCell>
         <mxCell id="8y6Ee9ZSgGJN8aSKaIr5-38" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Technically not &#39;border&#39; anymore but it&#39;s still the edge of my home network" vertex="1">
@@ -190,7 +190,7 @@
         <mxCell id="ZalLBJPP6w9tjaAZMeg1-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Keys to PoPs &amp;nbsp;and to LIR services in Secure Enclave" vertex="1">
           <mxGeometry height="30" width="110" x="625.81" y="197" as="geometry" />
         </mxCell>
-        <mxCell id="ZalLBJPP6w9tjaAZMeg1-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 0%;&quot;&gt;&lt;pre&gt;second pair of WG tunnels&amp;nbsp;&lt;/pre&gt;&lt;pre&gt;for management from Mac.&amp;nbsp;&lt;/pre&gt;&lt;pre&gt;Routing with AllowedIPs&lt;/pre&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="ZalLBJPP6w9tjaAZMeg1-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;div style=&quot;line-height: 0%;&quot;&gt;&lt;pre&gt;WG tunnels&amp;nbsp;&lt;span style=&quot;font-family: Helvetica; white-space: normal;&quot;&gt;for&amp;nbsp;&lt;/span&gt;&lt;/pre&gt;&lt;pre&gt;management from Mac.&amp;nbsp;&lt;/pre&gt;&lt;pre&gt;Routing with AllowedIPs&lt;/pre&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="30" width="120" x="320" y="130" as="geometry" />
         </mxCell>
         <mxCell id="ZalLBJPP6w9tjaAZMeg1-6" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;strokeColor=light-dark(#000000,#B266FF);strokeWidth=3;dashed=1;" value="">
