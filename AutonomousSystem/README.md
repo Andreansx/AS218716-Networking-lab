@@ -32,3 +32,4 @@ iFog VPS is a Switzerland Ryzen G2 with 2 AMD Ryzen Shared Cores, 2GB RAM, 50GB 
 * [OS](./04-os.md)   
 * [Dusseldorf VPS](./05-vps-dusseldorf.md)   
 * [Not a technical decision but just an issue with ssh and wireguard and nftables](../projects/32-issue-wg-nftables-ssh/)     
+* [route6 and ROA](./06-roa-route6.md)   
