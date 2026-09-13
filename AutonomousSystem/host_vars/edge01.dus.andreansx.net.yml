@@ -1,0 +1,5 @@
+wg_interfaces:
+  - name: wg0
+    port: 45921
+  - name: wg1
+    port: 45922
