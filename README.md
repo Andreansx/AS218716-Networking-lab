@@ -18,7 +18,7 @@ Anycast will only work for people behind IPv6. The A records for my domain will 
 
 # Autonomous System
 
-Check directory [./AutonomousSystem/](./AutonomousSystem/) for information specifically about the AS. 
+Check directory [AutonomousSystem/](./AutonomousSystem/) for all information regarding the AS and for the Ansible deployments.   
 
 # Architecture
 
@@ -48,9 +48,9 @@ I want this whole network to be 100% driven by code so it would be possible to s
 
 *   **[Arista cEOS ARM64 on M2 Max with OrbStack and Containerlab](./projects/25-cEOS-clab-OrbStack-MacOS/)**    
 
-*   **[The whole network defined in code](./Fabric-deploy/)**   
+*   **[The whole network defined in code](./old-fabric-deploy/)** - this is outdated mostly.   
 *   **[Leaf-vJunosRouter0 eBGP provisioning with Ansible](./projects/24-leaf-vjunosrouter0-ebgp-ansible/)**    
-*   **[Spine-DellEMCS4048-ON0 provisioning with Ansible](./Ansible/Provision-Spine-DellEMCS4048-ON0/)**   
+*   **[Spine-DellEMCS4048-ON0 provisioning with Ansible](./old-fabric-deploy/Provision-Spine-DellEMCS4048-ON0/)**   
 *   **[Jumbo Frames](./projects/23-jumbo-frames/)**   
 *   **[Dell EMC S4048-ON eBGP test run](./projects/22-ebgp-s4048-ccr2004/)**    
 *   **[Dell EMC S4048-ON Day0 and SSH pubkey setup](./projects/21-dell-emc-s4048-on-day0/)**    
@@ -103,14 +103,14 @@ Here is the simplified diagram which shows what I'm making my network to look li
 # Design notes 
 
 > [!NOTE]   
-> Honestly I didn't know whether to leave these things I wrote below cause they aren't actually well written but I'll leave them just so someone interested may read all that. Just please know that I didn't put much attention to those notes lately so do not refer to them as a source of truth.     
+> Honestly I didn't know whether to leave these things I wrote below cause they aren't actually well written but I'll leave them just so someone interested may read all that. Just please know that I didn't put much attention to those notes lately so do not refer to them as a source of truth.      
 
 
 I would like to divide the description of my network into two main parts: the up-and-running part, and the planned part.   
 
 However, I think the term "planned" might not reflect what I actually mean so here I would like to first write what is running NOW, and by scrolling a bit lower, you can read about what is planned.   
-I just want to say that the planned things are not just a "maybe sometime I will do that" thing but rather I have a lot planned out already and I'm just waiting to finish CCNA. 
-It's just that even though I'm currently doing CCNA, I did not abandon the lab, and I just stopped more practical implementations and projects, but I am still learning a lot of theory about other things, right now especially TCAM memory blocks and the switching engine blocks and their limitations specifically in Broadcom's StrataXGS series chips.
+I just want to say that the planned things are not just a "maybe sometime I will do that" thing but rather I have a lot planned out already ~and I'm just waiting to finish CCNA~. 
+~It's just that even though I'm currently doing CCNA, I did not abandon the lab, and~ I just stopped more practical implementations and projects, but I am still learning a lot of theory about other things, right now especially TCAM memory blocks and the switching engine blocks and their limitations specifically in Broadcom's StrataXGS series chips.
 
 For now, there are two main network devices running: the MikroTik CCR2004-1G-12S+2XS (AS65000, a.k.a. `border-leaf-ccr2004`), and a CRS326 (AS65001, a.k.a. `leaf-crs326`). 
 However, as you probably already noticed, those devices actually are not in a spine-leaf topology.   

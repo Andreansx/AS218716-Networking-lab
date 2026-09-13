@@ -25,6 +25,7 @@ iFog VPS is a Switzerland Ryzen G2 with 2 AMD Ryzen Shared Cores, 2GB RAM, 50GB 
 
 ## Docs
 
+* [IPs and interfaces](./07-ips-interfaces.md)   
 * [Why not Vultr or BGPTunnel and Oracle Always-Free VPS](./00-vultr-bgptunnel-oci.md)   
 * [Decisions on the sponsoring LIR (Lagrange Cloud)](./01-LIR.md)   
 * [Why 2GB of RAM on iFog VPS because of comfort and FogIXP](./02-vps-memory-bgp-full-table.md)    

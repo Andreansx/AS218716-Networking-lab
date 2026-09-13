@@ -3,3 +3,7 @@ wg_interfaces:
     port: 45921
   - name: wg1
     port: 45922
+    address: 2a06:9801:1514:3::2/128
+    allowedips: '::/0'
+  - name: wg2
+    port: 45923

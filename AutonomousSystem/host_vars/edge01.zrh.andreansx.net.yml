@@ -1,0 +1,12 @@
+wg_interfaces:
+  - name: wg0
+    port: 49581
+  - name: wg1
+    port: 49582
+    address: 2a06:9801:1514:3::1/128
+    allowedips: '::/0'
+    endpoint: ''
+  - name: wg2
+    port: 49583
+    address: 2a06:9801:1514:3::11/128
+    allowedips: '::/0'
