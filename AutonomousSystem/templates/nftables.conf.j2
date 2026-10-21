@@ -17,11 +17,12 @@ table inet filter {
         ip protocol icmp icmp type {
             echo-request, echo-reply,
             destination-unreachable, time-exceeded, parameter-problem
-        } accept
+            } accept
 {% for w in wg_interfaces | default ([]) %}
-        iif "{{ w.name }}" tcp dport 22 accept
+        iifname "{{ w.name }}" tcp dport 22 accept
         udp dport {{ w.port }} ct state new accept
 {% endfor %}
+        tcp dport { 80, 179, 443 } ct state new accept
       }
     chain forward {
         type filter hook forward priority filter; policy drop;

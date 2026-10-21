@@ -1,0 +1,2 @@
+ansible_python_interpreter: auto_silent
+ansible_become_flags: "-H -S"

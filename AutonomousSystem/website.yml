@@ -1,0 +1,20 @@
+- name: Reload website
+  hosts: edge_linux
+  become: true
+  tasks:
+    - name: Website
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: /var/www/html/index.html
+        mode: "0644"
+    - name: website media dir
+      ansible.builtin.file:
+        path: /var/www/html/media/
+        state: directory
+        mode: "0755"
+    - name: website media copy
+      ansible.builtin.copy:
+        src: site-media/
+        dest: /var/www/html/media/
+        mode: "0644"
+        directory_mode: "0755"
