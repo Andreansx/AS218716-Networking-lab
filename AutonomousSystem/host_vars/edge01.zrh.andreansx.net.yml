@@ -1,3 +1,4 @@
+ipv4: 185.44.82.168
 wg_interfaces:
   - name: wg0
     port: 49581

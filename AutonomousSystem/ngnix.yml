@@ -1,0 +1,35 @@
+- name: tasks for ngnix, cert renewal, site config and contents reload
+  hosts: edge_linux
+  become: true
+  tasks:
+    - name: Create /etc/nginx/tls
+      ansible.builtin.file:
+        path: /etc/nginx/tls
+        state: directory
+        mode: "0700"
+
+    - name: Copy certificate
+      ansible.builtin.copy:
+        src: ~/.lego/certificates/andreansx.net.crt
+        dest: /etc/nginx/tls/andreansx.net.crt
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Copy private key
+      ansible.builtin.copy:
+        src: ~/.lego/certificates/andreansx.net.key
+        dest: /etc/nginx/tls/andreansx.net.key
+        mode: "0600"
+      notify: Reload nginx
+
+    - name: nginx site config
+      ansible.builtin.template:
+        src: templates/andreansx.net.conf.j2
+        dest: /etc/nginx/conf.d/andreansx.net.conf
+        mode: "0644"
+      notify: Reload nginx
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded

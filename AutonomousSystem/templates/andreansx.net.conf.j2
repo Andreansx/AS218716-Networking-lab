@@ -1,0 +1,28 @@
+log_format via '$remote_addr [$time_local] "$request" $status "$http_user_agent" via="$via"';
+
+map $server_addr $via {
+    "2a06:9801:1514:a::1"  "anycast IPv6";
+    "{{ ipv4 }}"           "static IPv4 ({{ inventory_hostname }}, {{ ipv4 }})";
+    default                "unknown address ($server_addr)";
+}
+
+server {
+    listen [2a06:9801:1514:a::1]:80;
+    listen {{ ipv4 }}:80;
+    server_name andreansx.net;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen [2a06:9801:1514:a::1]:443 ssl http2;
+    listen {{ ipv4 }}:443 ssl http2;
+    server_name andreansx.net;
+
+    ssl_certificate     /etc/nginx/tls/andreansx.net.crt;
+    ssl_certificate_key /etc/nginx/tls/andreansx.net.key;
+    access_log /var/log/nginx/andreansx.net.access.log via;
+
+    root /var/www/html;
+    index index.html;
+    ssi on;
+}
