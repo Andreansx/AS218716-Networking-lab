@@ -64,6 +64,47 @@ And now look at this:
 ![scrn8-1](./media/scrn8-1.png)   
 
 And guess who does the `91.237.84.2` IP address shown above belong to.
-Of course it is my ISP:   
+Of course it is my ISP's:   
 ![scrn8-2](./media/scrn8-2.png)   
 
+Also, a request for the A record for google.com from `192.0.2.1`, returns the IPv4 address for google.com, even though it should not, since there is no DNS resolver at `192.0.2.1`.   
+![scrn8-3](./media/scrn8-3.png)    
+
+However, this is not something that should fail Let's Encrypt, since the validation is done by LE's servers, not my device.
+The lego run fails the propagation check because of the NXDOMAIN, but it should be possible to bypass that by adding `--dns-persist.propagation.disable-ans` to the lego command, as stated in `--help`:   
+```
+Flags related to the DNS-PERSIST-01 challenge:
+
+   --dns-persist                                                      Use the DNS-PERSIST-01 challenge to solve challenges. Manual verification only. Can be mixed with other types of challenges. [$LEGO_DNS_PERSIST]
+   --dns-persist.issuer-domain-name string                            Override the issuer-domain-name to use for DNS-PERSIST-01 when multiple are offered. Must be offered by the challenge. [$LEGO_DNS_PERSIST_ISSUER_DOMAIN_NAME]
+   --dns-persist.persist-until time                                   Set the optional persistUntil for DNS-PERSIST-01 records as an RFC3339 timestamp (for example, 2026-03-01T00:00:00Z). [$LEGO_DNS_PERSIST_PERSIST_UNTIL]
+   --dns-persist.propagation.disable-ans                              By setting this flag to true, disables the need to await propagation of the TXT record to all authoritative name servers. [$LEGO_DNS_PERSIST_PROPAGATION_DISABLE_ANS]
+   --dns-persist.propagation.disable-rns                              By setting this flag to true, disables the need to await propagation of the TXT record to all recursive name servers (aka resolvers). [$LEGO_DNS_PERSIST_PROPAGATION_DISABLE_RNS]
+```
+Local DNS Hijacking cannot fail LE, because LE is able to get the TXT record for `_acme-challenge`.    
+So I have to ways to renew certs, either add `--dns-persist.propagation.disable-ans`, or run the renewal through a VPN.   
+
+Anyways, LE certs for `*.andreansx.net` are now valid and I used ansible to automate the cert propagation to VPSes:   
+
+```yaml
+    - name: Create /etc/nginx/tls
+      ansible.builtin.file:
+        path: /etc/nginx/tls
+        state: directory
+        mode: "0700"
+
+    - name: Copy certificate
+      ansible.builtin.copy:
+        src: ~/.lego/certificates/andreansx.net.crt
+        dest: /etc/nginx/tls/andreansx.net.crt
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Copy private key
+      ansible.builtin.copy:
+        src: ~/.lego/certificates/andreansx.net.key
+        dest: /etc/nginx/tls/andreansx.net.key
+        mode: "0600"
+      notify: Reload nginx
+```
+These tasks are pretty self-explanatory. Nginx reloading and site config and website contents will be in a separate file.
