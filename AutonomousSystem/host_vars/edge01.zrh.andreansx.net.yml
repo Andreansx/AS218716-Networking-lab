@@ -1,13 +1,26 @@
+asn: "218716"
 ipv4: 185.44.82.168
+ipv6_prefix: "2a06:9801:1514::/48"
+unique_lo: "2a06:9801:1514:f::2/128"
 wg_interfaces:
   - name: wg0
     port: 49581
   - name: wg1
     port: 49582
-    address: 2a06:9801:1514:3::1/128
+    address: '2a06:9801:1514:31::2/128'
     allowedips: '::/0'
     endpoint: ''
   - name: wg2
     port: 49583
-    address: 2a06:9801:1514:3::11/128
+    address: '2a06:9801:1514:32::2/128'
     allowedips: '::/0'
+ebgp_peers:
+  - name: ifog0
+    local_address: "2a0c:9a40:2511:101::195f"
+    remote_as: 34927
+    remote_address: "2a0c:9a40:2511:101::1"
+ibgp_peers:
+  - name: core01.waw.andreansx.net
+    local_address: '2a06:9801:1514:32::2'
+    remote_address: '2a06:9801:1514:32::4'
+    remote_as: 218716

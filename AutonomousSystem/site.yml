@@ -1,4 +1,4 @@
-- name: nftables config, nginx 
+- name: nftables config, nginx
   hosts: edge_linux
   become: true
   tasks:

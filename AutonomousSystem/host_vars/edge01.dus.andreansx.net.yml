@@ -1,10 +1,24 @@
+asn: "218716"
 ipv4: 45.154.99.209
+ipv6_prefix: "2a06:9801:1514::/48"
+unique_lo: "2a06:9801:1514:f::3/128"
 wg_interfaces:
   - name: wg0
     port: 45921
   - name: wg1
     port: 45922
-    address: 2a06:9801:1514:3::2/128
+    address: '2a06:9801:1514:31::3/128'
     allowedips: '::/0'
-  - name: wg2
+  - name: wg3
     port: 45923
+    address: '2a06:9801:1514:33::3/128'
+ebgp_peers:
+  - name: servperso0
+    local_address: "2a0c:b640:10::6:209"
+    remote_as: 34872
+    remote_address: "2a0c:b640:10::6:ffff"
+ibgp_peers:
+  - name: core01.waw.andreansx.net
+    local_address: '2a06:9801:1514:33::3'
+    remote_address: '2a06:9801:1514:33::4'
+    remote_as: 218716
