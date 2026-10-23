@@ -17,11 +17,12 @@ server {
     listen [2a06:9801:1514:a::1]:443 ssl http2;
     listen {{ ipv4 }}:443 ssl http2;
     server_name andreansx.net;
-
+    add_header X-Served-By "{{ inventory_hostname }}" always;
     ssl_certificate     /etc/nginx/tls/andreansx.net.crt;
     ssl_certificate_key /etc/nginx/tls/andreansx.net.key;
     access_log /var/log/nginx/andreansx.net.access.log via;
-
+    location = /ip  { default_type text/plain; return 200 "$remote_addr\n"; }
+    location = /pop { default_type text/plain; return 200 "{{ inventory_hostname }} via $via\n"; }
     root /var/www/html;
     index index.html;
     ssi on;

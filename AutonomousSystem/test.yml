@@ -1,0 +1,9 @@
+- name: test
+  hosts: edge_linux 
+  gather_facts: false
+  tasks:
+    - name: gen conf bird
+      ansible.builtin.template:
+        src: templates/bird.conf.j2
+        dest: "{{ playbook_dir }}/out/{{ inventory_hostname }}-bird.conf"
+      delegate_to: localhost

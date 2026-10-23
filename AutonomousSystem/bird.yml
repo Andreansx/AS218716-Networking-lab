@@ -1,0 +1,20 @@
+- name: BIRD config
+  hosts: edge_linux
+  become: true
+  tasks:
+    - name: make sure bird dir exists
+      ansible.builtin.file:
+        path: /etc/bird/
+        state: directory
+        mode: "0755"
+    - name: generate bird config and push to servers
+      ansible.builtin.template:
+        src: templates/bird.conf.j2
+        dest: /etc/bird/bird.conf
+    - name: ReloadBIRD
+      ansible.builtin.service:
+        name: bird
+        state: reloaded
+    - name: file for website
+      ansible.builtin.shell: birdc -r show protocols > /var/www/html/status/bgp.txt.tmp && mv /var/www/html/status/bgp.txt.tmp /var/www/html/status/bgp.txt
+

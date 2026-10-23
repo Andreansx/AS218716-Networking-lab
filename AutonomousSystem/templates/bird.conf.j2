@@ -1,0 +1,49 @@
+router id {{ ipv4 }};
+log stderr all;
+define PREFIX = {{ ipv6_prefix }};
+protocol device {
+    scan time 10;
+  }
+protocol kernel {
+    ipv6 {
+        export all;
+        import none;
+      };
+    persist;
+  }
+protocol direct {
+    ipv6;
+    interface "eth*", "lo";
+  }
+protocol static {
+    ipv6;
+    route PREFIX blackhole;
+    route {{ unique_lo }} via "lo";
+  }
+function MyPrefix() -> bool {
+return net ~ [{{ ipv6_prefix }}+];
+  }
+filter allowedExport {
+    if MyPrefix() then accept;
+    reject;
+  }
+function isBogon() -> bool {
+    return net ~ [::/0, fc00::/7+, fe80::/10+, ff00::/8+];
+  }
+filter allowedFromUpstream {
+    if MyPrefix() then reject;
+    if isBogon() then reject;
+    accept;
+  }
+{% for i in ebgp_peers %}
+protocol bgp ebgp_{{ i.name }}_as{{ i.remote_as }} {
+    local {{ i.local_address }} as {{ asn }};
+    neighbor {{ i.remote_address }} as {{ i.remote_as }};
+    ipv6 {
+	import limit 500 action block;
+        import keep filtered on;
+        import filter allowedFromUpstream;
+        export filter allowedExport;
+      };
+  }
+{% endfor %}

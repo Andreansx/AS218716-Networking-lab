@@ -12,7 +12,7 @@
 |2a06:9801:1514:31::/64|iBGP1 WG edge01.zrh <-> edge01.dus, using /128|wg1|
 |2a06:9801:1514:32::/64|iBGP2 WG edge01.zrh <-> core01.waw, using /128|wg2|
 |2a06:9801:1514:33::/64|iBGP3 WG edge01.dus <-> core01.waw, using /128|wg3|
-|2a06:9801:1514:ffff::/64|unique loopbacks, using /128|lo|
+|2a06:9801:1514:f::/64|unique loopbacks, using /128|lo|
 |2a06:9801:1514:a::1/128|Anycasted website and Looking Glass||
 
 
