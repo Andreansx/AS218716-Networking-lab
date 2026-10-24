@@ -11,10 +11,25 @@
       ansible.builtin.template:
         src: templates/bird.conf.j2
         dest: /etc/bird/bird.conf
+
+    - name: get ebgp status
+      ansible.builtin.command: birdc -r show protocols all ebgp_{{ item.name }}_as{{ item.remote_as }}
+      loop: "{{ ebgp_peers }}"
+      register: ebgp_status
+      changed_when: false
+    - name: file for website
+      ansible.builtin.copy:
+        content: |
+          {% for r in ebgp_status.results %}
+          {% for line in r.stdout_lines %}
+          {{ line }}
+          {% endfor %}
+
+          {% endfor %}
+        dest: /var/www/html/status/bgp.txt
+        mode: "0644"
     - name: ReloadBIRD
       ansible.builtin.service:
         name: bird
         state: reloaded
-    - name: file for website
-      ansible.builtin.shell: birdc -r show protocols > /var/www/html/status/bgp.txt.tmp && mv /var/www/html/status/bgp.txt.tmp /var/www/html/status/bgp.txt
 

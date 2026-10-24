@@ -40,7 +40,7 @@ protocol bgp ebgp_{{ i.name }}_as{{ i.remote_as }} {
     local {{ i.local_address }} as {{ asn }};
     neighbor {{ i.remote_address }} as {{ i.remote_as }};
     ipv6 {
-	import limit 500 action block;
+	import limit 250000 action block;
         import keep filtered on;
         import filter allowedFromUpstream;
         export filter allowedExport;
