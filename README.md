@@ -2,6 +2,8 @@
 
 Here I document everything about my networking lab which serves as a practical ground for learning modern datacenter/service-provider technologies.     
 
+**Be sure to check out the docs in [AutonomousSystem/](./AutonomousSystem/) and in [projects/](./projects/)!**   
+
 The current focus for now is setting up my own Looking Glass on my domain which will be anycasted. And also later I would like to set up my own authoritative nameserver.   
 
 Anycast will only work for people behind IPv6. The A records for my domain will just point to the two public IPv4 addresses of the VPSes.   
@@ -82,22 +84,13 @@ I want this whole network to be 100% driven by code so it would be possible to s
 
 ![own as simplified](./media/ownassimplified.png)    
 
-## Logical topology
+The tunnels from my home to VPS themselves are established on VPS' public IPv4s to punch through my CGNAT.
+However the WG between the two `edge01.*`s will be established on Provider's IPv6s, cause those VPSes do get a public IPv6. Basically `edge01.zrh`-to-`edge01.dus` will be IPv6, and `edge01.*`-to-`core01.waw` will be IPv4.
+Sessions to `edge01.*` are always initiated from my home
 
-![logical diagram](./media/logical_diagram.png)
-
-## Modernization and currently ongoing
-
-Here is the simplified diagram which shows what I'm making my network to look like.   
-
-![modernization](./media/modernization.png)
-
-
-## Physical connections diagram
-
-![physical diagram](./media/physical_diagram.png)
-
-
+My PA IPv6 2a06:9801:1514::/48 is propagated from both those `edge01.*`. 
+Also, the AAAA record for my looking glass domain points to an anycasted address (`:a::1`).
+The A record for backwards compatibility points to the `edge01.*`s public IPv4 addresses.
 ## Photos
 
 ![devices](./media/devices.jpeg)   
@@ -107,7 +100,7 @@ Here is the simplified diagram which shows what I'm making my network to look li
 # Design notes 
 
 > [!NOTE]   
-> Honestly I didn't know whether to leave these things I wrote below cause they aren't actually well written but I'll leave them just so someone interested may read all that. Just please know that I didn't put much attention to those notes lately so do not refer to them as a source of truth.      
+> Honestly I didn't know whether to leave these things I wrote below cause they aren't actually well written but I'll leave them just so someone interested may read all that. Just please know that I didn't put much attention to those notes lately so absolutely **do NOT** refer to them as a source of truth.       
 
 
 I would like to divide the description of my network into two main parts: the up-and-running part, and the planned part.   
