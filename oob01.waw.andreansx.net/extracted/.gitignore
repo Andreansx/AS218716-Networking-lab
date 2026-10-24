@@ -1,0 +1,3 @@
+# decompressed runtime images — large, regenerate with extract_fls648.py
+*.dec.bin
+*.payload.bin
