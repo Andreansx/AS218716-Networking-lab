@@ -35,3 +35,4 @@ iFog VPS is a Switzerland Ryzen G2 with 2 AMD Ryzen Shared Cores, 2GB RAM, 50GB 
 * [Not a technical decision but just an issue with ssh and wireguard and nftables](../projects/32-issue-wg-nftables-ssh/)     
 * [route6 and ROA](./06-roa-route6.md)   
 * [How I found out my ISP does DNS Hijacking while setting up Lego with DNS-01](./08-isp-dns-hijacking-lego.md)   
+* [SSH cutoff because of wireguard](./09-ssh-cutoff-wg.md)    

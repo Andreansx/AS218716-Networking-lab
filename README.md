@@ -34,6 +34,8 @@ I want this whole network to be 100% driven by code so it would be possible to s
 
 # Projects
 
+*   [SSH cutoff because of wireguard](./AutonomousSystem/09-ssh-cutoff-wg.md)    
+
 *   **[Found out that my ISP does DNS Hijacking while setting up Lego DNS-01 TLS](./AutonomousSystem/08-isp-dns-hijacking-lego.md)**    
 
 *   [Kind of a post-mortem with an issue with ssh and wireguard and nftables and the difference between iif and iifname](./projects/32-issue-wg-nftables-ssh/)   
