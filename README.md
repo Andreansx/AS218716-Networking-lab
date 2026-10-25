@@ -36,6 +36,8 @@ I want this whole network to be 100% driven by code so it would be possible to s
 
 # Projects
 
+*   [Issue with management VRF and tunnels](./projects/33-management-vrf-wg-issue/)    
+
 *   [SSH cutoff because of wireguard](./AutonomousSystem/09-ssh-cutoff-wg.md)    
 
 *   **[Found out that my ISP does DNS Hijacking while setting up Lego DNS-01 TLS](./AutonomousSystem/08-isp-dns-hijacking-lego.md)**    
