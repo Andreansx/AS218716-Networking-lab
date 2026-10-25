@@ -1,0 +1,136 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Strona-1" id="La010VuIBGfo2_CEkhU9">
+    <mxGraphModel dx="684" dy="1662" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-28" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=none;dashed=1;dashPattern=8 8;strokeColor=light-dark(#000000,#B3FF66);" value="" vertex="1">
+          <mxGeometry height="180" width="440" x="140" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;pre&gt;core01.waw.andreansx.net&lt;/pre&gt;" vertex="1">
+          <mxGeometry height="60" width="180" x="170" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;pre&gt;edge01.zrh.andreansx.net&lt;/pre&gt;" vertex="1">
+          <mxGeometry height="60" width="180" x="60" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;pre&gt;edge01.zrh.andreansx.net&lt;/pre&gt;" vertex="1">
+          <mxGeometry height="60" width="180" x="280" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-6" edge="1" parent="1" source="yhraifnPH7Nn1mQnxAD0-2" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#B266FF);dashed=1;" target="yhraifnPH7Nn1mQnxAD0-4" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="380" y="210" as="sourcePoint" />
+            <mxPoint x="430" y="160" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-7" edge="1" parent="1" source="yhraifnPH7Nn1mQnxAD0-5" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#B266FF);dashed=1;" target="yhraifnPH7Nn1mQnxAD0-2" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="320" y="440" as="sourcePoint" />
+            <mxPoint x="260" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-8" edge="1" parent="1" source="yhraifnPH7Nn1mQnxAD0-5" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#B266FF);dashed=1;" target="yhraifnPH7Nn1mQnxAD0-4" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="389" y="140" as="sourcePoint" />
+            <mxPoint x="330" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;pre&gt;mgmt01.waw.andreansx.net&lt;/pre&gt;" vertex="1">
+          <mxGeometry height="60" width="180" x="390" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B266FF);" value="MTU 1420" vertex="1">
+          <mxGeometry height="30" width="60" x="360" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-12" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Public IPv4" vertex="1">
+          <mxGeometry height="30" width="70" x="115" y="-40" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Public IPv4" vertex="1">
+          <mxGeometry height="30" width="70" x="340" y="-40" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-14" edge="1" parent="1" source="yhraifnPH7Nn1mQnxAD0-10" style="endArrow=classicThin;html=1;rounded=1;defaultLabelBackgroundColor=page;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endFill=0;strokeWidth=2;curved=0;strokeColor=light-dark(#000000,#FF0080);" target="yhraifnPH7Nn1mQnxAD0-12" value="">
+          <mxGeometry height="50" relative="1" width="50" x="-0.1821" as="geometry">
+            <Array as="points">
+              <mxPoint x="435" y="330" />
+              <mxPoint x="285" y="330" />
+              <mxPoint x="210" y="330" />
+              <mxPoint x="180" y="40" />
+              <mxPoint x="80" y="40" />
+              <mxPoint x="80" y="-60" />
+              <mxPoint x="150" y="-60" />
+            </Array>
+            <mxPoint x="260" y="230" as="sourcePoint" />
+            <mxPoint x="310" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-15" edge="1" parent="1" source="yhraifnPH7Nn1mQnxAD0-10" style="endArrow=classicThin;html=1;rounded=1;defaultLabelBackgroundColor=page;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=light-dark(#000000,#FF0080);strokeWidth=2;endFill=0;curved=0;" target="yhraifnPH7Nn1mQnxAD0-13" value="">
+          <mxGeometry height="50" relative="1" width="50" x="-0.0884" as="geometry">
+            <Array as="points">
+              <mxPoint x="435" y="330" />
+              <mxPoint x="285" y="330" />
+              <mxPoint x="320" y="330" />
+              <mxPoint x="350" y="40" />
+              <mxPoint x="300" y="40" />
+              <mxPoint x="300" y="-60" />
+              <mxPoint x="375" y="-60" />
+            </Array>
+            <mxPoint x="260" y="230" as="sourcePoint" />
+            <mxPoint x="310" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;" value="&lt;pre&gt;sw01.waw.andreansx.net&lt;/pre&gt;" vertex="1">
+          <mxGeometry height="60" width="180" x="170" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-19" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#B266FF);dashed=1;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="180" y="260" as="sourcePoint" />
+            <mxPoint x="160" y="50" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-20" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#B266FF);dashed=1;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="360" y="50" as="sourcePoint" />
+            <mxPoint x="340" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-21" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#B266FF);dashed=1;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="280" y="10" as="sourcePoint" />
+            <mxPoint x="240" y="10" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-22" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#B266FF);dashed=1;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="440" y="80" as="sourcePoint" />
+            <mxPoint x="400" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-23" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#B266FF);dashed=1;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="440" y="90" as="sourcePoint" />
+            <mxPoint x="400" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-24" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Wireguard tunnels for iBGP" vertex="1">
+          <mxGeometry height="30" width="150" x="450" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-25" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=light-dark(#000000,#FF0080);" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="440" y="114.5" as="sourcePoint" />
+            <mxPoint x="400" y="114.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-26" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Wireguard tunnels for management" vertex="1">
+          <mxGeometry height="30" width="200" x="450" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-27" edge="1" parent="1" source="yhraifnPH7Nn1mQnxAD0-18" style="endArrow=none;html=1;rounded=0;defaultLabelBackgroundColor=page;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" target="yhraifnPH7Nn1mQnxAD0-2" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="270" y="330" as="sourcePoint" />
+            <mxPoint x="320" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yhraifnPH7Nn1mQnxAD0-29" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontColor=light-dark(#000000,#B3FF66);" value="AS218716" vertex="1">
+          <mxGeometry height="30" width="60" x="330" y="440" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
