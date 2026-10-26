@@ -24,3 +24,12 @@ This is a catastrophic MTU.
 But MTU is not actually the biggest concern here. 
 The biggest concern, is that this setup makes seemingly independent management tunnels actually dependent on dataplane tunnels, because for `mgmt01.waw.andreansx.net` to reach `edge01.*.andreansx.net` through `wg0`, both `wg2` and `wg3` must be working.
 So if dataplane fails, the control plane also fails, which renders the seemingly out-of-band management, unusable.   
+
+So a simple fix for this issue, is not to make management VRF outbound traffic pass through to wireguard interfaces.   
+Basically the default gateway for the management vrf will be `10.0.0.1` (ISP's home router) and it's traffic will not get routed neither to `wg2` nor `wg3`.
+This diagram explains what I came up with:   
+
+![33-2](./33-2.png)   
+
+So the management traffic must not be routed through wireguard dataplane tunnels. 
+Management tunnels will be established on the underlay IPv4-only network, and not inside the IPv6 wg dataplane.
